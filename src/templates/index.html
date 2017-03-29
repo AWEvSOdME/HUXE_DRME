@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Hello Webpack!</title>
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <h1>Webpack workflow</h1>
+
+        <p>This workflow includes the following:</p>
+
+        <ul>
+            <li>SASS</li>
+            <li>Babel for ES6 support</li>
+            <li>Vue.js and *.vue file support</li>
+            <li>Live reload webserver</li>
+            <li>Gulp with Webpack</li>
+            <li>Development and deployment builds</li>
+        </ul>
+
+        <hr>
+
+        <h2>Nunjucks partials:</h2>
+        {% include "./imports/content.html" %}
+
+        <hr>
+
+        <h2>A Vue.js module:</h2>
+        <div id="app"></div>
+
+        <hr>
+
+        <script src="js/vendor.js"></script>
+        <script src="js/script.js"></script>
+    </body>
+</html>
