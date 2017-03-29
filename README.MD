@@ -1,4 +1,5 @@
 #Team Members
 Sophie Drummer, David Messerer
 
-test test test SOPHIE
+Animal Movements
+HyperMedia User Experience Engineering Project
