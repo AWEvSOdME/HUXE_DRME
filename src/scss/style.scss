@@ -1,2 +1,10 @@
 @import "imports/layout";
 @import "../../node_modules/leaflet/dist/leaflet";
+
+
+#input{
+  position: fixed;
+  right: 15px;
+  top: 60px;
+  width: 45%;
+}

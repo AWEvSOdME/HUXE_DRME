@@ -1,7 +1,9 @@
 body {
   font-family: sans-serif;
   font-size: 14px;
-  background-color: lightgray;
+  //background-color: lightgray;
+  background-image: url(../../img/crane.png);
+
 }
 
 h1 {
@@ -10,7 +12,15 @@ h1 {
 
 
 #map {
-  position: absolute;
+  position: fixed;
+  left: 10px;
+  bottom: 10px;
+  top: 60px;
   width: 50%;
-  height: 90%;
 }
+
+//Overwrite absolute Path from Leaflet.css
+.leaflet-control-layers-toggle {
+  background-image: url(../../img/layers.png) !important;
+}
+
