@@ -110,7 +110,7 @@ $.ajax({
         });
 
         //How to access JSON values
-        console.log(data.individuals); //"First Level of Json File"
+        //console.log(data.individuals); //"First Level of Json File"
         //console.log(data.individuals[0].locations[0].location_lat); //"Fourth Level of Json File , latitude nr.1"
 
         //Single Marker
@@ -159,10 +159,10 @@ $.ajax({
 
         //polyline.setMap(map); //GOOGLE
 
-        console.log(polyArray);
+        //console.log(polyArray);
 
         //Console Tests...
         console.log('helloWorld');
-        console.log(JSON.stringify(data)); // Output of Json Request (Movebank)
+        //console.log(JSON.stringify(data)); // Output of Json Request (Movebank)
     }
 });

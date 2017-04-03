@@ -2,9 +2,27 @@
 @import "../../node_modules/leaflet/dist/leaflet";
 
 
+
+#vuemap{
+  width: 60%;
+  float: left;
+}
+
+
 #input{
-  position: fixed;
-  right: 15px;
+
+  padding: 10px;
+  width: 37%;
+  margin-left: 10px;
+  min-width: 80px;
+  background-color: crimson;
+  float: right;
+}
+
+div#vue{
+  position: absolute;
   top: 60px;
-  width: 45%;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
 }

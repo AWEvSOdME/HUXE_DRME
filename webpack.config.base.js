@@ -25,7 +25,12 @@ module.exports = {
     }, {
       test: /\.vue$/,
       use: ['vue-loader']
-    }]
+    },
+    {
+        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        use: [ 'url-loader']
+    }
+    ]
   },
   resolve: {
     modules: ["node_modules", "bower_components"],
