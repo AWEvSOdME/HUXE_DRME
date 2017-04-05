@@ -1,37 +1,29 @@
 <template lang="html" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
     <div id="vue">
         <vmap id="vuemap" :position="position" :zoom="zoom" @zoom="onZoom" @move="onMove">
-            <vmap-tile-layer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution="&copy; <a href=&#34;http://osm.org/copyright&#34;>OpenStreetMap</a> contributors"
-            ></vmap-tile-layer>
+            <vmap-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=&#34;http://osm.org/copyright&#34;>OpenStreetMap</a> contributors"></vmap-tile-layer>
             <vmap-marker v-for="markerPosition in markersOld" v-bind:key="markerPosition" :latlng="markerPosition.position" :visible="markerPosition.visible" :icon="markerPosition.icon"></vmap-marker>
-            <vmap-marker :latlng="marki.position" :visible="marki.visible" :icon="marki.icon" ></vmap-marker>
-            <!--vmap-layer-group>
-                <vmap-geo-json :data="geoJson" :feature-style="geoJsonStyle"></vmap-geo-json>
-            </vmap-layer-group-->
-            <!--vmap-polyline :latlngs="[{lat: 49.614, lng: 6.084}, { lat: 49.62, lng: 6.118 }]"></vmap-polyline-->
-            <vmap-marker v-for="markerOH in markersNew" v-bind:key="markerOH" :latlng="markerOH.position" :visible="markerOH.visible" :icon="markerOH.icon"></vmap-marker>
+            <vmap-polyline :latlngs="polyPos"></vmap-polyline>
         </vmap>
         <div id="input">
-            <select v-model="selected">
+            <select v-model="selectAnimal">
                 <option v-for="animal in animals" :value="animal">{{ animal.text }}</option>
             </select>
-            <span>Selected: {{ selected.text }}</span>
-            <span>Selected: {{ selected.value }}, {{selected.text}}</span>
-            <div v-if="selected.value === 'A'"> <img  v-bind:src="imgOen"></div>
-            <div v-if="selected.value === 'B'"> <img  v-bind:src="imgWhi"></div>
-            <div v-if="selected.value === 'C'"> <img  v-bind:src="imgBla"></div>
-            <div v-if="selected.value === 'D'"> <img  v-bind:src="imgCra"></div>
-            <button @click="addMarker(pos, changeIcon(selected.iconSelected))">Add</button>
-            <button @click="changeIcon(selected.iconSelected)">Change</button>
-            <button @click="outputCoords(selectedNmb)">AJAX</button><br>
-            <div>
-                <input v-model="message">
+            <span>Selected: {{ selectAnimal.text }}</span><br>
+            <img  v-bind:src="selectAnimal.imgSrc"><br>
+
+            <button @click="addMarker(setPositionMarker(message), changeIcon(selectAnimal.iconSelected))">Add Marker</button><br>
+            <!--button @click="outputCoords(message)">AJAX</button><br-->
+            <div class="inputField">
+                <input v-model="message"> <span>Selected Nmb: {{ message }}</span>
             </div>
-            <span>Selected Nmb: {{ message }}</span>
-            <button @click="showAnimal(message)">SHOW</button>
+
+            <!--button @click="setPositionMarker(message)">SHOW</button-->
+            <button @click="makeSinglePoly(message)">poly SINGLE</button>
+            <button @click="makePoly()">poly Multi</button>
         </div>
+        <div></div><Vinfo id="vueInfo"></Vinfo></div>
+
     </div>
 
 </template>
@@ -39,27 +31,18 @@
 <script>
 
     import Map from './Map.vue';
+    import Info from './AnimalInfo.vue';
     import * as components from './components';
 
-    var urlTest =  '../../img/oenanthe.png';
+    var imgOenSrc =  '../../img/oenanthe.png';
+    var imgWhiSrc =  '../../img/whitestork.png';
+    var imgBlaSrc =  '../../img/blackstork.png';
+    var imgCraSrc =  '../../img/crane.png';
 
-
-    var customIcon = L.icon({
-        iconUrl:  urlTest,
-        shadowUrl: ''
-    });
-    var customIcon2 = L.icon({
-        iconUrl:  '../../img/whitestork.png',
-        shadowUrl: ''
-    });
-    var customIcon3 = L.icon({
-        iconUrl:  '../../img/blackstork.png',
-        shadowUrl: ''
-    });
-    var customIcon4 = L.icon({
-        iconUrl:  '../../img/crane.png',
-        shadowUrl: ''
-    });
+    var iconOen = L.icon({iconUrl:  imgOenSrc});
+    var iconWhi = L.icon({iconUrl:  imgWhiSrc});
+    var iconBla = L.icon({iconUrl:  imgBlaSrc});
+    var iconCra = L.icon({iconUrl:  imgCraSrc});
 
     var main = require('../../js/data.js');
     main.getData();
@@ -67,7 +50,6 @@
 
     var arrayCoords = [];
     var posi = [];
-
 
     export default {
         name: 'app',
@@ -77,86 +59,36 @@
             VmapGeoJson: components.GeoJson,
             VmapLayerGroup: components.LayerGroup,
             VmapPolyline: components.Polyline,
-            VmapTileLayer: components.TileLayer
+            VmapTileLayer: components.TileLayer,
+            Vinfo: Info
         },
       data () {
         return {
+            lat: 49.1,
+            lng: 0,
             message: '1',
-            selected: 'White Stork',
-            selectedNmb: '1',
-            iconNew: customIcon3,
-            iconNew2: customIcon,
-            iconNew3: customIcon2,
+            selectAnimal: { text: 'Oenanthe', value: 'A', iconSelected: iconOen, imgSrc: '../../img/oenanthe.png'},
+            iconAnimal: '',
             animals: [
-                { text: 'Oenanthe', value: 'A' , iconSelected: customIcon},
-                { text: 'White Stork', value: 'B', iconSelected: customIcon2 },
-                { text: 'Black Stork', value: 'C', iconSelected: customIcon3 },
-                { text: 'Crane', value: 'D', iconSelected: customIcon4 }
+                { text: 'Oenanthe', value: 'A', iconSelected: iconOen, imgSrc: imgOenSrc},
+                { text: 'White Stork', value: 'B', iconSelected: iconWhi, imgSrc: imgWhiSrc},
+                { text: 'Black Stork', value: 'C', iconSelected: iconBla, imgSrc: imgBlaSrc},
+                { text: 'Crane', value: 'D', iconSelected: iconCra, imgSrc: imgCraSrc}
             ],
-            lat: 49.611,
-            lng: 6.13,
             zoom: 2,
-            numbers: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
             markersOld: [
-                { position : {lat:50.622, lng: 6.174}, visible: true, icon: customIcon },
-                { position : {lat:50.63, lng: 6.054}, visible: true, icon: customIcon2 }],
-            imgOen:  '../../img/oenanthe.png',
-            imgCra:  '../../img/crane.png',
-            imgBla:  '../../img/blackstork.png',
-            imgWhi:  '../../img/whitestork.png',
+                { position : {lat:50.622, lng: 6.174}, visible: true, icon: iconOen },
+                { position : {lat:60.63, lng: 2.054}, visible: true, icon: iconCra }],
             pos: {lat:49.658, lng: 6.774},
-            markersNew:[
-                { position : {lat:49.658, lng: 6.074}, visible: true, icon: customIcon },
-                { position : {lat:49.65, lng: 6.084}, visible: true, icon: customIcon2 }],
-            marki: { position : {lat:49.658, lng: 6.374}, visible: true, icon: customIcon },
-            geoJson: {
-                type: 'Polygon',
-                coordinates: [
-                    [
-                        [
-                            6.114921569824219,
-                            49.612378400270195
-                        ],
-                        [
-                            6.125907897949219,
-                            49.618495606374275
-                        ],
-                        [
-                            6.139812469482421,
-                            49.617272226578514
-                        ],
-                        [
-                            6.141357421875,
-                            49.61148856087291
-                        ],
-                        [
-                            6.14032745361328,
-                            49.60626042633693
-                        ],
-                        [
-                            6.126594543457031,
-                            49.60247802203419
-                        ],
-                        [
-                            6.113376617431641,
-                            49.60715036117516
-                        ],
-                        [
-                            6.114921569824219,
-                            49.612378400270195
-                        ]
-                    ]
-                ]
-            },
-            geoJsonStyle: function () {
-                return {
-                    color: '#933'
-                }
-            }
+            polyPos: [{lat: 30.614, lng: 8.084}],
         }
       },
         watch: {
-
+            selectAnimal:{
+                handler: function (val, oldVal) {
+                    alert('a thing changed')
+                }
+            }
         },
 
 
@@ -220,25 +152,44 @@
                 })
             },
             addMarker (){
-                this.markersNew.push(({
-                    position: this.pos, icon: this.iconNew
+                this.markersOld.push(({
+                    position: this.pos, icon: this.iconAnimal
                 }))
             },
-            changeIcon (iconN){
-                this.iconNew = iconN;
+            changeIcon (icon){
+                this.iconAnimal = icon;
             },
             doRequest(){
                 main.pushData();
                 main.pushCoords();
             },
-            outputCoords(i){
+            outputCoords(){
                 arrayCoords = main.getCoordArray();
-                console.log(arrayCoords[i]);
+                console.log(arrayCoords);
             },
-            showAnimal(i){
+            setPositionMarker(i){
                 posi = main.getCoordArray();
                 console.log(posi[i])
                 this.pos = posi[i];
+            },
+            makeSinglePoly(i){
+                posi = main.getCoordArray();
+                this.polyPos.push(({
+                    lat: posi[i].lat,
+                    lng: posi[i].lng
+                }))
+                console.log(this.polyPos);
+            },
+            makePoly(){
+                posi = main.getCoordArray();
+                var i;
+                for (i = 0; i < posi.length; i++){
+                    this.polyPos.push(({
+                        lat: posi[i].lat,
+                        lng: posi[i].lng
+                    }))
+                }
+                console.log(this.polyPos);
             }
         }
 

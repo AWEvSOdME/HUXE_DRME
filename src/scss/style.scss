@@ -1,28 +1,61 @@
 @import "imports/layout";
 @import "../../node_modules/leaflet/dist/leaflet";
 
+// ---------------------- VUE DIV ---------------------------------------------------------------
+div#vue{
+  position: absolute;
+  top: 60px;
+  right: 15px;
+  bottom: 15px;
+  left: 15px;
+  overflow: hidden;
+}
 
+// ---------------------- Components ---------------------------------------------------------------
 
 #vuemap{
   width: 60%;
+  margin-right: 10px;
   float: left;
 }
 
-
 #input{
-
   padding: 10px;
   width: 37%;
-  margin-left: 10px;
-  min-width: 80px;
+  height: 40%;
+  margin-bottom: 15px;
+  min-width: 75px;
   background-color: crimson;
   float: right;
 }
 
-div#vue{
-  position: absolute;
-  top: 60px;
-  right: 10px;
-  bottom: 10px;
-  left: 10px;
+
+#vueInfo{
+  padding: 10px;
+  width: 37%;
+  min-width: 75px;
+  float: right;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+// ---------------------- Scrollbar ---------------------------------------------------------------
+::-webkit-scrollbar{
+  width: 12px;
+}
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+// ---------------------- InputField ---------------------------------------------------------------
+.inputField{
+  padding-top: 15px;
+  padding-bottom: 10px;
+
 }
