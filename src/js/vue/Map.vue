@@ -5,20 +5,6 @@
   </div>
 </template>
 
-<style>
-  @import url(../../../node_modules/leaflet/dist/leaflet.css);
-
-  .component-vue-map {
-    position: relative;
-    width: 500px;
-  }
-
-  .map-container {
-    height: 100%;
-    width: 100%;
-  }
-</style>
-
 <script>
   import Leaflet from 'leaflet'
   import LayerContainer from './components/mixins/LayerContainer'
@@ -110,10 +96,7 @@
 </script>
 
 <style lang="sass" scoped>
-  div{
-    height: 100%;
-    width: 100%;
-  }
+
 
 
 </style>
