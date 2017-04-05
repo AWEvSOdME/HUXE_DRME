@@ -1,8 +1,8 @@
 <template lang="html" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
     <div id="vue">
-        <vmap id="vuemap" :position="position" :zoom="zoom" @zoom="onZoom" @move="onMove">
+        <vmap  :position="position" :zoom="zoom" @zoom="onZoom" @move="onMove">
             <vmap-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=&#34;http://osm.org/copyright&#34;>OpenStreetMap</a> contributors"></vmap-tile-layer>
-            <vmap-marker v-for="markerPosition in markersOld" v-bind:key="markerPosition" :latlng="markerPosition.position" :visible="markerPosition.visible" :icon="markerPosition.icon"></vmap-marker>
+            <vmap-marker v-for="markerPosition in markersOld" v-bind:key="markerPosition" :latlng="markerPosition.positionM" :visible="markerPosition.visible" :icon="markerPosition.icon"></vmap-marker>
             <vmap-polyline :latlngs="polyPos"></vmap-polyline>
         </vmap>
         <div id="input">
@@ -22,7 +22,7 @@
             <button @click="makeSinglePoly(message)">poly SINGLE</button>
             <button @click="makePoly()">poly Multi</button>
         </div>
-        <div></div><Vinfo id="vueInfo"></Vinfo></div>
+        <div><Vinfo id="vueInfo"></Vinfo></div>
 
     </div>
 
@@ -77,8 +77,8 @@
             ],
             zoom: 2,
             markersOld: [
-                { position : {lat:50.622, lng: 6.174}, visible: true, icon: iconOen },
-                { position : {lat:60.63, lng: 2.054}, visible: true, icon: iconCra }],
+                { positionM : {lat:50.622, lng: 6.174}, visible: true, icon: iconOen },
+                { positionM : {lat:60.63, lng: 2.054}, visible: true, icon: iconCra }],
             pos: {lat:49.658, lng: 6.774},
             polyPos: [{lat: 30.614, lng: 8.084}],
         }
@@ -153,7 +153,7 @@
             },
             addMarker (){
                 this.markersOld.push(({
-                    position: this.pos, icon: this.iconAnimal
+                    positionM: this.pos, icon: this.iconAnimal
                 }))
             },
             changeIcon (icon){
