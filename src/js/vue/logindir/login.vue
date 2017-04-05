@@ -10,7 +10,7 @@
                 <button v-on:click="removeUser(user)">X</button>
             </li>
         </ul>
-        <form id="form" v-on:submit.prevent="addUser">
+        <form id="form" v-on:submit.prevent="authentication()">
             <input type="text" v-model="newUser.name" placeholder="Username">
             <input type="email" v-model="newUser.email" placeholder="email@email.com">
             <input type="submit" value="Add User">
@@ -20,12 +20,7 @@
             <li v-show="!validation.email">EZ PZ</li>
         </ul>
 
-        <div id="login">
 
-
-
-
-        </div>
 
 
     </div>
@@ -55,6 +50,8 @@
         messagingSenderId: "981242849200"
     }
     firebase.initializeApp(config);
+
+
 
     var usersRef = firebase.database().ref('users');
 
@@ -107,6 +104,19 @@
             },
             removeUser: function (user) {
                 usersRef.child(user['.key']).remove()
+            },
+            //Function for
+            authentication: function () {
+                if (this.isValid)
+                {
+                    firebase.auth().createUserWithEmailAndPassword(this.newUser.email, this.newUser.name)
+                    {
+                    var errorCode = "ERRORPLAN";
+                    var errorMessage = "ERROR";
+
+                };
+                }
+
             }
         }
     };
