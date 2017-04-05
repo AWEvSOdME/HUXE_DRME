@@ -1,6 +1,9 @@
 <template>
 
-    <div id="log">
+
+
+
+    <div id="da">
         <ul is="transition-group">
             <li v-for="user in users" class="user" :key="user['.key']">
                 <span>{{user.name}} - {{user.email}}</span>
@@ -13,10 +16,21 @@
             <input type="submit" value="Add User">
         </form>
         <ul class="errors">
-            <li v-show="!validation.name">Name cannot be empty.</li>
-            <li v-show="!validation.email">Please provide a valid email address.</li>
+            <li v-show="!validation.name">PLS INSERT</li>
+            <li v-show="!validation.email">EZ PZ</li>
         </ul>
+
+        <div id="login">
+
+
+
+
+        </div>
+
+
     </div>
+
+
 
 
 
@@ -29,15 +43,19 @@
 
 
 
-
     var firebase = require('firebase');
+
     var emailRE = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     var config = {
         apiKey: "AIzaSyBwYBLW7TCGJH0HjFWAgAMw_iQe5YQQO98",
         authDomain: "mapapp-9d5a2.firebaseapp.com",
-        databaseURL: "https://mapapp-9d5a2.firebaseio.com"
+        databaseURL: "https://mapapp-9d5a2.firebaseio.com",
+        projectId: "mapapp-9d5a2",
+        storageBucket: "mapapp-9d5a2.appspot.com",
+        messagingSenderId: "981242849200"
     }
     firebase.initializeApp(config);
+
     var usersRef = firebase.database().ref('users');
 
     export default {
@@ -55,11 +73,12 @@
             newUser: {
                 name: '',
                 email: ''
-            }
+            },
+            users: ''
         }},
         // firebase binding
         // https://github.com/vuejs/vuefire
-                firebase: {
+        firebase: {
                 users: usersRef
             },
         // computed property for form validation state
