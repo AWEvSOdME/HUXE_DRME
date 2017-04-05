@@ -13,7 +13,6 @@
 
 // ---------------------- Components ---------------------------------------------------------------
 
-@import url(../../node_modules/leaflet/dist/leaflet.css);
 
 .component-vue-map {
   position: fixed;
@@ -48,7 +47,7 @@
   padding: 10px;
   width: 365px;
   bottom: 0px;
-  top: 205px;
+  top: 250px;
   right: 0px;
   float: right;
   overflow-y: scroll;
@@ -75,5 +74,19 @@
 .inputField{
   padding-top: 15px;
   padding-bottom: 10px;
-
 }
+
+select{
+  min-width: 100px;
+  color: rgba(28, 26, 26, 0.93);
+  border-radius: 4px;
+}
+
+select:focus{
+  background-color: #dddddd;
+}
+
+
+
+
+

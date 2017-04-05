@@ -6,21 +6,26 @@
             <vmap-polyline :latlngs="polyPos"></vmap-polyline>
         </vmap>
         <div id="input">
-            <select v-model="selectAnimal">
+            <select v-model="selectAnimal" v-on:focusout="getAnimalName(selectAnimal.urlPublic, selectAnimal.urlStudyId), showNames()" >
                 <option v-for="animal in animals" :value="animal">{{ animal.text }}</option>
             </select>
             <span>Selected: {{ selectAnimal.text }}</span><br>
+
+            <select v-model="selectSpecificAnimal" >
+                <option v-for="animalname in animalnames" v-bind:value="animalname.text">{{ animalname.text }}</option>
+            </select>
+            <span>Selected Animal: {{ selectSpecificAnimal }}</span><br>
+
             <img  v-bind:src="selectAnimal.imgSrc"><br>
 
             <button @click="addMarker(setPositionMarker(message), changeIcon(selectAnimal.iconSelected))">Add Marker</button><br>
-            <!--button @click="outputCoords(message)">AJAX</button><br-->
             <div class="inputField">
                 <input v-model="message"> <span>Selected Nmb: {{ message }}</span>
             </div>
-
-            <!--button @click="setPositionMarker(message)">SHOW</button-->
             <button @click="makeSinglePoly(message)">poly SINGLE</button>
             <button @click="makePoly()">poly Multi</button>
+            <button @click="getData(selectAnimal.urlPublic, selectAnimal.urlStudyId, selectSpecificAnimal, selectAnimal.urlSensor)">getData</button>
+            <button @click="getAnimalName(selectAnimal.urlPublic, selectAnimal.urlStudyId)">getNames</button>
         </div>
         <div><Vinfo id="vueInfo"></Vinfo></div>
 
@@ -44,12 +49,21 @@
     var iconBla = L.icon({iconUrl:  imgBlaSrc});
     var iconCra = L.icon({iconUrl:  imgCraSrc});
 
+
+    var AnimalIdOen= 'bird%201';
+    var AnimalIdWhi= '15007';
+    var AnimalIdBla= '15011';
+    var AnimalIdFal= '128881-Pc-NWHI';
+
+    var priv = 'json-auth';
+    var pub  = 'json';
+
     var main = require('../../js/data.js');
-    main.getData();
-    main.pushData();
 
     var arrayCoords = [];
     var posi = [];
+    var animalNamesArray = [];
+    var requestUrl;
 
     export default {
         name: 'app',
@@ -66,30 +80,37 @@
         return {
             lat: 49.1,
             lng: 0,
+            zoom: 2,
             message: '1',
-            selectAnimal: { text: 'Oenanthe', value: 'A', iconSelected: iconOen, imgSrc: '../../img/oenanthe.png'},
+            selectAnimal: { text: 'Choose Animal', value: '', iconSelected: '', imgSrc: '', urlStudyId: '', urlPublic: '', urlAnimalId: '', urlSensor: ''},
+            selectSpecificAnimal: { text: '', value: ''},
             iconAnimal: '',
             animals: [
-                { text: 'Oenanthe', value: 'A', iconSelected: iconOen, imgSrc: imgOenSrc},
-                { text: 'White Stork', value: 'B', iconSelected: iconWhi, imgSrc: imgWhiSrc},
-                { text: 'Black Stork', value: 'C', iconSelected: iconBla, imgSrc: imgBlaSrc},
-                { text: 'Crane', value: 'D', iconSelected: iconCra, imgSrc: imgCraSrc}
+                { text: 'Oenanthe', value: 'A', iconSelected: iconOen, imgSrc: imgOenSrc, urlStudyId: '58672150', urlPublic: priv, urlAnimalId: AnimalIdOen, urlSensor: 'solar-geolocator'},
+                { text: 'White Stork', value: 'B', iconSelected: iconWhi, imgSrc: imgWhiSrc, urlStudyId: '92053942', urlPublic: priv, urlAnimalId: AnimalIdWhi, urlSensor: 'gps'},
+                { text: 'Black Stork', value: 'C', iconSelected: iconBla, imgSrc: imgBlaSrc, urlStudyId: '102703103', urlPublic: priv, urlAnimalId: AnimalIdBla, urlSensor: 'gps'},
+                { text: 'Crane', value: 'D', iconSelected: iconCra, imgSrc: imgCraSrc, urlStudyId: '17196801', urlPublic: priv, urlAnimalId: AnimalIdFal, urlSensor: 'argos-doppler-shift'}
             ],
-            zoom: 2,
+            animalnames:[
+                { text: '', value: ''}
+            ],
             markersOld: [
                 { positionM : {lat:50.622, lng: 6.174}, visible: true, icon: iconOen },
                 { positionM : {lat:60.63, lng: 2.054}, visible: true, icon: iconCra }],
             pos: {lat:49.658, lng: 6.774},
-            polyPos: [{lat: 30.614, lng: 8.084}],
+            polyPos: [{lat: '', lng: ''}]
+
         }
       },
         watch: {
-            selectAnimal:{
-                handler: function (val, oldVal) {
-                    alert('a thing changed')
-                }
+            selectAnimal:function (val, oldVal) {
+                    alert('a thing changed' + val + oldVal)
+            },
+            animalnames:function(val){
+                    this.selectSpecificAnimal = val
             }
         },
+
 
 
         computed: {
@@ -98,18 +119,7 @@
                     lat: this.lat,
                     lng: this.lng
                 }
-            },
-
-            stuff: function () {
-                return this.numbers.filter(function (number) {
-                    return number % 2 === 0
-                })
-            },
-
-            coords: function () {
-                return this.animals
-                }
-
+            }
 
         },
         methods: {
@@ -159,10 +169,7 @@
             changeIcon (icon){
                 this.iconAnimal = icon;
             },
-            doRequest(){
-                main.pushData();
-                main.pushCoords();
-            },
+
             outputCoords(){
                 arrayCoords = main.getCoordArray();
                 console.log(arrayCoords);
@@ -181,6 +188,7 @@
                 console.log(this.polyPos);
             },
             makePoly(){
+                this.polyPos = [];
                 posi = main.getCoordArray();
                 var i;
                 for (i = 0; i < posi.length; i++){
@@ -190,7 +198,29 @@
                     }))
                 }
                 console.log(this.polyPos);
+            },
+            getData(pp, si, ai, st){
+                requestUrl = 'https://www.movebank.org/movebank/service/' + pp + '?study_id=' + si +'&individual_local_identifiers[]=' + ai + '&sensor_type=' + st + '';
+                console.log('url: ' + requestUrl);
+                main.doRequest(requestUrl);
+            },
+            getAnimalName(pp, studyId){
+
+                requestUrl = 'https://www.movebank.org/movebank/service/' + pp + '?&entity_type=individual&study_id='+ studyId +'';
+                console.log('url: ' + requestUrl);
+                this.animalnames = [];
+                animalNamesArray = main.getNames(requestUrl);
+            },
+            showNames(){
+                var i;
+                for (i in animalNamesArray){
+                    this.animalnames.push(({
+                        text: animalNamesArray[i].local_identifier,
+                        value: animalNamesArray[i].idValue
+                    }))
+                }
             }
+
         }
 
     };
