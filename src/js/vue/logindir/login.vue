@@ -22,6 +22,22 @@
 
 
 
+        <form id="form2" v-on:submit.prevent="login()">
+            <input type="text" v-model="loguser.password" placeholder="password">
+            <input type="email" v-model="loguser.lemail" placeholder="email">
+            <input type="submit" value="LOGIN">
+        </form>
+        <ul class="errors">
+            <li v-show="!validation.name">PLS INSERT</li>
+            <li v-show="!validation.email">EZ PZ</li>
+        </ul>
+
+
+        <form id="form3" v-on:submit.prevent="check()">
+            <input type="submit" value="check">
+        </form>
+
+        <button v-on:click="signOut()">Logout</button>
 
     </div>
 
@@ -54,6 +70,7 @@
 
 
     var usersRef = firebase.database().ref('users');
+    var auth = firebase.auth();
 
     export default {
 
@@ -71,7 +88,11 @@
                 name: '',
                 email: ''
             },
-            users: ''
+            users: '',
+            loguser: {
+                lemail: '',
+                password: ''
+            }
         }},
         // firebase binding
         // https://github.com/vuejs/vuefire
@@ -117,6 +138,39 @@
                 };
                 }
 
+            },
+            login: function () {
+
+                auth.signInWithEmailAndPassword(this.loguser.lemail, this.loguser.password).catch(function (error) {
+                    console.log("ERRORORORO");
+
+                    var errorCode = "ERRORPLAN";
+                    var errorMessage = "ERROR";
+
+                });
+
+
+            },
+            check: function () {
+
+                auth.onAuthStateChanged(function (user) {
+                    if(user) {
+                        console.log("User is logged in")
+                    }
+                    else {
+                        console.log("User is not logged in")
+                    }
+                });
+                
+            },
+
+            signOut: function () {
+                auth.signOut().then(function() {
+                    console.log("sign out")
+                }).catch(function(error) {
+                    // An error happened.
+                });
+                
             }
         }
     };
