@@ -37,6 +37,8 @@
             <input type="submit" value="check">
         </form>
 
+        <button v-on:click="signOut()">Logout</button>
+
     </div>
 
 
@@ -158,6 +160,15 @@
                     else {
                         console.log("User is not logged in")
                     }
+                });
+                
+            },
+
+            signOut: function () {
+                auth.signOut().then(function() {
+                    console.log("sign out")
+                }).catch(function(error) {
+                    // An error happened.
                 });
                 
             }
