@@ -38,6 +38,10 @@ export default {
         icon: {
             custom: false,
             default: '',
+        },
+        popupcontent: {
+            type: String,
+            default: ''
         }
     },
     watch: {
@@ -54,6 +58,7 @@ export default {
         this.$marker = Leaflet.marker(this.latlng, {
             icon: this.icon
         })
+        this.$marker.bindPopup(this.popupcontent)
         this.$setLayer(this.$marker)
     },
 
@@ -66,7 +71,7 @@ export default {
         mapEvents.forEach(eventName => this.$marker.on(eventName, ev => this.$emit(eventName, ev)))
     },
     beforeDestroy() {
-        this.setVisible(false);
+        //this.setVisible(false);
     },
     methods: {
 
