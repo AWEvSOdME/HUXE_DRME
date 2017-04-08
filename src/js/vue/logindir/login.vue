@@ -1,6 +1,5 @@
 <template>
-
-
+<div>
 
 
     <div id="da">
@@ -40,7 +39,7 @@
         <button v-on:click="signOut()">Logout</button>
 
     </div>
-
+</div>
 
 
 
@@ -71,6 +70,8 @@
 
     var usersRef = firebase.database().ref('users');
     var auth = firebase.auth();
+
+
 
     export default {
 
@@ -132,6 +133,10 @@
                 {
                     firebase.auth().createUserWithEmailAndPassword(this.newUser.email, this.newUser.name)
                     {
+
+                    this.newUser.email="";
+                    this.newUser.name="";
+
                     var errorCode = "ERRORPLAN";
                     var errorMessage = "ERROR";
 
@@ -143,6 +148,7 @@
 
                 auth.signInWithEmailAndPassword(this.loguser.lemail, this.loguser.password).catch(function (error) {
                     console.log("ERRORORORO");
+
 
                     var errorCode = "ERRORPLAN";
                     var errorMessage = "ERROR";
@@ -174,6 +180,7 @@
             }
         }
     };
+
 
 
 </script>
@@ -211,6 +218,8 @@
     .errors {
         color: #f00;
     }
+
+
 
 
 
