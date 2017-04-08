@@ -5,11 +5,12 @@
 import Vue from 'vueCommon';
 import App from './navi.vue';
 
-var navi = new Vue({
+var navi = new Vue ({
     el: '#navi',
     components: {App},
     name: 'app',
-    template: `<app></app>`,
-
-
+    template: `<app></app>`
 });
+
+
+
