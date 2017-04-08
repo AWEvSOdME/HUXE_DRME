@@ -30,7 +30,10 @@
 
       maxZoom: {
         type: Number
-      }
+      },
+        positionClick: {
+            type: Object
+        }
     },
 
     mounted () {
@@ -40,6 +43,7 @@
         minZoom: this.minZoom,
         maxZoom: this.maxZoom
       })
+
 
       // passthru events
       const mapEvents = [
@@ -68,6 +72,7 @@
         position: this.$map.getCenter()
       }))
 
+
       this.$setContainer(this.$map)
     },
 
@@ -90,7 +95,11 @@
           lng: position.lng
         })
       }
-    }
+    },
+
+
+
+
 
   }
 </script>

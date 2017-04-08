@@ -36,6 +36,7 @@
   margin-top: 15px;
   margin-bottom: 15px;
   width: 565px;
+  height: 235px;
   background-color: crimson;
   float: right;
   z-index: 2;
@@ -80,15 +81,55 @@ select{
   min-width: 100px;
   color: rgba(28, 26, 26, 0.93);
   border-radius: 4px;
+  margin: 5px;
 }
 
 select:focus{
   background-color: #dddddd;
 }
 
-// ---------------------- Marker ---------------------------------------------------------------
-
-#polyMarker{
-
+button{
+  margin: 5px;
+  border-radius: 1px;
+  border: none;
+  background-color: #dddddd;
+  padding: 5px;
+  margin: 5px;
 }
+button:hover{
+  background-color: darkorange;
+}
+
+#resultDiv{
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 200px;
+}
+
+#selectedImg{
+  display: block;
+  width: 30%;
+  margin: auto;
+}
+
+p.title{
+  font-size: 120%;
+  margin: 5px;
+}
+
+
+p.selectingResult{
+  font-size: 90%;
+  margin: 5px;
+  text-align: center;
+}
+p.selectingAnimal{
+  font-size: 110%;
+  margin: 5px;
+  text-align: center;
+}
+
+// ---------------------- SelectingResult ---------------------------------------------------------------
+
 
