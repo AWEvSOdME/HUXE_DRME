@@ -49,6 +49,7 @@
     "leaflet": "^1.0.3",
     "vue": "^2.1.10",
     "vue-router": "^2.4.0",
+    "vue-spinner": "^1.0.2",
     "vuefire": "^1.4.1"
   }
 }

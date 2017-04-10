@@ -42,7 +42,10 @@ export default {
         popupcontent: {
             type: String,
             default: ''
-        }
+        },
+        draggable: {
+            type: Boolean
+        },
     },
     watch: {
         position (latlng) {
@@ -51,13 +54,19 @@ export default {
 
         icon (icon) {
             this.$marker.setIcon(icon)
+        },
+        draggable (draggable) {
+            if (draggable){
+                this.$marker.dragging.enable()}
+            else {
+                this.$marker.dragging.disable()}
         }
     },
 
     created () {
         this.$marker = Leaflet.marker(this.latlng, {
-            icon: this.icon
-        })
+            icon: this.icon, draggable: this.draggable
+        }, )
         this.$marker.bindPopup(this.popupcontent)
         this.$setLayer(this.$marker)
     },

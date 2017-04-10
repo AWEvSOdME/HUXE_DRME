@@ -4,7 +4,7 @@
 // ---------------------- VUE DIV ---------------------------------------------------------------
 #vue{
   position: absolute;
-  top: 60px;
+  top: 0px;
   right: 15px;
   bottom: 15px;
   left: 15px;
@@ -12,6 +12,12 @@
 }
 
 // ---------------------- Components ---------------------------------------------------------------
+div#menuMap{
+  position: absolute;
+  top: 15px;
+  right: 30px;
+}
+
 
 
 .component-vue-map {
@@ -29,14 +35,15 @@
   width: 100%;
 }
 
-#input{
+.input{
   position: absolute;
   right: 0px;
+  top: 60px;
   padding: 10px;
   margin-top: 15px;
   margin-bottom: 15px;
   width: 565px;
-  height: 235px;
+  height: 220px;
   background-color: crimson;
   float: right;
   z-index: 2;
@@ -48,7 +55,7 @@
   padding: 10px;
   width: 565px;
   bottom: 0px;
-  top: 250px;
+  top: 330px;
   right: 0px;
   float: right;
   overflow-y: scroll;
@@ -130,6 +137,24 @@ p.selectingAnimal{
   text-align: center;
 }
 
+p.textNormal{
+  margin: 5px;
+}
+
+div.v-spinner{
+  margin: 100px;
+}
+
+
 // ---------------------- SelectingResult ---------------------------------------------------------------
 
 
+// ---------------------- PopUp ---------------------------------------------------------------
+
+img#popupImg{
+  min-width: 50px;
+  max-width: 120px;
+  max-height: 80px;
+  display: block;
+  margin: auto;
+}
