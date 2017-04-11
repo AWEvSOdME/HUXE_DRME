@@ -1,13 +1,28 @@
 @import "imports/layout";
 @import "../../node_modules/leaflet/dist/leaflet";
 
+body {
+  font-family: sans-serif;
+  font-size: 14px;
+  background: url("../img/bgd.jpg");
+  overflow: hidden;
+
+}
+
+h1 {
+  text-transform: uppercase;
+}
+
+
+
+
 // ---------------------- VUE DIV ---------------------------------------------------------------
 #vue{
   position: absolute;
   top: 0px;
-  right: 15px;
-  bottom: 15px;
-  left: 15px;
+  right: 5px;
+  bottom: 5px;
+  left: 5px;
   overflow: hidden;
 }
 
@@ -28,25 +43,30 @@ div#menuMap{
   left: 0px;
   padding: 15px;
   z-index: 1;
+
 }
 
 .component-vue-map .map-container {
   height: 100%;
   width: 100%;
+  box-shadow: 2px 2px 10px rgba(0,0,0,.2);
 }
 
 .input{
   position: absolute;
-  right: 0px;
+  right: 10px;
   top: 60px;
   padding: 10px;
+  padding-top: 5px;
   margin-top: 15px;
   margin-bottom: 15px;
   width: 565px;
-  height: 220px;
-  background-color: crimson;
+  height: 230px;
+  background-color: #fffaff;
   float: right;
   z-index: 2;
+  border-radius: 2px;
+  box-shadow: 2px 2px 10px rgba(0,0,0,.2);
 }
 
 
@@ -54,14 +74,15 @@ div#menuMap{
   position: absolute;
   padding: 10px;
   width: 565px;
-  bottom: 0px;
-  top: 330px;
-  right: 0px;
+  bottom: 10px;
+  top: 335px;
+  right: 10px;
   float: right;
   overflow-y: scroll;
   overflow-x: hidden;
-  overflow: hidden;
   z-index: 2;
+  border-radius: 2px;
+  box-shadow: 2px 2px 10px rgba(0,0,0,.2);
 }
 
 // ---------------------- Scrollbar ---------------------------------------------------------------
@@ -95,7 +116,7 @@ select:focus{
   background-color: #dddddd;
 }
 
-button{
+.selectButton{
   margin: 5px;
   border-radius: 1px;
   border: none;
@@ -103,28 +124,107 @@ button{
   padding: 5px;
   margin: 5px;
 }
-button:hover{
+.selectButton:hover{
   background-color: darkorange;
 }
 
-#resultDiv{
+// ---------------------- InputField Menu ---------------------------------------------------------------
+
+.selectMenu{
+  font-size: 120%;
+  margin: 5px;
+  border: none;
+  background-color: #ffffff;
+}
+
+nav a.show, a.add, a.delete{
+  display:inline-block;
+  padding: 7px 40px;
+  color: #3f3f3f !important;
+  font-weight:bold;
+  font-size:13px;
+  text-decoration:none !important;
+  text-transform: uppercase;
+  background-color:transparent;
+}
+nav a.selectMenu:hover{
+  color: #2f2f5e !important;
+}
+
+nav.show .show,
+nav.add .add,
+nav.delete .delete{
+  background-color: #404040;
+  color: #e6e8e8 !important;
+}
+
+.inputFieldButton:hover{
+  color: #0078A8;
+}
+
+.inputFieldButton:active{
+  color: #a81700;
+}
+
+.sep{
+  font-size: 120%;
+}
+
+hr {
+  border:solid #d6d6d6 thin;
+  margin-top: 2px;
+  margin-bottom: 10px;
+}
+
+
+
+
+p.textNormal{
+  margin: 5px;
+}
+
+div.v-spinner{
+  margin: 50px;
+}
+
+// ---------------------- AnimalInfo Field ---------------------------------------------------------------
+
+.animalInfo{
+  background-color: #fbf9ff;
+  width: 100%;
+  max-height: 53%;
+
+}
+
+.infoText{
+  text-align: justify;
+  margin: 5px;
+}
+
+.resultDiv{
   position: absolute;
-  top: 15px;
+  bottom: 15px;
   right: 15px;
   width: 200px;
+  border:solid #d6d6d6 thin;
 }
 
 #selectedImg{
   display: block;
-  width: 30%;
+  min-width: 70px;
+  max-width: 125px;
+  max-height: 80px;
+  min-height: 60px;
   margin: auto;
+  margin-top: 15px;
 }
 
-p.title{
-  font-size: 120%;
-  margin: 5px;
+#selectedIcon{
+  display: block;
+  width: 25%;
+  margin: auto;
+  margin-top: 15px;
 }
-
 
 p.selectingResult{
   font-size: 90%;
@@ -137,16 +237,21 @@ p.selectingAnimal{
   text-align: center;
 }
 
-p.textNormal{
-  margin: 5px;
+.animal_img_right
+{
+  float:right;
+  width:100px;
+  height: auto;
+  margin: 10px 0 10px 10px;
 }
 
-div.v-spinner{
-  margin: 100px;
+.animal_img_left
+{
+  float:left;
+  width:100px;
+  height: auto;
+  margin: 10px 10px 10px 0;
 }
-
-
-// ---------------------- SelectingResult ---------------------------------------------------------------
 
 
 // ---------------------- PopUp ---------------------------------------------------------------

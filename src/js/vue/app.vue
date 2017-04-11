@@ -1,9 +1,9 @@
 <template lang="html" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
     <div id="vue">
         <vmap  :position="position" :zoom="zoom" @move="onMove" @zoom="onZoom" @click="onClick" >
-            <vmap-tile-layer v-if="selectMap.value === 'map1'" url="http://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}" attribution="Imagery from <a href=&#34;http://giscience.uni-hd.de/&#34;>GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy;"></vmap-tile-layer>
+            <vmap-tile-layer v-if="selectMap.value === 'map1'" url="http://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}" attribution="Imagery from <a href='http://giscience.uni-hd.de/'>GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy;"></vmap-tile-layer>
             <vmap-tile-layer v-if="selectMap.value === 'map2'" url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}" attribution="Tiles &copy; Esri"></vmap-tile-layer>
-            <vmap-tile-layer v-if="selectMap.value === 'map3'" url="http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" attribution="&copy; <a href=&#34;http://www.openstreetmap.org/copyright&#34;>OpenStreetMap</a>"></vmap-tile-layer>
+            <vmap-tile-layer v-if="selectMap.value === 'map3'" url="http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" attribution="&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"></vmap-tile-layer>
             <vmap-tile-layer v-if="selectMap.value === 'map4'" url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" attribution="Tiles &copy; Esri"></vmap-tile-layer>
 
             <vmap-marker v-for="markerPosition in markersOld" v-bind:key="markerPosition" :latlng="markerPosition.positionM" :visible="markerPosition.visible" :icon="markerPosition.icon" :draggable="markerPosition.draggable" :popupcontent="' <img id=' + popupImg +' src=' + markerPosition.iconPop +' > <p>Hello world!<br />This is a nice popup.</p>'"></vmap-marker>
@@ -13,58 +13,90 @@
             <vmap-marker v-for="markerPolyPosition in polyMarkerPos" v-if="markerPolyPosition.popupTitle!=''" v-bind:key="markerPolyPosition" :latlng="markerPolyPosition.positionM" :visible="markerPolyPosition.visible" :icon="markerPolyPosition.icon" :draggable="markerPolyPosition.draggable" :popupcontent="'<img id=' + popupImg +' src=' + selectAnimal.iconPop +' ><p> Species: ' + markerPolyPosition.popupName + '<br /> Specific animal: ' + markerPolyPosition.popupTitle + '<br /> Genus: ' + markerPolyPosition.popupText + '.</p>'"></vmap-marker>
 
         </vmap>
-        <div class="input" v-if="!waiting">
-            <p class="title">Select an Animal</p>
+        <div class="input">
 
-            <p class="textNormal">Species:
-            <select v-model="selectAnimal"  >
-                <option v-for="animal in animals" :value="animal">{{ animal.text }}</option>
-            </select></p>
+            <!-- INPUT MENU -->
+            <nav v-bind:class="inputMenu" v-on:click.prevent class="selectMenu">
+                <a href="#" class="show" v-on:click="setInputMenu('show')">Show animal</a><span class="sep">   |   </span>
+                <a href="#" class="add" v-on:click="setInputMenu('add')" >Add animal</a><span class="sep">   |   </span>
+                <a href="#" class="delete" v-on:click="setInputMenu('delete')">Delete animal</a>
+            </nav>
 
-            <div v-show="show">
-                <p class="textNormal">Specific Animal:
-                <select v-model="selectSpecificAnimal" v-on:mouseleave="setSelectingDone(true)">
-                    <option v-for="animalname in animalnames" v-bind:value="animalname.text">{{ animalname.text }}</option>
+            <hr>
+
+            <!-- Menu SHOW -->
+            <div v-show="inputMenu === 'show'">
+                <p class="textNormal">Species:
+                <select v-model="selectAnimal"  >
+                    <option v-for="animal in animals" :value="animal">{{ animal.text }}</option>
                 </select></p>
+
+                <div v-show="show">
+                    <p class="textNormal">Specific Animal:
+                    <select v-model="selectSpecificAnimal" v-on:mouseleave="setSelectingDone(true)">
+                        <option v-for="animalname in animalnames" v-bind:value="animalname.text">{{ animalname.text }}</option>
+                    </select></p>
+                </div>
+
+
+                <div class="resultDiv" v-show="show">
+                    <img id="selectedImg" v-bind:src="selectAnimal.iconPop"><br>
+                    <p class="selectingResult">Species: <span>{{ selectAnimal.text }}</span></p>
+                    <p class="selectingResult">Genus: <span>{{ selectAnimal.genus }}</span></p>
+                    <p class="selectingResult">Animal: <span>{{ selectSpecificAnimal }}</span></p>
+                </div><br>
+
+
+                <!--div class="inputField">
+                    <input v-model="message"> <span>Selected Nmb: {{ message }}</span>
+                </div-->
+                <div id="SelectingNotDone" v-if="!selectingDone">
+                    <!--span>{{ status }}</span-->
+                    <button class="selectButton" @click="doAlert(alertMessage)">show on map! xxx</button>
+                </div>
+                <div id="SelectingDone" v-else-if="selectingDone">
+                    <!--span>{{ status }}</span-->
+                    <button class="selectButton" @click="getData(selectAnimal.urlStudyId, selectSpecificAnimal, selectAnimal.urlSensor)">show on map!</button>
+                </div>
             </div>
 
+            <!-- Menu ADD -->
+            <div v-show="inputMenu === 'add'">
+                <p class="textNormal">Species:
+                <select v-model="selectAnimalMarker"  >
+                    <option v-for="animal in animals" :value="animal">{{ animal.text }}</option>
+                </select></p>
 
-            <div id="resultDiv" v-show="show">
-                <p class="selectingAnimal">Selected Animal</p>
-                <img id="selectedImg" v-bind:src="selectAnimal.iconPop"><br>
-                <p class="selectingResult">Species: <span>{{ selectAnimal.text }}</span></p>
-                <p class="selectingResult">Genus: <span>{{ selectAnimal.genus }}</span></p>
-                <p class="selectingResult">Animal: <span>{{ selectSpecificAnimal }}</span></p>
+                <div class="resultDiv" v-if="showSelectedMarker">
+                    <img id="selectedIcon" v-bind:src="selectAnimalMarker.imgSrc"><br>
+                    <p class="selectingResult">Species: <span>{{ selectAnimalMarker.text }}</span></p>
+                    <p class="selectingResult">Genus: <span>{{ selectAnimalMarker.genus }}</span></p>
+                </div><br>
 
-            </div><br>
-
-
-            <!--div class="inputField">
-                <input v-model="message"> <span>Selected Nmb: {{ message }}</span>
-            </div-->
-            <div id="SelectingNotDone" v-if="!selectingDone">
-                <!--span>{{ status }}</span-->
-                <button @click="doAlert(alertMessage)">show on map! xxx</button>
-            </div>
-            <div id="SelectingDone" v-else-if="selectingDone">
-                <!--span>{{ status }}</span-->
-                <button @click="getData(selectAnimal.urlPublic, selectAnimal.urlStudyId, selectSpecificAnimal, selectAnimal.urlSensor)">show on map!</button>
+                <button class="selectButton" @click="activateAdding(true)">Add Marker</button>
+                <button class="selectButton" @click="activateAdding(false)">Stop Adding</button><br><br>
             </div>
 
-            <button @click="activateAdding(true)">Add Marker</button>
-            <button @click="activateAdding(false)">Stop Adding</button><br><br>
+            <!-- Menu DELETE -->
+            <div v-show="inputMenu === 'delete'">
+                <p> Here are delete things happening</p>
+            </div>
 
-
+            <!-- Menu WAITING -->
+            <div v-show="inputMenu === 'waiting'">
+                <div id="spinner">
+                    <scale-loader :loading="spinner.loading" :color="spinner.color" ></scale-loader>
+                    <p class="selectingResult"> Waiting for requested Data... </p>
+                </div>
+            </div>
 
         </div>
 
-        <div class="input" v-if="waiting"><div id="spinner">
-        <scale-loader :loading="spinner.loading" :color="spinner.color" ></scale-loader>
-        </div></div>
 
-        <div><Vinfo id="vueInfo"></Vinfo></div>
+        <!-- Animal Info -->
+        <div><Vinfo id="vueInfo" :animal="selectAnimal.text"></Vinfo></div>
 
-
+        <!-- MAP SETTINGS -->
         <div id="menuMap"><p class="textNormal">Switch Basemap:
             <select v-model="selectMap" v-on:onmouseover="selectMap = map" >
             <option v-for="map in maps" :value="map">{{ map.name }}</option>
@@ -84,16 +116,27 @@
     import * as Vue from "vue";
     import ScaleLoader from 'vue-spinner/src/ScaleLoader.vue'
 
+    var main = require('../../js/data.js');
+
     var imgWheSrc =  '../../img/icon_wheatear.png';
     var imgWhiSrc =  '../../img/icon_whitestork.png';
     var imgBlaSrc =  '../../img/icon_blackstork.png';
     var imgFalSrc =  '../../img/icon_false_killer_whale.png';
+    var imgAgoSrc =  '../../img/icon_agouti.png';
+    var imgAfrSrc =  '../../img/icon_african_elephant.png';
+    var imgLioSrc =  '../../img/icon_lion.png';
+    var imgOceSrc =  '../../img/icon_ocelot.png';
+    var imgSkiSrc =  '../../img/icon_black_skimmer.png';
 
     var imgWhePop = '../../img/wheatear.png';
     var imgWhiPop = '../../img/whitestork.png';
     var imgBlaPop = '../../img/blackstork.png';
     var imgFalPop = '../../img/false_killer_whale.png';
-
+    var imgAgoPop = '../../img/agouti.png';
+    var imgAfrPop = '../../img/african_elephant.png';
+    var imgLioPop = '../../img/lion.png';
+    var imgOcePop = '../../img/ocelot.png';
+    var imgSkiPop = '../../img/black_skimmer.png';
 
     var iconShadow = '../../img/marker-shadow.png';
 
@@ -101,30 +144,16 @@
     var iconWhi = L.icon({iconUrl:  imgWhiSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
     var iconBla = L.icon({iconUrl:  imgBlaSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
     var iconFal = L.icon({iconUrl:  imgFalSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    var iconAgo = L.icon({iconUrl:  imgAgoSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    var iconAfr = L.icon({iconUrl:  imgAfrSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    var iconLio = L.icon({iconUrl:  imgLioSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    var iconOce = L.icon({iconUrl:  imgOceSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    var iconSki = L.icon({iconUrl:  imgSkiSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
 
-
-    var AnimalIdWhe= 'bird%201';
-    var AnimalIdWhi= '15007';
-    var AnimalIdBla= '15011';
-    var AnimalIdFal= '128881-Pc-NWHI';
-
-
-    var priv = 'json-auth';
-    var pub  = 'json';
-
-    var main = require('../../js/data.js');
-
-    var animalNamesArray = [];
-    var requestUrl;
-
-    var coords;
-    var polyArray = [];
-    var popupInfo, popupName, popupTaxName, nameId, nameIdArray;;
-    var finished = false;
-    var drag = false;
-    var dragtrue = true;
+    var coords, popupInfo, popupName, popupTaxName, nameId, nameIdArray, requestUrl;
+    var finished = false; var drag = false;var dragtrue = true;
+    var counterArr = []; var polyArray = [];
     var counter = 1;
-    var counterArr = [];
 
     export default {
         name: 'app',
@@ -144,13 +173,20 @@
             lng: 0,
             zoom: 2,
             message: '1',
-            selectAnimal: { text: 'Choose Animal', genus: '', iconSelected: '', imgSrc: '', urlStudyId: '', urlPublic: '', urlAnimalId: '', urlSensor: '', iconPop: ''},
+            selectAnimal: { text: '', genus: '', iconSelected: '', imgSrc: '', urlStudyId: '', urlPublic: '', urlSensor: '', iconPop: ''},
+            selectAnimalMarker: { text: '', genus: '', iconSelected: '', imgSrc: '', urlStudyId: '', urlPublic: '', urlSensor: '', iconPop: ''},
             selectSpecificAnimal: { text: '', genus: ''},
             animals: [
-                { text: 'Wheatear', genus: 'Oenanthe oenanthe', iconSelected: iconWhe, imgSrc: imgWheSrc, urlStudyId: '58672150', urlPublic: priv, urlAnimalId: AnimalIdWhe, urlSensor: 'solar-geolocator', iconPop: imgWhePop},
-                { text: 'White Stork', genus: 'Ciconia ciconia', iconSelected: iconWhi, imgSrc: imgWhiSrc, urlStudyId: '92053942', urlPublic: priv, urlAnimalId: AnimalIdWhi, urlSensor: 'gps', iconPop: imgWhiPop},
-                { text: 'Black Stork', genus: 'Ciconia negra', iconSelected: iconBla, imgSrc: imgBlaSrc, urlStudyId: '102703103', urlPublic: priv, urlAnimalId: AnimalIdBla, urlSensor: 'gps', iconPop: imgBlaPop},
-                { text: 'False Killer Whale', genus: 'Pseudorca crassidens', iconSelected: iconFal, imgSrc: imgFalSrc, urlStudyId: '17196801', urlPublic: priv, urlAnimalId: AnimalIdFal, urlSensor: 'argos-doppler-shift', iconPop: imgFalPop}
+                { text: 'Wheatear', genus: 'Oenanthe oenanthe', iconSelected: iconWhe, imgSrc: imgWheSrc, urlStudyId: '58672150', urlSensor: 'solar-geolocator', iconPop: imgWhePop},
+                { text: 'White Stork', genus: 'Ciconia ciconia', iconSelected: iconWhi, imgSrc: imgWhiSrc, urlStudyId: '92053942', urlSensor: 'gps', iconPop: imgWhiPop},
+                { text: 'Black Stork', genus: 'Ciconia negra', iconSelected: iconBla, imgSrc: imgBlaSrc, urlStudyId: '102703103', urlSensor: 'gps', iconPop: imgBlaPop},
+                { text: 'False Killer Whale', genus: 'Pseudorca crassidens', iconSelected: iconFal, imgSrc: imgFalSrc, urlStudyId: '17196801', urlSensor: 'argos-doppler-shift', iconPop: imgFalPop},
+                { text: 'Agouti', genus: 'Dasyprocta', iconSelected: iconAgo, imgSrc: imgAgoSrc, urlStudyId: '82207', urlSensor: 'gps', iconPop: imgAgoPop},
+                { text: 'African Elephant', genus: 'Loxodonta africana', iconSelected: iconAfr, imgSrc: imgAfrSrc, urlStudyId: '1818825', urlSensor: 'gps', iconPop: imgAfrPop},
+                { text: 'Lion', genus: 'Panthera leo', iconSelected: iconLio, imgSrc: imgLioSrc, urlStudyId: '220229', urlSensor: 'gps', iconPop: imgLioPop},
+                { text: 'Ocelot', genus: 'Leopardus pardalis', iconSelected: iconOce, imgSrc: imgOceSrc, urlStudyId: '123413', urlSensor: 'radio-transmitter', iconPop: imgOcePop},
+                { text: 'Black Skimmer', genus: 'Rynchops niger', iconSelected: iconSki, imgSrc: imgSkiSrc, urlStudyId: '126103076', urlSensor: 'argos-doppler-shift', iconPop: imgSkiPop},
+
             ],
             animalnames:[
                 { text: '', genus: ''}
@@ -166,22 +202,26 @@
             lngClick: '',
             addingActive: false,
             show: false,
+            showSelectedMarker: false,
             selectingDone: false,
             alertMessage: 'You first have to select a specific animal!',
             popupImg: 'popupImg',
             selectMap: {name: 'OpenMapSurfer Roads', value: 'map1'},
             maps: [{name: 'OpenMapSurfer Roads', value: 'map1'}, {name: 'Esri WorldStreetMap', value: 'map2'}, {name: 'OpenStreetMap BlackandWhite', value: 'map3'}, {name: 'Esri WorldImagery', value: 'map4'}],
-            spinner: {loading: true, color: 'blue', height: '100', width: '100'},
-            waiting: false
+            spinner: {loading: true, color: 'lightgrey', height: '100', width: '100'},
+            inputMenu: 'show'
         }
       },
         watch: {
             selectAnimal:function (val, oldVal) {
                     //alert('a thing changed' + val + oldVal)
-                    this.changeIcon(this.selectAnimal.iconSelected)
-                    this.getAnimalName(this.selectAnimal.urlPublic, this.selectAnimal.urlStudyId)
+
+                    this.getAnimalName(this.selectAnimal.urlStudyId)
                     this.show = true
                     this.selectingDone = false;
+            },
+            selectAnimalMarker: function(val){
+                this.showSelectedMarker = true
             },
             animalnames:function(val){
                     this.selectSpecificAnimal = val
@@ -190,19 +230,17 @@
             },
             polyPos: function (val){
                 this.status = 'thinking'
-                this.waiting = true
+                this.inputMenu = 'waiting'
             },
             polyMarkerPos: function(val){
                 this.status = 'done :)'
-                this.waiting = false
+                this.inputMenu = 'show'
 
             },
             pos: function (val){
                 this.zoom = 5;
             }
         },
-
-
 
         computed: {
             position () {
@@ -229,7 +267,8 @@
                 this.lngClick = data.latlng.lng
                 console.log(this.lngClick + '..x..' + this.latClick)
                 if (this.addingActive) {
-                    this.addMarker(this.changeIcon(this.selectAnimal.iconSelected))
+                    this.addMarker(this.selectAnimalMarker.iconSelected)
+                    console.log('adding IS active :)')
                 }
                 else {
                     console.log('adding not active :)')
@@ -247,31 +286,15 @@
                 }
 
             },
-
-
             removeMarker (index) {
                 this.markers.splice(index, 1)
             },
-
-            /*addMarker () {
-                this.markers.push(this.newMarker)
-                this.newMarker = { lat: '', lng: '' }
-            },
-
-            addMarkerAtMapPosition () {
-                this.markers.push({
-                    lat: this.lat,
-                    lng: this.lng
-                })
-            },*/
-
             updateMarkerLat (index, event) {
                 this.markers.splice(index, 1, {
                     ...this.markers[index],
                     lat: event.target.value
                 })
             },
-
             updateMarkerLng (index, event) {
                 this.markers.splice(index, 1, {
                     ...this.markers[index],
@@ -282,15 +305,12 @@
                 counter = counter+1
                 console.log('counter' + counter)
                 this.markersOld.push(({
-                    positionM: {lat: this.latClick, lng: this.lngClick}, icon: this.selectAnimal.iconSelected, draggable: drag, iconPop: this.selectAnimal.iconPop
+                    positionM: {lat: this.latClick, lng: this.lngClick}, icon: this.selectAnimalMarker.iconSelected, draggable: drag, iconPop: this.selectAnimalMarker.iconPop
                 }))
                 //this.$set(this.markersOld[counter], 'icon', iconWhi);
                 this.$set(this.markersOld[counter], 'draggable', dragtrue)
                 counterArr.push(counter)
                 //console.log(counterArr)
-            },
-            changeIcon (icon){
-                this.iconAnimal = icon;
             },
             removeMarkerMy (index) {
                 this.polyMarkerPos.splice(index, 1)
@@ -306,9 +326,9 @@
             doAlert(alertMessage){
                 alert('Error: ' + alertMessage)
             },
-            getData(pp, si, ai, st){ //get Movebank Data from single animal
+            getData(si, ai, st){ //get Movebank Data from single animal
 
-                requestUrl = 'https://www.movebank.org/movebank/service/' + pp + '?study_id=' + si +'&individual_local_identifiers[]=' + ai + '&sensor_type=' + st + '';
+                requestUrl = 'https://www.movebank.org/movebank/service/json-auth?study_id=' + si +'&individual_local_identifiers[]=' + ai + '&sensor_type=' + st + '';
                 //console.log('url: ' + requestUrl);
                 this.polyPos = [];
 
@@ -365,9 +385,8 @@
                 })
 
             },
-            getAnimalName(pp, studyId){
-                requestUrl = 'https://www.movebank.org/movebank/service/' + pp + '?&entity_type=individual&study_id='+ studyId +'';
-                //console.log(animalNamesArray);
+            getAnimalName(studyId){
+                requestUrl = 'https://www.movebank.org/movebank/service/json-auth?&entity_type=individual&study_id='+ studyId +'';
 
                 var self = this;
 
@@ -399,10 +418,12 @@
                         }))
                     }
                 })
+            },
+            setInputMenu(val){
+                this.inputMenu = val
+                console.log(this.inputMenu)
             }
         }
-
     };
-
 
 </script>

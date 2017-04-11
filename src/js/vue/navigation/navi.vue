@@ -350,7 +350,7 @@
     nav.login .login,
     nav.services .services,
     nav.contact .contact{
-        background-color: #8de0ed;
+        background-color: #ed5758;
     }
 
     p{
