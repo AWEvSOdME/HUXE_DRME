@@ -38,17 +38,19 @@
 
 <div>
     <form id="addAnimal" v-on:submit.prevent="addAnimal">
-        <select name="species" v-model="newAnimal.species">
+        <!--select name="species" v-model="newAnimal.user.species">
             <option value="mamal">mamal</option>
             <option value="bird">bird</option>
             <option value="fish">fish</option>
             <option value="amphib">amphib</option>
-        </select>
+        </select-->
 
-        <input type="text" v-model="newAnimal.animal" placeholder="Kind of Animal">
-        <input type="text" v-model="newAnimal.name" placeholder="Name">
-        <input type="text" v-model="newAnimal.lat" placeholder="latitude">
-        <input type="text" v-model="newAnimal.lon" placeholder="longitude">
+
+        <input type="text" v-model="newAnimal.user.species" placeholder="Spec">
+        <input type="text" v-model="newAnimal.user.animal" placeholder="Kind of Animal">
+        <input type="text" v-model="newAnimal.user.name" placeholder="Name">
+        <input type="text" v-model="newAnimal.user.lat" placeholder="latitude">
+        <input type="text" v-model="newAnimal.user.lon" placeholder="longitude">
         <input type="submit" value="Add TO DATABASE">
     </form>
 
@@ -143,7 +145,6 @@
 
 
     var usersRef = firebase.database().ref('users');
-    var animalRef = firebase.database().ref('animals');
     var auth = firebase.auth();
 
     export default {
@@ -154,14 +155,15 @@
         ),
         data() {
             return {
-            newAnimal:
-                {
-                    species:'',
-                    animal:'',
+            newAnimal: {
+                user: {
+                    species: '',
+                    animal: '',
                     name: '',
-                    lat:'',
-                    lon:''
-                },
+                    lat: '',
+                    lon: ''
+                }
+            },
             newUser: {
                     name: '',
                     email: ''
@@ -175,11 +177,13 @@
                     lemail: '',
                     password: ''
                 },
+                userID: '',
 
         }},
         firebase: {
             users: usersRef
         },
+
 
 
         computed: {
@@ -212,12 +216,14 @@
             },
             addAnimal: function () {
 
-                    animalRef.push(this.newAnimal)
-                    this.newAnimal.species='',
-                    this.newAnimal.animal='',
-                    this.newAnimal.name='',
-                    this.newAnimal.lat='',
-                    this.newAnimal.lon=''
+
+
+                    firebase.database().ref('userID' + this.userID).push(this.newAnimal)
+                    this.newAnimal.user.species='',
+                    this.newAnimal.user.animal='',
+                    this.newAnimal.user.name='',
+                    this.newAnimal.user.lat='',
+                    this.newAnimal.user.lon=''
 
 
 
@@ -256,11 +262,14 @@
 
                 var self = this;
 
+
                 auth.onAuthStateChanged(function (user) {
+
 
 
                     if(user) {
 
+                        self.userID = user.uid;
                         self.showModal = false;
 
                         console.log("User is logged in");
