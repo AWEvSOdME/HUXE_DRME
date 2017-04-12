@@ -18,25 +18,20 @@
 
 <script type="text/x-template" id="modal-template">
 
-
-
     <transition name="modal">
-        <div class="modal-mask">
+        <div class="modal-mask" @click="$emit('close')">
             <div class="modal-wrapper">
-                <div class="modal-container">
+                <div class="modal-container" @click.stop>
 
                     <div class="modal-header">
                         <slot name="header">
-                            default header
                         </slot>
                     </div>
 
                     <div class="modal-body">
                         <slot name="body">
 
-                    <button class="modal-default-button">
-                                OK
-                            </button>
+
 
                         </slot>
                     </div>
@@ -57,30 +52,26 @@
 
 <div>
 
+
     <modal v-if="showModal" @close="showModal = false">
 
         <form slot = header id="form2" v-on:submit.prevent="login()">
             <input type="text" v-model="loguser.password" placeholder="password">
             <input type="email" v-model="loguser.lemail" placeholder="email">
-            <input type="submit" value="LOGIN">
+            <input type="submit" value="LOGIN" v-on:click="check('true')">
         </form>
+
+        <div slot = footer>
+            <a href="#" class="services" v-on:click="makeActive('services')">Login</a>
+            <a href="#" class="contact" v-on:click="makeActive('contact')">Create Account</a>
+        </div>
 
     </modal>
 
 
 </div>
 
-
-
-
-
-
-    </div>
-
-
-
-
-
+</div>
 
 </div>
 
@@ -186,7 +177,8 @@
 
             },
             login: function () {
-
+                console.log(isloggedin);
+                //this.check();
                 auth.signInWithEmailAndPassword(this.loguser.lemail, this.loguser.password).catch(function (error) {
                     console.log("ERRORORORO");
 
@@ -198,13 +190,16 @@
 
 
             },
-            check: function () {
+            check: function (isloggedin) {
 
                 auth.onAuthStateChanged(function (user) {
                     if(user) {
-                        console.log("User is logged in")
+                        this.isloggedin = isloggedin;
+
+                        console.log("User is logged in");
                     }
                     else {
+                        isloggedin=false;
                         console.log("User is not logged in")
                     }
                 });
@@ -241,7 +236,7 @@
         height: 100%;
         background-color: rgba(0, 0, 0, .5);
         display: table;
-        transition: opacity .3s ease;
+        transition: opacity .10s ease;
     }
 
     .modal-wrapper {
