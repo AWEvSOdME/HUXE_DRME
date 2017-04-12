@@ -58,6 +58,17 @@
                     <!--span>{{ status }}</span-->
                     <button class="selectButton" @click="getData(selectAnimal.urlStudyId, selectSpecificAnimal, selectAnimal.urlSensor)">show on map!</button>
                 </div>
+
+                <div >
+
+                    <input type="range" v-model="polyMarkerPos.time" min="0" max="10000000000">
+                    <span>{{selectAnimal.text}}</span><span>{{polyMarkerPos.time}}</span>
+                </div>
+
+
+
+
+
             </div>
 
             <!-- Menu ADD -->
@@ -150,9 +161,9 @@
     var iconOce = L.icon({iconUrl:  imgOceSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
     var iconSki = L.icon({iconUrl:  imgSkiSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
 
-    var coords, popupInfo, popupName, popupTaxName, nameId, nameIdArray, requestUrl;
+    var coords, popupInfo, popupName, popupTaxName, nameId, nameIdArray, requestUrl, times;
     var finished = false; var drag = false;var dragtrue = true;
-    var counterArr = []; var polyArray = [];
+    var counterArr = []; var polyArray = []; var timeArray = [];
     var counter = 1;
 
     export default {
@@ -196,7 +207,7 @@
                 { positionM : {lat:60.63, lng: 2.054}, visible: true, icon: iconFal, draggable: drag, iconPop: imgFalPop }],
             pos: {lat:49.658, lng: 6.774},
             polyPos: [{lat: '', lng: ''}],
-            polyMarkerPos: [{ positionM : {lat:'', lng: ''}, visible: '', icon: '', popupTitle: '', popupText: '' }],
+            polyMarkerPos: [{ positionM : {lat:'', lng: ''}, visible: '', icon: '', popupTitle: '', popupText: '', time: '' }],
             status: '...choose a specific animal! ',
             latClick: '',
             lngClick: '',
@@ -344,18 +355,23 @@
 
                     //Clear vars, to only show 1 animal at the same time.
                     polyArray = [];
+                    timeArray = [];
                     self.removeMarkerMy(1);
 
                     // loop through data array, write all coordinates into polyArray var.
-                    var i, x, y, j;
+                    var i, x, y, j, t;
                     for (i in data.individuals[0].locations){
                         x = data.individuals[0].locations[i].location_lat;
                         y = data.individuals[0].locations[i].location_long;
+                        t = data.individuals[0].locations[i].timestamp;
 
                         coords = {lat: x, lng: y };
+                        times = {timestamp: t};
+
                         polyArray.push(coords);
-                        //console.log(polyArray); //check if coordinates were written into polyArray
+                        timeArray.push(times);
                     };
+                    console.log(timeArray);
 
                     //make polyline here
                     for (j = 0; j < polyArray.length; j++){
@@ -372,8 +388,11 @@
                         visible: true,
                         popupName: self.selectAnimal.text,
                         popupTitle: popupInfo.name,
-                        popupText: self.selectAnimal.genus
+                        popupText: self.selectAnimal.genus,
+                        time: timeArray[timeArray.length-1]
                     }))
+
+                    console.log(self.polyMarkerPos);
 
                     // moving to path
                     self.lat = null; self.lng = null;
