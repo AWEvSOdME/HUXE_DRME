@@ -13,6 +13,46 @@
 
         <p>You chose <b>{{ active }}</b></p>
 
+<div>
+        <ul is="transition-group">
+            <li v-for="user in users" class="user" :key="user['.key']">
+                <span>{{user.name}} - {{user.email}}</span>
+                <button v-on:click="removeUser(user)">X</button>
+            </li>
+        </ul>
+        <form id="form" v-on:submit.prevent="addUser">
+            <input type="text" v-model="newUser.name" placeholder="Username">
+            <input type="email" v-model="newUser.email" placeholder="email@email.com">
+            <input type="submit" value="Add TO DATABASE">
+            <button @click="authentication()">Create User</button>
+        </form>
+        <ul class="errors">
+            <li v-show="!validation.name">Name cannot be empty.</li>
+            <li v-show="!validation.email">Please provide a valid email address.</li>
+        </ul>
+
+
+</div>
+
+
+
+<div>
+    <form id="addAnimal" v-on:submit.prevent="addAnimal">
+        <select name="species" v-model="newAnimal.species">
+            <option value="mamal">mamal</option>
+            <option value="bird">bird</option>
+            <option value="fish">fish</option>
+            <option value="amphib">amphib</option>
+        </select>
+
+        <input type="text" v-model="newAnimal.animal" placeholder="Kind of Animal">
+        <input type="text" v-model="newAnimal.name" placeholder="Name">
+        <input type="text" v-model="newAnimal.lat" placeholder="latitude">
+        <input type="text" v-model="newAnimal.lon" placeholder="longitude">
+        <input type="submit" value="Add TO DATABASE">
+    </form>
+
+</div>
 
 
 
@@ -58,10 +98,11 @@
         <form slot = header id="form2" v-on:submit.prevent="login()">
             <input type="text" v-model="loguser.password" placeholder="password">
             <input type="email" v-model="loguser.lemail" placeholder="email">
-            <input type="submit" value="LOGIN" v-on:click="check('true')">
+            <input type="submit" value="LOGIN">
         </form>
 
         <div slot = footer>
+            <button @click="signOut()">Logout</button>
             <a href="#" class="services" v-on:click="makeActive('services')">Login</a>
             <a href="#" class="contact" v-on:click="makeActive('contact')">Create Account</a>
         </div>
@@ -102,13 +143,25 @@
 
 
     var usersRef = firebase.database().ref('users');
+    var animalRef = firebase.database().ref('animals');
     var auth = firebase.auth();
 
     export default {
 
         name: 'LOGIN',
-        data () {
+        component: Vue.component('modal', {
+            template: '#modal-template',   },
+        ),
+        data() {
             return {
+            newAnimal:
+                {
+                    species:'',
+                    animal:'',
+                    name: '',
+                    lat:'',
+                    lon:''
+                },
             newUser: {
                     name: '',
                     email: ''
@@ -127,9 +180,7 @@
         firebase: {
             users: usersRef
         },
-        component: Vue.component('modal', {
-                template: '#modal-template',   },
-        ),
+
 
         computed: {
             validation: function () {
@@ -159,11 +210,23 @@
             removeUser: function (user) {
                 usersRef.child(user['.key']).remove()
             },
+            addAnimal: function () {
+
+                    animalRef.push(this.newAnimal)
+                    this.newAnimal.species='',
+                    this.newAnimal.animal='',
+                    this.newAnimal.name='',
+                    this.newAnimal.lat='',
+                    this.newAnimal.lon=''
+
+
+
+            },
             //Function for
             authentication: function () {
                 if (this.isValid)
                 {
-                    firebase.auth().createUserWithEmailAndPassword(this.newUser.email, this.newUser.name)
+                    auth.createUserWithEmailAndPassword(this.newUser.email, this.newUser.name)
                     {
 
                         this.newUser.email="";
@@ -177,8 +240,7 @@
 
             },
             login: function () {
-                console.log(isloggedin);
-                //this.check();
+                this.check();
                 auth.signInWithEmailAndPassword(this.loguser.lemail, this.loguser.password).catch(function (error) {
                     console.log("ERRORORORO");
 
@@ -190,16 +252,20 @@
 
 
             },
-            check: function (isloggedin) {
+            check: function () {
+
+                var self = this;
 
                 auth.onAuthStateChanged(function (user) {
+
+
                     if(user) {
-                        this.isloggedin = isloggedin;
+
+                        self.showModal = false;
 
                         console.log("User is logged in");
                     }
                     else {
-                        isloggedin=false;
                         console.log("User is not logged in")
                     }
                 });
