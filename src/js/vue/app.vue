@@ -44,27 +44,21 @@
                     <p class="selectingResult">Species: <span>{{ selectAnimal.text }}</span></p>
                     <p class="selectingResult">Genus: <span>{{ selectAnimal.genus }}</span></p>
                     <p class="selectingResult">Animal: <span>{{ selectSpecificAnimal }}</span></p>
-                </div><br>
-
-
-                <!--div class="inputField">
-                    <input v-model="message"> <span>Selected Nmb: {{ message }}</span>
-                </div-->
-                <div id="SelectingNotDone" v-if="!selectingDone">
-                    <!--span>{{ status }}</span-->
-                    <button class="selectButton" @click="doAlert(alertMessage)">show on map! xxx</button>
-                </div>
-                <div id="SelectingDone" v-else-if="selectingDone">
-                    <!--span>{{ status }}</span-->
-                    <button class="selectButton" @click="getData(selectAnimal.urlStudyId, selectSpecificAnimal, selectAnimal.urlSensor)">show on map!</button>
                 </div>
 
-                <div >
-
-                    <input type="range" v-model="polyMarkerPos.time" min="0" max="10000000000">
-                    <span>{{selectAnimal.text}}</span><span>{{polyMarkerPos.time}}</span>
+                <div class="ShowButtonDiv" v-if="selectingDone">
+                    <button class="selectButton" @click="getData(selectAnimal.urlStudyId, selectSpecificAnimal, selectAnimal.urlSensor), setInputMenu('waiting')">show on map!</button>
                 </div>
 
+                <div class="ShowButtonDiv" v-if="selectingCompleteDone">
+                    <button class="selectButton" @click="hideAnimal()">clear!</button>
+                </div><br><br><br>
+
+                <div v-if="selectingCompleteDone">
+                    <div id="slider">
+                        <vue-slider ref="slider" v-bind="demo.default" v-model="demo.default.value"></vue-slider>
+                    </div>
+                </div>
 
 
 
@@ -103,7 +97,6 @@
 
         </div>
 
-
         <!-- Animal Info -->
         <div><Vinfo id="vueInfo" :animal="selectAnimal.text"></Vinfo></div>
 
@@ -126,6 +119,7 @@
     import * as $ from "jquery";
     import * as Vue from "vue";
     import ScaleLoader from 'vue-spinner/src/ScaleLoader.vue'
+    import vueSlider from 'vue-slider-component';
 
     var main = require('../../js/data.js');
 
@@ -176,7 +170,8 @@
             VmapPolyline: components.Polyline,
             VmapTileLayer: components.TileLayer,
             Vinfo: Info,
-            ScaleLoader
+            ScaleLoader,
+            vueSlider
         },
       data () {
         return {
@@ -206,30 +201,66 @@
                 { positionM : {lat:50.622, lng: 6.174}, visible: true, icon: iconWhe, draggable: drag, iconPop: imgWhePop },
                 { positionM : {lat:60.63, lng: 2.054}, visible: true, icon: iconFal, draggable: drag, iconPop: imgFalPop }],
             pos: {lat:49.658, lng: 6.774},
-            polyPos: [{lat: '', lng: ''}],
+            polyPos: [{lat: '', lng: '', time: ''}],
             polyMarkerPos: [{ positionM : {lat:'', lng: ''}, visible: '', icon: '', popupTitle: '', popupText: '', time: '' }],
-            status: '...choose a specific animal! ',
             latClick: '',
             lngClick: '',
             addingActive: false,
             show: false,
             showSelectedMarker: false,
             selectingDone: false,
+            selectingCompleteDone: false,
             alertMessage: 'You first have to select a specific animal!',
             popupImg: 'popupImg',
             selectMap: {name: 'OpenMapSurfer Roads', value: 'map1'},
             maps: [{name: 'OpenMapSurfer Roads', value: 'map1'}, {name: 'Esri WorldStreetMap', value: 'map2'}, {name: 'OpenStreetMap BlackandWhite', value: 'map3'}, {name: 'Esri WorldImagery', value: 'map4'}],
             spinner: {loading: true, color: 'lightgrey', height: '100', width: '100'},
-            inputMenu: 'show'
+            inputMenu: 'show',
+            demo: {
+                default: {
+                    value: 0,
+                    width: 230,
+                    height: 6,
+                    direction: 'horizontal',
+                    dotSize: 15,
+                    eventType: 'auto',
+                    min: 0,
+                    max: 100,
+                    interval: 1,
+                    disabled: false,
+                    show: true,
+                    realTime: false,
+                    tooltip: 'hover',
+                    clickable: true,
+                    tooltipDir: 'top',
+                    tooltipStyle: {
+                        "backgroundColor": "#666",
+                        "borderColor": "#666"
+                    },
+                    piecewise: false,
+                    lazy: false,
+                    reverse: false,
+                    speed: 0.5,
+                    formatter: null,
+                    bgStyle: null,
+                    sliderStyle:{
+                        "backgroundColor": "#f3f0f2"
+                    },
+                    processStyle: {
+                        "backgroundColor": "#424041"
+                    },
+                    piecewiseStyle: null,
+                    data: []
+                }
+            }
         }
       },
         watch: {
             selectAnimal:function (val, oldVal) {
-                    //alert('a thing changed' + val + oldVal)
-
                     this.getAnimalName(this.selectAnimal.urlStudyId)
                     this.show = true
                     this.selectingDone = false;
+                    this.setSelectingCompleteDone(false);
             },
             selectAnimalMarker: function(val){
                 this.showSelectedMarker = true
@@ -237,19 +268,22 @@
             animalnames:function(val){
                     this.selectSpecificAnimal = val
             },
-            selectSpecificAnimal: function (val){
-            },
-            polyPos: function (val){
-                this.status = 'thinking'
-                this.inputMenu = 'waiting'
-            },
-            polyMarkerPos: function(val){
-                this.status = 'done :)'
-                this.inputMenu = 'show'
-
-            },
             pos: function (val){
                 this.zoom = 5;
+            },
+            'demo.default.value': function(val){
+
+                var searchTerm = val, index = -1;
+                for(var i = 0, len = timeArray.length; i < len; i++) {
+                    if (timeArray[i].time === searchTerm) {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index != -1) {
+                    this.changeMarkerPos(index)
+                }
             }
         },
 
@@ -268,7 +302,7 @@
             onMove (data) {
                 //this.lat = data.position.lat
                 //this.lng = data.position.lng
-                console.log(data.position.lat + '...' + this.lat)
+                //console.log(data.position.lat + '...' + this.lat)
             },
             onClick (data) {
 
@@ -321,17 +355,18 @@
                 //this.$set(this.markersOld[counter], 'icon', iconWhi);
                 this.$set(this.markersOld[counter], 'draggable', dragtrue)
                 counterArr.push(counter)
-                //console.log(counterArr)
             },
             removeMarkerMy (index) {
                 this.polyMarkerPos.splice(index, 1)
             },
             setSelectingDone (done){
-                console.log(this.selectSpecificAnimal)
                 if (this.selectSpecificAnimal != undefined) {
-                    console.log('done???')
-                    console.log(this.selectSpecificAnimal)
                     this.selectingDone = done;
+                }
+            },
+            setSelectingCompleteDone(done){
+                if (this.selectSpecificAnimal != undefined) {
+                    this.selectingCompleteDone = done;
                 }
             },
             doAlert(alertMessage){
@@ -342,9 +377,8 @@
                 requestUrl = 'https://www.movebank.org/movebank/service/json-auth?study_id=' + si +'&individual_local_identifiers[]=' + ai + '&sensor_type=' + st + '';
                 //console.log('url: ' + requestUrl);
                 this.polyPos = [];
-
-
-
+                this.polyMarkerPos = [];
+                this.demo.default.data = [];
                 var self = this;
 
                 $.when(main.doRequest(requestUrl)).done(function(data){
@@ -365,39 +399,47 @@
                         y = data.individuals[0].locations[i].location_long;
                         t = data.individuals[0].locations[i].timestamp;
 
+                        t = self.convertTimestamp(t);
+
                         coords = {lat: x, lng: y };
-                        times = {timestamp: t};
+                        times = {time: t};
 
                         polyArray.push(coords);
                         timeArray.push(times);
                     };
-                    console.log(timeArray);
-
-                    //make polyline here
-                    for (j = 0; j < polyArray.length; j++){
-                        self.polyPos.push(({
-                            lat: polyArray[j].lat,
-                            lng: polyArray[j].lng
-                        }))
-                    };
-                    //console.log(self.polyPos); //check if there is output
-
-                    //Add Marker to end of Polyline (with Popup)
-                    self.polyMarkerPos.push(({
-                        positionM: polyArray[polyArray.length-1], icon: self.selectAnimal.iconSelected,
-                        visible: true,
-                        popupName: self.selectAnimal.text,
-                        popupTitle: popupInfo.name,
-                        popupText: self.selectAnimal.genus,
-                        time: timeArray[timeArray.length-1]
-                    }))
-
-                    console.log(self.polyMarkerPos);
 
                     // moving to path
                     self.lat = null; self.lng = null;
                     self.lat = polyArray[polyArray.length-1].lat;
                     self.lng = polyArray[polyArray.length-1].lng;
+
+                    //make polyline here
+                    for (j = 0; j < polyArray.length; j++){
+                        self.polyPos.push(({
+                            lat: polyArray[j].lat,
+                            lng: polyArray[j].lng,
+                            time: timeArray[j].time
+                        }))
+                        //TimeSlider Data Values
+                        self.demo.default.data.push(self.polyPos[j].time)
+                    };
+                    //console.log(self.polyPos); //check if there is output
+
+                    //Add Marker to end of Polyline (with Popup)
+                    self.polyMarkerPos.push(({
+                        positionM: polyArray[0], icon: self.selectAnimal.iconSelected,
+                        visible: true,
+                        popupName: self.selectAnimal.text,
+                        popupTitle: popupInfo.name,
+                        popupText: self.selectAnimal.genus,
+                        time: timeArray[0]
+                    }))
+
+                    //TimeSlider start value
+                    self.demo.default.value = self.polyPos[0].time;
+
+                    self.setSelectingCompleteDone(true)
+                    self.setInputMenu('show')
 
                     finished = true;
 
@@ -440,7 +482,38 @@
             },
             setInputMenu(val){
                 this.inputMenu = val
-                console.log(this.inputMenu)
+            },
+            convertTimestamp (unix_timestamp){
+
+                var a = new Date(unix_timestamp);
+                var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                var year = a.getFullYear();
+                var month = months[a.getMonth()];
+                var date = a.getDate();
+                var hour = a.getHours();
+                var min = a.getMinutes();
+                var sec = a.getSeconds();
+                var time = date + ' ' + month + '. ' + year + ', ' + hour + ':' + min ;
+
+                return time;
+            },
+            changeMarkerPos (val){
+
+                this.polyMarkerPos.splice(0, this.polyMarkerPos.length)
+
+                this.polyMarkerPos.push(({
+                    positionM: polyArray[val], icon: this.selectAnimal.iconSelected,
+                    visible: true,
+                    popupName: this.selectAnimal.text,
+                    popupTitle: popupInfo.name,
+                    popupText: this.selectAnimal.genus,
+                    time: timeArray[val]
+                }))
+            },
+            hideAnimal (val){
+                this.polyPos = []
+                this.polyMarkerPos = []
+                this.selectingCompleteDone = false
             }
         }
     };

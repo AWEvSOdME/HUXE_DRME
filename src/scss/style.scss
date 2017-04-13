@@ -193,6 +193,12 @@ div.v-spinner{
   margin: 50px;
 }
 
+.ShowButtonDiv{
+  float: left;
+  width: 120px;
+  height: 30px;
+}
+
 // ---------------------- AnimalInfo Field ---------------------------------------------------------------
 
 .animalInfo{
@@ -268,4 +274,10 @@ img#popupImg{
   max-height: 80px;
   display: block;
   margin: auto;
+}
+
+// ---------------------- Slider ---------------------------------------------------------------
+
+#slider{
+  margin: 30px 15px 10px 55px;
 }
