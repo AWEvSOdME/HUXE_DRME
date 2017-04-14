@@ -6,7 +6,7 @@
     <div id="navi">
         <nav v-bind:class="active" v-on:click.prevent>
             <a href="#" class="home" v-on:click="makeActive('home')">Home</a>
-            <a href="#" class="login" v-on:click="makeActive('login')" @click="showModal = true">login</a>
+            <a href="#" class="login" v-on:click="makeActive('log')" @click="showModal = true">login</a>
             <a href="#" class="services" v-on:click="makeActive('services')">Services</a>
             <a href="#" class="contact" v-on:click="makeActive('contact')">Contact</a>
         </nav>
@@ -15,15 +15,7 @@
 
 <div>
 
-        <form id="form" v-on:submit.prevent="authentication">
-            <input type="email" v-model="createuser.email" placeholder="email@email.com">
-            <input type="password" v-model="createuser.password" placeholder="Password">
-            <input type="submit" value="Create User">
-        </form>
-        <ul class="errors">
-            <li v-show="!validation.name">Name cannot be empty.</li>
-            <li v-show="!validation.email">Please provide a valid email address.</li>
-        </ul>
+
 
 
 </div>
@@ -93,11 +85,40 @@
 
     <modal v-if="showModal" @close="showModal = false">
 
-        <form slot = header id="form2" v-on:submit.prevent="login()">
+        <div slot = header>
+            <nav v-bind:class="active" v-on:click.prevent>
+                <a href="#" class="log" v-on:click="makeActive('log')">Login</a>
+                <a href="#" class="new" v-on:click="makeActive('new')">New Account</a>
+            </nav>
+
+
+        </div>
+        <div slot = body>
+        <div  v-if="retActive()==='log'">
+        <form  id="form2" v-on:submit.prevent="login()">
             <input type="email" v-model="loguser.lemail" placeholder="email">
             <input type="password" v-model="loguser.password" placeholder="password">
             <input type="submit" value="LOGIN">
         </form>
+        </div>
+            <div v-else-if="retActive()==='new'">
+
+                <form slot = body id="form" v-on:submit.prevent="authentication">
+                    <input type="email" v-model="createuser.email" placeholder="email@email.com">
+                    <input type="password" v-model="createuser.password" placeholder="Password">
+                    <input type="submit" value="Create User">
+
+                    <ul class="errors">
+                        <li v-show="!validation.email">Please provide a valid email address.</li>
+                        <li v-show="!validation.name">Password cannot be empty.</li>
+                    </ul>
+                </form>
+
+
+            </div>
+        </div>
+
+
 
         <div slot = footer>
             <button @click="signOut()">Logout</button>
@@ -161,6 +182,7 @@
             active: 'home',
             currentRoute: window.location.pathname,
             showModal: false,
+            logActive: true,
 
                 users: '',
                 createuser: {
@@ -197,6 +219,11 @@
         methods: {
             makeActive: function (beitem) {
                 this.active = beitem;
+            },
+
+            retActive: function () {
+                return this.active;
+
             },
 
             //Function for
@@ -244,7 +271,8 @@
                         self.showModal = false;
 
 
-
+                        this.loguser.email="";
+                        this.loguser.password="";
 
                         console.log("User is logged in")
                     }
@@ -334,7 +362,7 @@
     .modal-container {
         width: 300px;
         margin: 0px auto;
-        padding: 20px 30px;
+        padding: 0px 0px;
         background-color: #fff;
         border-radius: 2px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
@@ -348,11 +376,15 @@
     }
 
     .modal-body {
+        padding: 20px 30px;
         margin: 20px 0;
     }
 
     .modal-default-button {
         float: right;
+    }
+    .modal-footer{
+        padding: 10px 10px;
     }
 
     /*
@@ -398,7 +430,7 @@
 
     nav{
         display:inline-block;
-        margin:60px auto 45px;
+        margin:0px auto 0px;
         background-color:#5d5b66;
         box-shadow:0 1px 1px #ccc;
         border-radius:2px;
@@ -406,7 +438,7 @@
 
     nav a{
         display:inline-block;
-        padding: 18px 30px;
+        padding: 20px 10px;
         color:#fff !important;
         font-weight:bold;
         font-size:16px;
@@ -427,6 +459,10 @@
     nav a:last-child{
         border-radius:0 2px 2px 0;
     }
+
+
+    nav.log .log,
+    nav.new .new,
 
     nav.home .home,
     nav.login .login,
