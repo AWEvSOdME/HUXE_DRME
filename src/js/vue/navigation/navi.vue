@@ -271,8 +271,8 @@
                         self.showModal = false;
 
 
-                        this.loguser.email="";
-                        this.loguser.password="";
+                       // this.loguser.email="";
+                      //  this.loguser.password="";
 
                         console.log("User is logged in")
                     }
