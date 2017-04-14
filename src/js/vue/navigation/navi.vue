@@ -46,13 +46,15 @@
         </select-->
 
 
-        <input type="text" v-model="newAnimal.user.species" placeholder="Spec">
-        <input type="text" v-model="newAnimal.user.animal" placeholder="Kind of Animal">
-        <input type="text" v-model="newAnimal.user.name" placeholder="Name">
-        <input type="text" v-model="newAnimal.user.lat" placeholder="latitude">
-        <input type="text" v-model="newAnimal.user.lon" placeholder="longitude">
+        <input type="text" v-model="newAnimal.species" placeholder="Spec">
+        <input type="text" v-model="newAnimal.animal" placeholder="Kind of Animal">
+        <input type="text" v-model="newAnimal.name" placeholder="Name">
+        <input type="text" v-model="newAnimal.lat" placeholder="latitude">
+        <input type="text" v-model="newAnimal.lon" placeholder="longitude">
         <input type="submit" value="Add TO DATABASE">
     </form>
+
+    <button v-on:click="querydb()">QueryDB</button>
 
 </div>
 
@@ -156,13 +158,13 @@
         data() {
             return {
             newAnimal: {
-                user: {
+
                     species: '',
                     animal: '',
                     name: '',
                     lat: '',
                     lon: ''
-                }
+
             },
             newUser: {
                     name: '',
@@ -219,11 +221,11 @@
 
 
                     firebase.database().ref('userID' + this.userID).push(this.newAnimal)
-                    this.newAnimal.user.species='',
-                    this.newAnimal.user.animal='',
-                    this.newAnimal.user.name='',
-                    this.newAnimal.user.lat='',
-                    this.newAnimal.user.lon=''
+                    this.newAnimal.species='',
+                    this.newAnimal.animal='',
+                    this.newAnimal.name='',
+                    this.newAnimal.lat='',
+                    this.newAnimal.lon=''
 
 
 
@@ -260,6 +262,8 @@
             },
             check: function () {
 
+
+
                 var self = this;
 
 
@@ -267,12 +271,20 @@
 
 
 
+
+
+
                     if(user) {
+
+
 
                         self.userID = user.uid;
                         self.showModal = false;
 
-                        console.log("User is logged in");
+
+
+
+                            console.log("User is logged in")
                     }
                     else {
                         console.log("User is not logged in")
@@ -288,7 +300,47 @@
                     // An error happened.
                 });
 
+            },
+
+            querydb: function () {
+
+               /* return firebase.database().ref('userID' + this.userID).once('value').then(function(snapshot) {
+                    var key = snapshot.key;
+                    var username = snapshot.val();
+                    var childKey = snapshot.child("species").val(); // "last"
+
+
+                    console.log(username);
+                    console.log(key);
+                    console.log(childKey);
+
+
+
+
+
+
+                });*/
+
+
+                var query = firebase.database().ref('userID' + this.userID).orderByKey();
+                query.once("value")
+                    .then(function(snapshot) {
+                        snapshot.forEach(function(childSnapshot) {
+                            // key will be "ada" the first time and "alan" the second time
+                            var key2 = childSnapshot.key;
+                            // childData will be the actual contents of the child
+                            var childData = childSnapshot.val();
+                            var childchild = childSnapshot.child("species").val();
+
+                            console.log(key2);
+                            console.log(childData);
+                            console.log('This is the species: '+ childchild);
+
+                        });
+                    });
+
             }
+
         },
 
     }
