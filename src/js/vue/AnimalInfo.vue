@@ -64,7 +64,8 @@
 
     <!--Nothing selected-->
     <div class="animalInfo" v-else>
-        <p class="infoText">LALAAL</p>
+        <p class="infoText"><b>Welcome to ANCKS - the animal tracks database</b><br>
+        </p>
     </div>
 </template>
 

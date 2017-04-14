@@ -14,17 +14,11 @@
         <p>You chose <b>{{ active }}</b></p>
 
 <div>
-        <ul is="transition-group">
-            <li v-for="user in users" class="user" :key="user['.key']">
-                <span>{{user.name}} - {{user.email}}</span>
-                <button v-on:click="removeUser(user)">X</button>
-            </li>
-        </ul>
-        <form id="form" v-on:submit.prevent="addUser">
-            <input type="text" v-model="newUser.name" placeholder="Username">
-            <input type="email" v-model="newUser.email" placeholder="email@email.com">
-            <input type="submit" value="Add TO DATABASE">
-            <button @click="authentication()">Create User</button>
+
+        <form id="form" v-on:submit.prevent="authentication">
+            <input type="email" v-model="createuser.email" placeholder="email@email.com">
+            <input type="password" v-model="createuser.password" placeholder="Password">
+            <input type="submit" value="Create User">
         </form>
         <ul class="errors">
             <li v-show="!validation.name">Name cannot be empty.</li>
@@ -38,15 +32,15 @@
 
 <div>
     <form id="addAnimal" v-on:submit.prevent="addAnimal">
-        <!--select name="species" v-model="newAnimal.user.species">
+        <select name="species" v-model="newAnimal.species">
             <option value="mamal">mamal</option>
             <option value="bird">bird</option>
             <option value="fish">fish</option>
             <option value="amphib">amphib</option>
-        </select-->
+        </select>
 
 
-        <input type="text" v-model="newAnimal.species" placeholder="Spec">
+        <!--input type="text" v-model="newAnimal.species" placeholder="Spec"-->
         <input type="text" v-model="newAnimal.animal" placeholder="Kind of Animal">
         <input type="text" v-model="newAnimal.name" placeholder="Name">
         <input type="text" v-model="newAnimal.lat" placeholder="latitude">
@@ -100,15 +94,13 @@
     <modal v-if="showModal" @close="showModal = false">
 
         <form slot = header id="form2" v-on:submit.prevent="login()">
-            <input type="text" v-model="loguser.password" placeholder="password">
             <input type="email" v-model="loguser.lemail" placeholder="email">
+            <input type="password" v-model="loguser.password" placeholder="password">
             <input type="submit" value="LOGIN">
         </form>
 
         <div slot = footer>
             <button @click="signOut()">Logout</button>
-            <a href="#" class="services" v-on:click="makeActive('services')">Login</a>
-            <a href="#" class="contact" v-on:click="makeActive('contact')">Create Account</a>
         </div>
 
     </modal>
@@ -166,15 +158,15 @@
                     lon: ''
 
             },
-            newUser: {
-                    name: '',
-                    email: ''
-                },
             active: 'home',
             currentRoute: window.location.pathname,
             showModal: false,
 
                 users: '',
+                createuser: {
+                    lemail: '',
+                    password: ''
+                },
                 loguser: {
                     lemail: '',
                     password: ''
@@ -191,8 +183,8 @@
         computed: {
             validation: function () {
                 return {
-                    name: !!this.newUser.name.trim(),
-                    email: emailRE.test(this.newUser.email)
+                    name: !!this.createuser.password.trim(),
+                    email: emailRE.test(this.createuser.email)
                 }
             },
             isValid: function () {
@@ -206,39 +198,16 @@
             makeActive: function (beitem) {
                 this.active = beitem;
             },
-            addUser: function () {
-                if (this.isValid) {
-                    usersRef.push(this.newUser)
-                    this.newUser.name = ''
-                    this.newUser.email = ''
-                }
-            },
-            removeUser: function (user) {
-                usersRef.child(user['.key']).remove()
-            },
-            addAnimal: function () {
 
-
-
-                    firebase.database().ref('userID' + this.userID).push(this.newAnimal)
-                    this.newAnimal.species='',
-                    this.newAnimal.animal='',
-                    this.newAnimal.name='',
-                    this.newAnimal.lat='',
-                    this.newAnimal.lon=''
-
-
-
-            },
             //Function for
             authentication: function () {
                 if (this.isValid)
                 {
-                    auth.createUserWithEmailAndPassword(this.newUser.email, this.newUser.name)
+                    auth.createUserWithEmailAndPassword(this.createuser.email, this.createuser.password)
                     {
 
-                        this.newUser.email="";
-                        this.newUser.name="";
+                        this.createuser.email="";
+                        this.createuser.password="";
 
                         var errorCode = "ERRORPLAN";
                         var errorMessage = "ERROR";
@@ -248,6 +217,7 @@
 
             },
             login: function () {
+                //Check and write UserID
                 this.check();
                 auth.signInWithEmailAndPassword(this.loguser.lemail, this.loguser.password).catch(function (error) {
                     console.log("ERRORORORO");
@@ -262,21 +232,13 @@
             },
             check: function () {
 
-
-
+                // Check function for Login and writing user.uid
                 var self = this;
 
 
                 auth.onAuthStateChanged(function (user) {
 
-
-
-
-
-
                     if(user) {
-
-
 
                         self.userID = user.uid;
                         self.showModal = false;
@@ -284,7 +246,7 @@
 
 
 
-                            console.log("User is logged in")
+                        console.log("User is logged in")
                     }
                     else {
                         console.log("User is not logged in")
@@ -302,34 +264,32 @@
 
             },
 
+
+            addAnimal: function () {
+
+                    firebase.database().ref('userID' + this.userID).push(this.newAnimal)
+                    this.newAnimal.species='',
+                    this.newAnimal.animal='',
+                    this.newAnimal.name='',
+                    this.newAnimal.lat='',
+                    this.newAnimal.lon=''
+
+
+
+            },
+
             querydb: function () {
-
-               /* return firebase.database().ref('userID' + this.userID).once('value').then(function(snapshot) {
-                    var key = snapshot.key;
-                    var username = snapshot.val();
-                    var childKey = snapshot.child("species").val(); // "last"
-
-
-                    console.log(username);
-                    console.log(key);
-                    console.log(childKey);
-
-
-
-
-
-
-                });*/
-
 
                 var query = firebase.database().ref('userID' + this.userID).orderByKey();
                 query.once("value")
                     .then(function(snapshot) {
                         snapshot.forEach(function(childSnapshot) {
-                            // key will be "ada" the first time and "alan" the second time
+
                             var key2 = childSnapshot.key;
                             // childData will be the actual contents of the child
                             var childData = childSnapshot.val();
+
+                            //Here you can query the different informations about the animals
                             var childchild = childSnapshot.child("species").val();
 
                             console.log(key2);
