@@ -104,13 +104,13 @@
             <div v-else-if="retActive()==='new'">
 
                 <form slot = body id="form" v-on:submit.prevent="authentication">
-                    <input type="email" v-model="createuser.email" placeholder="email@email.com">
+                    <input type="email" v-model="createuser.lemail" placeholder="email@email.com">
                     <input type="password" v-model="createuser.password" placeholder="Password">
                     <input type="submit" value="Create User">
 
                     <ul class="errors">
                         <li v-show="!validation.email">Please provide a valid email address.</li>
-                        <li v-show="!validation.name">Password cannot be empty.</li>
+                        <li v-show="!validation.password">Password cannot be empty.</li>
                     </ul>
                 </form>
 
@@ -159,7 +159,6 @@
 
 
 
-    var usersRef = firebase.database().ref('users');
     var auth = firebase.auth();
 
     export default {
@@ -183,8 +182,6 @@
             currentRoute: window.location.pathname,
             showModal: false,
             logActive: true,
-
-                users: '',
                 createuser: {
                     lemail: '',
                     password: ''
@@ -196,17 +193,14 @@
                 userID: '',
 
         }},
-        firebase: {
-            users: usersRef
-        },
 
 
 
         computed: {
             validation: function () {
                 return {
-                    name: !!this.createuser.password.trim(),
-                    email: emailRE.test(this.createuser.email)
+                    password: !!this.createuser.password.trim(),
+                    email: emailRE.test(this.createuser.lemail)
                 }
             },
             isValid: function () {
@@ -228,32 +222,64 @@
 
             //Function for
             authentication: function () {
+
+               var self = this;
+
                 if (this.isValid)
                 {
-                    auth.createUserWithEmailAndPassword(this.createuser.email, this.createuser.password)
-                    {
+                    auth.createUserWithEmailAndPassword(this.createuser.lemail, this.createuser.password).then(function(user) {
 
-                        this.createuser.email="";
-                        this.createuser.password="";
 
-                        var errorCode = "ERRORPLAN";
-                        var errorMessage = "ERROR";
 
-                    };
+                        if (user.emailVerified)
+                        {
+                            console.log("Email is already verified")
+                        }
+                        else
+                        {
+                            user.sendEmailVerification();
+                            auth.signOut();
+                            console.log("Verification Mail is send");
+
+
+                        }
+
+                        self.createuser.lemail="";
+                        self.createuser.password="";
+
+
+
+                    }).catch(function (error) {
+
+
+                       console.log(error);
+
+
+                    });
                 }
 
             },
             login: function () {
                 //Check and write UserID
+
                 this.check();
-                auth.signInWithEmailAndPassword(this.loguser.lemail, this.loguser.password).catch(function (error) {
-                    console.log("ERRORORORO");
+
+                    auth.signInWithEmailAndPassword(this.loguser.lemail, this.loguser.password).then(function (user) {
 
 
-                    var errorCode = "ERRORPLAN";
-                    var errorMessage = "ERROR";
 
-                });
+
+
+                    }).catch(function (error) {
+                        console.log("NO LOGIN POSSIBLE");
+
+
+                    });
+
+
+
+
+
 
 
             },
@@ -266,17 +292,23 @@
                 auth.onAuthStateChanged(function (user) {
 
                     if(user) {
+                        if (user.emailVerified) {
 
-                        self.userID = user.uid;
-                        self.showModal = false;
+                            self.userID = user.uid;
+                            self.showModal = false;
 
 
-                       // this.loguser.email="";
-                      //  this.loguser.password="";
+                            self.loguser.lemail="";
+                            self.loguser.password="";
 
-                        console.log("User is logged in")
+                            console.log("User is logged in")
+                        }
+                        else {
+                            //auth.signOut();
+                            console.log("Please Validate Email!")
+                        }
                     }
-                    else {
+                    else{
                         console.log("User is not logged in")
                     }
                 });
@@ -437,6 +469,8 @@
     }
 
     nav a{
+
+
         display:inline-block;
         padding: 20px 10px;
         color:#fff !important;
