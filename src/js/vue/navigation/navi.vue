@@ -1,143 +1,127 @@
 <template>
+
 <div>
-
-
-
     <div id="navi">
-        <nav v-bind:class="active" v-on:click.prevent>
-            <a href="#" class="home" v-on:click="makeActive('home')">Home</a>
-            <a href="#" class="login" v-on:click="makeActive('log')" @click="showModal = true">login</a>
-            <a href="#" class="services" v-on:click="makeActive('services')">Services</a>
+
+        <nav v-bind:class="active" v-on:click.prevent class="navMenu">
+            <a href="#" v-if="!loggedin" class="login" v-on:click="makeActive('login'), makeModalActive('log')" @click="showModal = true">{{ loginText }}</a>
+            <a href="#" v-if="loggedin" class="login" v-on:click="makeActive(''), signOut()" >{{ loginText }}</a>
+            <a href="#" class="services" v-on:click="makeActive('services')">Settings</a>
             <a href="#" class="contact" v-on:click="makeActive('contact')">Contact</a>
         </nav>
-
         <p>You chose <b>{{ active }}</b></p>
 
-<div>
+        <div>
+            <form id="addAnimal" v-on:submit.prevent="addAnimal">
+                <select name="species" v-model="newAnimal.species">
+                    <option value="mamal">mamal</option>
+                    <option value="bird">bird</option>
+                    <option value="fish">fish</option>
+                    <option value="amphib">amphib</option>
+                </select>
+
+                <!--input type="text" v-model="newAnimal.species" placeholder="Spec"-->
+                <input type="text" v-model="newAnimal.animal" placeholder="Kind of Animal">
+                <input type="text" v-model="newAnimal.name" placeholder="Name">
+                <input type="text" v-model="newAnimal.lat" placeholder="latitude">
+                <input type="text" v-model="newAnimal.lon" placeholder="longitude">
+                <input type="submit" value="Add TO DATABASE">
+            </form>
+
+            <button v-on:click="querydb()">QueryDB</button>
+
+        </div>
 
 
+        <script type="text/x-template" id="modal-template">
 
+            <transition name="modal">
+                <div class="modal-mask" @click="$emit('close')" >
+                    <div class="modal-wrapper">
+                        <div class="modal-container" @click.stop >
 
-</div>
+                            <div class="modal-header">
+                                <slot name="header">
+                                </slot>
+                            </div>
 
+                            <div class="modal-body">
+                                <slot name="body">
 
+                                </slot>
+                            </div>
 
-<div>
-    <form id="addAnimal" v-on:submit.prevent="addAnimal">
-        <select name="species" v-model="newAnimal.species">
-            <option value="mamal">mamal</option>
-            <option value="bird">bird</option>
-            <option value="fish">fish</option>
-            <option value="amphib">amphib</option>
-        </select>
-
-
-        <!--input type="text" v-model="newAnimal.species" placeholder="Spec"-->
-        <input type="text" v-model="newAnimal.animal" placeholder="Kind of Animal">
-        <input type="text" v-model="newAnimal.name" placeholder="Name">
-        <input type="text" v-model="newAnimal.lat" placeholder="latitude">
-        <input type="text" v-model="newAnimal.lon" placeholder="longitude">
-        <input type="submit" value="Add TO DATABASE">
-    </form>
-
-    <button v-on:click="querydb()">QueryDB</button>
-
-</div>
-
-
-
-<script type="text/x-template" id="modal-template">
-
-    <transition name="modal">
-        <div class="modal-mask" @click="$emit('close')">
-            <div class="modal-wrapper">
-                <div class="modal-container" @click.stop>
-
-                    <div class="modal-header">
-                        <slot name="header">
-                        </slot>
-                    </div>
-
-                    <div class="modal-body">
-                        <slot name="body">
-
-
-
-                        </slot>
-                    </div>
-
-                    <div class="modal-footer">
-                        <slot name="footer">
-                            default footer
-                            <button class="modal-default-button" @click="$emit('close')">
-                                OK
-                            </button>
-                        </slot>
+                            <div class="modal-footer">
+                                <slot name="footer">
+                                    <!--button class="modal-default-button" @click="$emit('close')">
+                                        OK
+                                    </button-->
+                                </slot>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </transition>
+        </script>
+
+        <div>
+            <modal v-if="showModal" @close="showModal = false">
+                <div slot = header>
+                    <nav v-bind:class="activeMod" v-on:click.prevent>
+                        <a href="#" class="logMod" v-on:click="makeModalActive('log')">Login</a>
+                        <a href="#" class="newMod" v-on:click="makeModalActive('new')">New Account</a>
+                    </nav>
+
+                </div>
+                <div slot = body>
+                    <!-- LOGIN -->
+                <div  v-if="retActive()==='log'">
+                    <div class="modhalfleft">
+                        <img class="modImg" src="../../../img/footsteps.png">
+                    </div>
+                    <div class="modhalfright" v-if="!loggedin">
+                        <form id="form2" v-on:submit.prevent="login()">
+                             <div class="form-group">
+                                <label>Email</label>
+                                <input v-bind:class="{ lala: isActive }" type="email" v-model="loguser.lemail" placeholder="">
+                                 <label>Password</label>
+                                <input v-bind:class="{ lala: isActive }" type="password" v-model="loguser.password" placeholder="">
+                                <input type="submit" class="loginButton" value="LOGIN">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                    <!-- SIGN IN -->
+                    <div v-else-if="retActive()==='new'">
+                        <div class="modhalfleft">
+                            <img class="modImgRight" src="../../../img/footsteps_right.png">
+                        </div>
+                        <div class="modhalfright">
+                        <form slot = body id="form" v-on:submit.prevent="authentication">
+                            <div class="form-group">
+                                <label>Email <span class="errorInfo" v-show="!validation.email"> (Please provide a valid email address.)</span></label>
+                                <input type="email" v-model="createuser.lemail" placeholder="">
+                                <label>Password <span class="errorInfo" v-show="!validation.password"> (Password cannot be empty.)</span></label>
+                                <input type="password" v-model="createuser.password" placeholder="">
+                                <input type="submit" class="createButton" value="CREATE USER">
+                            </div>
+                        </form></div>
+                    </div>
+                </div>
+
+                <!-- slot = footer>
+                    <button @click="signOut()">Logout</button>
+                </div-->
+
+            </modal>
+
         </div>
-    </transition>
-</script>
 
-<div>
-
-
-    <modal v-if="showModal" @close="showModal = false">
-
-        <div slot = header>
-            <nav v-bind:class="active" v-on:click.prevent>
-                <a href="#" class="log" v-on:click="makeActive('log')">Login</a>
-                <a href="#" class="new" v-on:click="makeActive('new')">New Account</a>
-            </nav>
-
-
-        </div>
-        <div slot = body>
-        <div  v-if="retActive()==='log'">
-        <form  id="form2" v-on:submit.prevent="login()">
-            <input type="email" v-model="loguser.lemail" placeholder="email">
-            <input type="password" v-model="loguser.password" placeholder="password">
-            <input type="submit" value="LOGIN">
-        </form>
-        </div>
-            <div v-else-if="retActive()==='new'">
-
-                <form slot = body id="form" v-on:submit.prevent="authentication">
-                    <input type="email" v-model="createuser.lemail" placeholder="email@email.com">
-                    <input type="password" v-model="createuser.password" placeholder="Password">
-                    <input type="submit" value="Create User">
-
-                    <ul class="errors">
-                        <li v-show="!validation.email">Please provide a valid email address.</li>
-                        <li v-show="!validation.password">Password cannot be empty.</li>
-                    </ul>
-                </form>
-
-
-            </div>
-        </div>
-
-
-
-        <div slot = footer>
-            <button @click="signOut()">Logout</button>
-        </div>
-
-    </modal>
-
+    </div>
 
 </div>
-
-</div>
-
-</div>
-
 
 </template>
-
-
-
 
 
 <script>
@@ -156,8 +140,6 @@
         messagingSenderId: "981242849200"
     }
     firebase.initializeApp(config);
-
-
 
     var auth = firebase.auth();
 
@@ -179,22 +161,24 @@
 
             },
             active: 'home',
+            activeMod: 'log',
             currentRoute: window.location.pathname,
             showModal: false,
             logActive: true,
-                createuser: {
-                    lemail: '',
-                    password: ''
-                },
-                loguser: {
-                    lemail: '',
-                    password: ''
-                },
-                userID: '',
+            loggedin: false,
+            isActive: false,
+            loginText: 'Login',
+            createuser: {
+                lemail: '',
+                password: ''
+            },
+            loguser: {
+                lemail: '',
+                password: ''
+            },
+            userID: '',
 
         }},
-
-
 
         computed: {
             validation: function () {
@@ -210,17 +194,30 @@
                 })
             }
         },
+        watch: {
+            showModal:function (val) {
+
+                if(val === true){
+                    this.makeActive('login')
+                }
+                else{
+                    this.makeActive('')
+                }
+
+            }
+        },
         methods: {
             makeActive: function (beitem) {
                 this.active = beitem;
             },
-
-            retActive: function () {
-                return this.active;
-
+            makeModalActive: function(item){
+                this.activeMod = item;
             },
 
-            //Function for
+            retActive: function () {
+                return this.activeMod;
+            },
+
             authentication: function () {
 
                var self = this;
@@ -234,13 +231,15 @@
                         if (user.emailVerified)
                         {
                             console.log("Email is already verified")
+
                         }
                         else
                         {
                             user.sendEmailVerification();
                             auth.signOut();
-                            console.log("Verification Mail is send");
-
+                            console.log("Verification Mail was sent");
+                            self.showModal = false;
+                            self.doAlert('Verification Mail was sent');
 
                         }
 
@@ -253,32 +252,30 @@
 
 
                        console.log(error);
+                       self.doAlert(error.message)
 
 
                     });
+                }
+                else{
+
                 }
 
             },
             login: function () {
                 //Check and write UserID
-
+                var self = this;
                 this.check();
 
                     auth.signInWithEmailAndPassword(this.loguser.lemail, this.loguser.password).then(function (user) {
 
-
-
-
-
                     }).catch(function (error) {
                         console.log("NO LOGIN POSSIBLE");
-
+                        var message = 'Invalid e-mail or password!'
+                        self.doAlert(message);
+                        self.isActive = true;
 
                     });
-
-
-
-
 
 
 
@@ -301,7 +298,12 @@
                             self.loguser.lemail="";
                             self.loguser.password="";
 
+                            self.loggedin = true;
+
                             console.log("User is logged in")
+                            self.makeActive('');
+
+                            self.loginText = 'Logout'
                         }
                         else {
                             //auth.signOut();
@@ -316,14 +318,18 @@
             },
 
             signOut: function () {
+                var self = this;
+
                 auth.signOut().then(function() {
                     console.log("sign out")
+                    self.loggedin = false;
+                    self.loginText = 'Login'
+                    self.makeActive('');
                 }).catch(function(error) {
                     // An error happened.
                 });
 
             },
-
 
             addAnimal: function () {
 
@@ -359,6 +365,9 @@
                         });
                     });
 
+            },
+            doAlert(alertMessage){
+                alert('Error: ' + alertMessage)
             }
 
         },
@@ -368,160 +377,3 @@
 
 
 </script>
-
-
-
-
-<style>
-
-    .modal-mask {
-        position: fixed;
-        z-index: 9998;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, .5);
-        display: table;
-        transition: opacity .10s ease;
-    }
-
-    .modal-wrapper {
-        display: table-cell;
-        vertical-align: middle;
-    }
-
-    .modal-container {
-        width: 300px;
-        margin: 0px auto;
-        padding: 0px 0px;
-        background-color: #fff;
-        border-radius: 2px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
-        transition: all .3s ease;
-        font-family: Helvetica, Arial, sans-serif;
-    }
-
-    .modal-header h3 {
-        margin-top: 0;
-        color: #42b983;
-    }
-
-    .modal-body {
-        padding: 20px 30px;
-        margin: 20px 0;
-    }
-
-    .modal-default-button {
-        float: right;
-    }
-    .modal-footer{
-        padding: 10px 10px;
-    }
-
-    /*
-     * The following styles are auto-applied to elements with
-     * transition="modal" when their visibility is toggled
-     * by Vue.js.
-     *
-     * You can easily play with the modal transition by editing
-     * these styles.
-     */
-
-    .modal-enter {
-        opacity: 0;
-    }
-
-    .modal-leave-active {
-        opacity: 0;
-    }
-
-    .modal-enter .modal-container,
-    .modal-leave-active .modal-container {
-        -webkit-transform: scale(1.1);
-        transform: scale(1.1);
-    }
-
-
-    a, a:visited {
-        outline:none;
-        color:#309dc1;
-    }
-
-    a:hover{
-        text-decoration:none;
-    }
-
-    section, footer, header, aside, nav{
-        display: block;
-    }
-
-    /*-------------------------
-        The menu
-    --------------------------*/
-
-    nav{
-        display:inline-block;
-        margin:0px auto 0px;
-        background-color:#5d5b66;
-        box-shadow:0 1px 1px #ccc;
-        border-radius:2px;
-    }
-
-    nav a{
-
-
-        display:inline-block;
-        padding: 20px 10px;
-        color:#fff !important;
-        font-weight:bold;
-        font-size:16px;
-        text-decoration:none !important;
-        line-height:1;
-        text-transform: uppercase;
-        background-color:transparent;
-
-        -webkit-transition:background-color 0.25s;
-        -moz-transition:background-color 0.25s;
-        transition:background-color 0.25s;
-    }
-
-    nav a:first-child{
-        border-radius:2px 0 0 2px;
-    }
-
-    nav a:last-child{
-        border-radius:0 2px 2px 0;
-    }
-
-
-    nav.log .log,
-    nav.new .new,
-
-    nav.home .home,
-    nav.login .login,
-    nav.services .services,
-    nav.contact .contact{
-        background-color: #ed5758;
-    }
-
-    p{
-        font-size:22px;
-        font-weight:bold;
-        color:#7d9098;
-    }
-
-    p b{
-        color:#ffffff;
-        display:inline-block;
-        padding:5px 10px;
-        background-color:#c4d7e0;
-        border-radius:2px;
-        text-transform:uppercase;
-        font-size:18px;
-    }
-    .resource {
-        margin: 20px 0;
-    }
-
-</style>

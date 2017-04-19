@@ -67,15 +67,18 @@
 
             <!-- Menu ADD -->
             <div v-show="inputMenu === 'add'">
-                <p class="textNormal">Species:
-                <select v-model="selectAnimalMarker"  >
-                    <option v-for="animal in animals" :value="animal">{{ animal.text }}</option>
+
+                <p class="textNormal">Animal Class:
+                <select v-model="selectAnimalClass"  >
+                    <option v-for="animal in animalClass" :value="animal">{{ animal.class }}</option>
                 </select></p>
 
-                <div class="resultDiv" v-if="showSelectedMarker">
-                    <img id="selectedIcon" v-bind:src="selectAnimalMarker.imgSrc"><br>
-                    <p class="selectingResult">Species: <span>{{ selectAnimalMarker.text }}</span></p>
-                    <p class="selectingResult">Genus: <span>{{ selectAnimalMarker.genus }}</span></p>
+
+
+                <div class="resultDiv" v-if="showSelectedClass">
+                    <img id="selectedIcon" v-bind:src="selectAnimalClass.imgSrc"><br>
+                    <p class="selectingResult">Species: <span>{{ selectAnimalClass.class }}</span></p>
+                    <p class="selectingResult">Genus: <span>{{ selectAnimalClass.class }}</span></p>
                 </div><br>
 
                 <button class="selectButton" @click="activateAdding(true)">Add Marker</button>
@@ -100,6 +103,12 @@
         <!-- Animal Info -->
         <div><Vinfo id="vueInfo" :animal="selectAnimal.text"></Vinfo></div>
 
+        <!-- Navigation -->
+        <div>
+            <img id="logo" src="../../img/logo.png">
+            <Vnavi id="vueNavi" ></Vnavi>
+        </div>
+
         <!-- MAP SETTINGS -->
         <div id="menuMap"><p class="textNormal">Switch Basemap:
             <select v-model="selectMap" v-on:onmouseover="selectMap = map" >
@@ -115,6 +124,7 @@
 
     import Map from './Map.vue';
     import Info from './AnimalInfo.vue';
+    import Navi from './navigation/navi.vue';
     import * as components from './components';
     import * as $ from "jquery";
     import * as Vue from "vue";
@@ -132,6 +142,13 @@
     var imgLioSrc =  '../../img/icon_lion.png';
     var imgOceSrc =  '../../img/icon_ocelot.png';
     var imgSkiSrc =  '../../img/icon_black_skimmer.png';
+
+    var imgMamSrc =  '../../img/icon_mammal.png';
+    var imgBirSrc =  '../../img/icon_bird.png';
+    var imgFisSrc =  '../../img/icon_fish.png';
+    var imgRepSrc =  '../../img/icon_reptile.png';
+    var imgInsSrc =  '../../img/icon_insect.png';
+    var imgAmpSrc =  '../../img/icon_amphib.png';
 
     var imgWhePop = '../../img/wheatear.png';
     var imgWhiPop = '../../img/whitestork.png';
@@ -155,6 +172,13 @@
     var iconOce = L.icon({iconUrl:  imgOceSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
     var iconSki = L.icon({iconUrl:  imgSkiSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
 
+    var iconMam = L.icon({iconUrl:  imgMamSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    var iconBir = L.icon({iconUrl:  imgBirSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    var iconFis = L.icon({iconUrl:  imgFisSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    var iconRep = L.icon({iconUrl:  imgRepSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    var iconIns = L.icon({iconUrl:  imgInsSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    var iconAmp = L.icon({iconUrl:  imgAmpSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+
     var coords, popupInfo, popupName, popupTaxName, nameId, nameIdArray, requestUrl, times;
     var finished = false; var drag = false;var dragtrue = true;
     var counterArr = []; var polyArray = []; var timeArray = [];
@@ -171,7 +195,8 @@
             VmapTileLayer: components.TileLayer,
             Vinfo: Info,
             ScaleLoader,
-            vueSlider
+            vueSlider,
+            Vnavi: Navi
         },
       data () {
         return {
@@ -180,7 +205,7 @@
             zoom: 2,
             message: '1',
             selectAnimal: { text: '', genus: '', iconSelected: '', imgSrc: '', urlStudyId: '', urlPublic: '', urlSensor: '', iconPop: ''},
-            selectAnimalMarker: { text: '', genus: '', iconSelected: '', imgSrc: '', urlStudyId: '', urlPublic: '', urlSensor: '', iconPop: ''},
+            selectAnimalClass: { class: '', genus: '', iconSelected: '', imgSrc: ''},
             selectSpecificAnimal: { text: '', genus: ''},
             animals: [
                 { text: 'Wheatear', genus: 'Oenanthe oenanthe', iconSelected: iconWhe, imgSrc: imgWheSrc, urlStudyId: '58672150', urlSensor: 'solar-geolocator', iconPop: imgWhePop},
@@ -192,10 +217,17 @@
                 { text: 'Lion', genus: 'Panthera leo', iconSelected: iconLio, imgSrc: imgLioSrc, urlStudyId: '220229', urlSensor: 'gps', iconPop: imgLioPop},
                 { text: 'Ocelot', genus: 'Leopardus pardalis', iconSelected: iconOce, imgSrc: imgOceSrc, urlStudyId: '123413', urlSensor: 'radio-transmitter', iconPop: imgOcePop},
                 { text: 'Black Skimmer', genus: 'Rynchops niger', iconSelected: iconSki, imgSrc: imgSkiSrc, urlStudyId: '126103076', urlSensor: 'argos-doppler-shift', iconPop: imgSkiPop},
-
             ],
             animalnames:[
                 { text: '', genus: ''}
+            ],
+            animalClass: [
+                { class: 'Mammal', iconSelected: iconMam, imgSrc: imgMamSrc},
+                { class: 'Bird', iconSelected: iconBir, imgSrc: imgBirSrc},
+                { class: 'Fish', iconSelected: iconFis, imgSrc: imgFisSrc},
+                { class: 'Reptile', iconSelected: iconRep, imgSrc: imgRepSrc},
+                { class: 'Insect', iconSelected: iconIns, imgSrc: imgInsSrc},
+                { class: 'Amphib', iconSelected: iconAmp, imgSrc: imgAmpSrc}
             ],
             markersOld: [
                 { positionM : {lat:50.622, lng: 6.174}, visible: true, icon: iconWhe, draggable: drag, iconPop: imgWhePop },
@@ -207,7 +239,7 @@
             lngClick: '',
             addingActive: false,
             show: false,
-            showSelectedMarker: false,
+            showSelectedClass: false,
             selectingDone: false,
             selectingCompleteDone: false,
             alertMessage: 'You first have to select a specific animal!',
@@ -262,8 +294,8 @@
                     this.selectingDone = false;
                     this.setSelectingCompleteDone(false);
             },
-            selectAnimalMarker: function(val){
-                this.showSelectedMarker = true
+            selectAnimalClass: function(val){
+                this.showSelectedClass = true
             },
             animalnames:function(val){
                     this.selectSpecificAnimal = val
@@ -312,7 +344,7 @@
                 this.lngClick = data.latlng.lng
                 console.log(this.lngClick + '..x..' + this.latClick)
                 if (this.addingActive) {
-                    this.addMarker(this.selectAnimalMarker.iconSelected)
+                    this.addMarker(this.selectAnimalClass.iconSelected)
                     console.log('adding IS active :)')
                 }
                 else {
@@ -350,7 +382,7 @@
                 counter = counter+1
                 console.log('counter' + counter)
                 this.markersOld.push(({
-                    positionM: {lat: this.latClick, lng: this.lngClick}, icon: this.selectAnimalMarker.iconSelected, draggable: drag, iconPop: this.selectAnimalMarker.iconPop
+                    positionM: {lat: this.latClick, lng: this.lngClick}, icon: this.selectAnimalClass.iconSelected, draggable: drag, iconPop: this.selectAnimalClass.imgSrc
                 }))
                 //this.$set(this.markersOld[counter], 'icon', iconWhi);
                 this.$set(this.markersOld[counter], 'draggable', dragtrue)
