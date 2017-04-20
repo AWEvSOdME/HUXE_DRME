@@ -143,7 +143,7 @@
         <div>
             <img id="logo" src="../../img/logo.png">
 
-            <Vnavi id="vueNavi" :reaction="reaction" @update="destroyReaction"></Vnavi>
+            <Vnavi id="vueNavi" :reaction="reaction" @update="changeMap"></Vnavi>
             <!--Vnavi id="vueNavi" @changeMap="destroyReaction(reaction)" :reaction="reaction"></Vnavi-->
 
         </div>
@@ -603,9 +603,7 @@
                 this.polyMarkerPos = []
                 this.selectingCompleteDone = false
             },
-
-
-            destroyReaction(param) {
+            changeMap(param) {
 
                 this.selectMap.value = param;
                 console.log(param);

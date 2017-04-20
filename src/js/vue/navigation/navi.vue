@@ -8,7 +8,7 @@
             <a href="#" v-if="loggedin" class="login" v-on:click="makeActive(''), signOut()" >{{ loginText }}</a>
 
             <a href="#" class="settings" v-on:click="makeActive('settings')" @click="showSettings = true">Settings</a>
-            <a href="#" class="contact" v-on:click="makeActive('contact')" @click="showContact = true">Contact</a>
+            <a href="#" class="contact" v-on:click="makeActive('contact'), makeModalActive('con')" @click="showContact = true">Contact</a>
 
         </nav>
         <p>You chose <b>{{ active }}</b></p>
@@ -81,7 +81,7 @@
                     <div class="modhalfleft">
                         <img class="modImg" src="../../../img/footsteps.png">
                     </div>
-                    <div class="modhalfright" v-if="!loggedin">
+                    <div class="modhalfright">
                         <form id="form2" v-on:submit.prevent="login()">
                              <div class="form-group">
                                 <label>Email</label>
@@ -111,19 +111,43 @@
                     </div>
                 </div>
 
-                <!-- slot = footer>
-                    <button @click="signOut()">Logout</button>
-                </div-->
 
             </modal>
 
+            <!-- CONTACT MODAL-->
             <div>
              <modal v-if="showContact" @close="showContact = false">
                 <div slot = header>
-                    <button @click="destroy">Destroy Function</button>
+                    <nav v-bind:class="activeMod" v-on:click.prevent>
+                        <a href="#" class="logMod" v-on:click="makeModalActive('con')">Contact</a>
+                        <a href="#" class="newMod" v-on:click="makeModalActive('imp')">Impressum</a>
+                    </nav>
 
                 </div>
                 <div slot = body>
+
+                    <div  v-if="retActive()==='con'">
+                        <div class="modhalfleft">
+                            <img class="modImg" src="../../../img/footsteps.png">
+                        </div>
+                        <div class="modhalfright">
+                        <form id="form5">
+                            <div class="form-group">
+                                <p>contact stuff here</p>
+                            </div></form></div>
+                    </div>
+                    <div  v-if="retActive()==='imp'">
+                        <div class="modhalfleft">
+                            <img class="modImgRight" src="../../../img/footsteps_right.png">
+                        </div>
+                        <div class="modhalfright">
+                            <form id="form6">
+                                <div class="form-group">
+                                    <p>impressum stuff here</p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
 
 

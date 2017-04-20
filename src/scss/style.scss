@@ -194,13 +194,14 @@ div.vdp-datepicker__calendar{
 
 nav a.show, a.add, a.delete{
   display:inline-block;
-  padding: 7px 40px;
+  padding: 7px 39px;
   color: #3f3f3f !important;
   font-weight:bold;
   font-size:13px;
   text-decoration:none !important;
   text-transform: uppercase;
   background-color:transparent;
+  border: 1px solid rgba(202, 198, 199, 0);
 }
 nav a.selectMenu:hover{
   color: #2f2f5e !important;
@@ -209,8 +210,9 @@ nav a.selectMenu:hover{
 nav.show .show,
 nav.add .add,
 nav.delete .delete{
-  background-color: #404040;
-  color: #e6e8e8 !important;
+  //background-color: #404040;
+  //color: #e6e8e8 !important;
+  border: 1px solid rgba(182, 178, 179, 0.76);
 }
 
 .inputFieldButton:hover{
@@ -228,7 +230,7 @@ nav.delete .delete{
 hr {
   border:solid #d6d6d6 thin;
   margin-top: 2px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 
@@ -383,13 +385,10 @@ img#popupImg{
 }
 
 
-a, a:visited {
-  outline:none;
-  color:#309dc1;
-}
+
 
 a:hover{
-  text-decoration:none;
+  color: #bdb9bd;
 }
 
 section, footer, header, aside, nav{
@@ -456,7 +455,6 @@ input[type="submit"]{
   padding: 10px;
   background: transparent ;
   outline: none;
-  //cursor:pointer;
   cursor: url("../img/cursor_foot_black.png"), auto;
 
   text-align: center;
@@ -502,13 +500,6 @@ a.home, a.login, a.settings, a.contact{
 }
 
 
-/*nav a:hover{
-  color: #2f2f5e !important;
-}*/
-nav.new, nav.log{
-  //background-color: #f2f2f2;
-}
-
 a.logMod, a.newMod{
   padding: 12px 15px 16px 15px;
   cursor: url("../img/cursor_foot_black.png"), auto;
@@ -518,7 +509,9 @@ a.logMod, a.newMod{
   text-align: center;
 }
 nav.log .logMod,
-nav.new .newMod{
+nav.new .newMod,
+nav.con .logMod,
+nav.imp .newMod{
   background-color: #ffffff;
   box-shadow: none;
   padding: 12px 15px 16px 15px;
@@ -530,12 +523,8 @@ nav.new .newMod{
 nav.navMenu{
   display:inline-block;
   margin:0px auto 0px;
-
-  //background-color: #66080c;
-  //box-shadow:0 1px 1px #ccc;
-  //border-radius:2px;
 }
-nav.log a, nav.new a{
+nav.log a, nav.new a, nav.con a, nav.imp a{
   color: #000 !important;
 }
 
@@ -546,20 +535,8 @@ nav a{
   text-decoration:none;
   text-transform: uppercase;
   background-color:transparent;
-
-  /*-webkit-transition:background-color 0.25s;
-  -moz-transition:background-color 0.25s;
-  transition:background-color 0.25s;*/
 }
 
-/*nav a:first-child{
-  border-radius:2px 0 0 2px;
-
-}
-
-nav a:last-child{
-  border-radius:0 2px 2px 0;
-}*/
 
 nav.home a.home,
 nav.login a.login,
@@ -573,32 +550,6 @@ nav.contact a.contact{
   transition:border 0.25s;
 }
 
-
-/*nav.logMod .logMod,
-nav.newMod .newMod,
-nav.home .home,
-nav.login .login,
-nav.services .services,
-nav.contact .contact{
-  //background-color: #ed5758;
-
-}*/
-
-/*p{
-  font-size:22px;
-  font-weight:bold;
-  color:#7d9098;
-}*/
-
-/*p b{
-  color:#ffffff;
-  display:inline-block;
-  padding:5px 10px;
-  background-color:#c4d7e0;
-  border-radius:2px;
-  text-transform:uppercase;
-  font-size:18px;
-}*/
 .resource {
   margin: 20px 0;
 }
