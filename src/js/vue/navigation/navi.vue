@@ -6,8 +6,13 @@
         <nav v-bind:class="active" v-on:click.prevent class="navMenu">
             <a href="#" v-if="!loggedin" class="login" v-on:click="makeActive('login'), makeModalActive('log')" @click="showModal = true">{{ loginText }}</a>
             <a href="#" v-if="loggedin" class="login" v-on:click="makeActive(''), signOut()" >{{ loginText }}</a>
+<<<<<<< HEAD
             <a href="#" class="services" v-on:click="makeActive('services')" @click="doChild">Settings</a>
             <a href="#" class="contact" v-on:click="makeActive('contact')" @click="addCounter">Contact</a>
+=======
+            <a href="#" class="settings" v-on:click="makeActive('settings')" @click="showSettings = true">Settings</a>
+            <a href="#" class="contact" v-on:click="makeActive('contact')" @click="showContact = true">Contact</a>
+>>>>>>> 298ecb1730e7ac077e67dda048701ffdc27de04a
         </nav>
         <p>You chose <b>{{ active }}</b></p>
 
@@ -115,7 +120,40 @@
 
             </modal>
 
+            <div>
+             <modal v-if="showContact" @close="showContact = false">
+                <div slot = header>
+                    <button @click="destroy">Destroy Function</button>
+
+                </div>
+                <div slot = body>
+                </div>
+
+
+              </modal>
+            </div>
+
+
+            <div>
+                <modal v-if="showSettings" @close="showSettings = false">
+                    <div slot = header>
+                        <div><p class="textNormal">Switch Basemap:
+                            <select v-model="selectMap" v-on:onmouseover="selectMap = map" >
+                            <option v-for="map in maps" :value="map">{{ map.name }}</option>
+                        </select>   </p>
+                            <button @click="changeMap">changeMap</button>
+                        </div>
+                    </div>
+                    <div slot = body>
+                    </div>
+
+
+                </modal>
+            </div>
+
+
         </div>
+
 
     </div>
 
@@ -149,14 +187,20 @@
         component: Vue.component('modal', {
             template: '#modal-template',   },
         ),
+<<<<<<< HEAD
         /*props:{
             texto: {
                 type: String,
                 required: true
             },
         },*/
+=======
+
+>>>>>>> 298ecb1730e7ac077e67dda048701ffdc27de04a
         data() {
             return {
+            selectMap: {name: 'OpenMapSurfer Roads', value: 'map1'},
+            maps: [{name: 'OpenMapSurfer Roads', value: 'map1'}, {name: 'Esri WorldStreetMap', value: 'map2'}, {name: 'OpenStreetMap BlackandWhite', value: 'map3'}, {name: 'Esri WorldImagery', value: 'map4'}],
             newAnimal: {
 
                     animalclass: '',
@@ -170,8 +214,11 @@
             },
             active: 'home',
             activeMod: 'log',
+            reaction: '',
             currentRoute: window.location.pathname,
             showModal: false,
+            showContact: false,
+            showSettings: false,
             logActive: true,
             loggedin: false,
             isActive: false,
@@ -214,9 +261,29 @@
                 }
 
             },
+<<<<<<< HEAD
             texta: function(val){
                 console.log('watch' +val)
+=======
+            showSettings: function (val) {
+                if(val === true){
+                    this.makeActive('settings')
+                }
+                else{
+                    this.makeActive('')
+                }
+            },
+            showContact: function (val) {
+                if(val === true){
+                    this.makeActive('contact')
+                }
+                else{
+                    this.makeActive('')
+                }
+
+>>>>>>> 298ecb1730e7ac077e67dda048701ffdc27de04a
             }
+
         },
         methods: {
             makeActive: function (beitem) {
@@ -381,6 +448,7 @@
             doAlert(alertMessage){
                 alert('Error: ' + alertMessage)
             },
+<<<<<<< HEAD
             doChild: function(){
                 this.counter++
                 console.log('child' + this.counter)
@@ -392,8 +460,22 @@
                 this.counter = this.counter + 5
                 console.log('adding ' + this.counter)
             }
+=======
+
+            changeMap: function() {
+
+                this.reaction = this.selectMap.value;
+                console.log(this.selectMap.value);
+
+                this.$emit('update', this.selectMap.value);
+            },
+>>>>>>> 298ecb1730e7ac077e67dda048701ffdc27de04a
 
         },
+
+
+
+
 
     }
 

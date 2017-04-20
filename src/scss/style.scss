@@ -494,7 +494,7 @@ div#navi{
   right: 0px;
 }
 
-a.home, a.login, a.services, a.contact{
+a.home, a.login, a.settings, a.contact{
   padding: 12px 15px 16px 15px;
   margin: 5px;
   height: 10px;
@@ -563,7 +563,7 @@ nav a:last-child{
 
 nav.home a.home,
 nav.login a.login,
-nav.services a.services,
+nav.settings a.settings,
 nav.contact a.contact{
   border: 1px solid #efe8ef;
 
