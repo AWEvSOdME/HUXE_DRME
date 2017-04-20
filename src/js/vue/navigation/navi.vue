@@ -6,13 +6,10 @@
         <nav v-bind:class="active" v-on:click.prevent class="navMenu">
             <a href="#" v-if="!loggedin" class="login" v-on:click="makeActive('login'), makeModalActive('log')" @click="showModal = true">{{ loginText }}</a>
             <a href="#" v-if="loggedin" class="login" v-on:click="makeActive(''), signOut()" >{{ loginText }}</a>
-<<<<<<< HEAD
-            <a href="#" class="services" v-on:click="makeActive('services')" @click="doChild">Settings</a>
-            <a href="#" class="contact" v-on:click="makeActive('contact')" @click="addCounter">Contact</a>
-=======
+
             <a href="#" class="settings" v-on:click="makeActive('settings')" @click="showSettings = true">Settings</a>
             <a href="#" class="contact" v-on:click="makeActive('contact')" @click="showContact = true">Contact</a>
->>>>>>> 298ecb1730e7ac077e67dda048701ffdc27de04a
+
         </nav>
         <p>You chose <b>{{ active }}</b></p>
 
@@ -187,16 +184,7 @@
         component: Vue.component('modal', {
             template: '#modal-template',   },
         ),
-<<<<<<< HEAD
-        /*props:{
-            texto: {
-                type: String,
-                required: true
-            },
-        },*/
-=======
 
->>>>>>> 298ecb1730e7ac077e67dda048701ffdc27de04a
         data() {
             return {
             selectMap: {name: 'OpenMapSurfer Roads', value: 'map1'},
@@ -261,10 +249,7 @@
                 }
 
             },
-<<<<<<< HEAD
-            texta: function(val){
-                console.log('watch' +val)
-=======
+
             showSettings: function (val) {
                 if(val === true){
                     this.makeActive('settings')
@@ -281,7 +266,7 @@
                     this.makeActive('')
                 }
 
->>>>>>> 298ecb1730e7ac077e67dda048701ffdc27de04a
+
             }
 
         },
@@ -448,19 +433,7 @@
             doAlert(alertMessage){
                 alert('Error: ' + alertMessage)
             },
-<<<<<<< HEAD
-            doChild: function(){
-                this.counter++
-                console.log('child' + this.counter)
 
-
-                this.$emit('update', this.counter)
-            },
-            addCounter(){
-                this.counter = this.counter + 5
-                console.log('adding ' + this.counter)
-            }
-=======
 
             changeMap: function() {
 
@@ -469,7 +442,7 @@
 
                 this.$emit('update', this.selectMap.value);
             },
->>>>>>> 298ecb1730e7ac077e67dda048701ffdc27de04a
+
 
         },
 

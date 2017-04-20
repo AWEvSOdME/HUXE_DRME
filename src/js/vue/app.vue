@@ -142,13 +142,10 @@
         <!-- Navigation -->
         <div>
             <img id="logo" src="../../img/logo.png">
-<<<<<<< HEAD
-            <Vnavi id="vueNavi" :newAnimal="newAnimal" :total="total" @update="makeMessage"></Vnavi>
-=======
+
             <Vnavi id="vueNavi" :reaction="reaction" @update="destroyReaction"></Vnavi>
             <!--Vnavi id="vueNavi" @changeMap="destroyReaction(reaction)" :reaction="reaction"></Vnavi-->
 
->>>>>>> 298ecb1730e7ac077e67dda048701ffdc27de04a
         </div>
 
         <!-- MAP SETTINGS -->
@@ -606,13 +603,7 @@
                 this.polyMarkerPos = []
                 this.selectingCompleteDone = false
             },
-<<<<<<< HEAD
-            makeMessage(newValue){
-                this.total = newValue
-                alert(this.total)
-                console.log('parent' + this.total)
-            }
-=======
+
 
             destroyReaction(param) {
 
@@ -620,12 +611,6 @@
                 console.log(param);
             },
 
-
-
-
-
-
->>>>>>> 298ecb1730e7ac077e67dda048701ffdc27de04a
         }
     };
 
