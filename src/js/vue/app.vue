@@ -68,21 +68,56 @@
             <!-- Menu ADD -->
             <div v-show="inputMenu === 'add'">
 
-                <p class="textNormal">Animal Class:
+                <!--p class="textNormal">Animal Class:
                 <select v-model="selectAnimalClass"  >
                     <option v-for="animal in animalClass" :value="animal">{{ animal.class }}</option>
-                </select></p>
+                </select></p-->
 
 
+                <form id="form4" v-on:submit.prevent="activateAdding(true)">
+                    <div class="form-group">
+                        <table class="animalTable">
+                            <tr>
+                                <td class="animalTableField"><label class="animalLabel">Class</label></td>
+                                <td class="animalTableField"><label class="animalLabel">Date</label></td>
+                            </tr>
+                            <tr>
+                                <td><select v-model="selectAnimalClass"  >
+                                    <option v-for="animal in animalClass" :value="animal">{{ animal.class }}</option>
+                                </select></td>
+                                <td><datepicker :value="state.date" v-model="newAnimal.timestamp"></datepicker></td>
+                            </tr>
+                            <tr>
+                                <td class="animalTableField"><label class="animalLabel">Class</label></td>
+                                <td class="animalTableField"><label class="animalLabel">Family</label></td>
+                            </tr>
+                            <tr>
+                                <td><input type="animal" v-model="newAnimal.species" placeholder=""></td>
+                                <td><input type="animal" v-model="newAnimal.family" placeholder=""></td>
+                            </tr>
+                            <tr>
+                                <td class="animalTableField"><label class="animalLabel">Additional Info</label></td>
+                                <td rowspan="2" class="animalTableButton"><input v-bind:class="{ addButtonEna: doAdd, addButtonDis: !doAdd}" type="submit" value="ADD"></td>
+                            </tr>
+                            <tr>
+                                <td><input type="animal" v-model="newAnimal.additionalInfo" placeholder=""></td>
 
-                <div class="resultDiv" v-if="showSelectedClass">
+                            </tr>
+
+                        </table>
+
+                    </div>
+                </form>
+
+
+                <div class="resultDivAdd" v-if="showSelectedClass">
                     <img id="selectedIcon" v-bind:src="selectAnimalClass.imgSrc"><br>
                     <p class="selectingResult">Species: <span>{{ selectAnimalClass.class }}</span></p>
                     <p class="selectingResult">Genus: <span>{{ selectAnimalClass.class }}</span></p>
                 </div><br>
 
-                <button class="selectButton" @click="activateAdding(true)">Add Marker</button>
-                <button class="selectButton" @click="activateAdding(false)">Stop Adding</button><br><br>
+                <!--button class="selectButton" @click="activateAdding(true)">Add Marker</button-->
+                <!--button-- class="selectButton" @click="activateAdding(false)">Stop Adding</button--><br><br>
             </div>
 
             <!-- Menu DELETE -->
@@ -106,7 +141,7 @@
         <!-- Navigation -->
         <div>
             <img id="logo" src="../../img/logo.png">
-            <Vnavi id="vueNavi" ></Vnavi>
+            <Vnavi id="vueNavi" :newAnimal="newAnimal" :total="total" @update="makeMessage"></Vnavi>
         </div>
 
         <!-- MAP SETTINGS -->
@@ -130,6 +165,7 @@
     import * as Vue from "vue";
     import ScaleLoader from 'vue-spinner/src/ScaleLoader.vue'
     import vueSlider from 'vue-slider-component';
+    import Datepicker from 'vuejs-datepicker';
 
     var main = require('../../js/data.js');
 
@@ -184,6 +220,8 @@
     var counterArr = []; var polyArray = []; var timeArray = [];
     var counter = 1;
 
+
+
     export default {
         name: 'app',
         components: {
@@ -196,6 +234,7 @@
             Vinfo: Info,
             ScaleLoader,
             vueSlider,
+            Datepicker,
             Vnavi: Navi
         },
       data () {
@@ -242,11 +281,15 @@
             showSelectedClass: false,
             selectingDone: false,
             selectingCompleteDone: false,
+            doAdd: false,
             alertMessage: 'You first have to select a specific animal!',
             popupImg: 'popupImg',
             selectMap: {name: 'OpenMapSurfer Roads', value: 'map1'},
             maps: [{name: 'OpenMapSurfer Roads', value: 'map1'}, {name: 'Esri WorldStreetMap', value: 'map2'}, {name: 'OpenStreetMap BlackandWhite', value: 'map3'}, {name: 'Esri WorldImagery', value: 'map4'}],
             spinner: {loading: true, color: 'lightgrey', height: '100', width: '100'},
+            state: {
+                date: new Date(2017, 4,  24)
+            },
             inputMenu: 'show',
             demo: {
                 default: {
@@ -284,7 +327,11 @@
                     piecewiseStyle: null,
                     data: []
                 }
-            }
+            },
+            newAnimal: {
+                animalclass: '', species: '', family: '', additionalInfo: '', timestamp: '', lat: '', lon: ''
+            },
+            total: 0
         }
       },
         watch: {
@@ -296,6 +343,7 @@
             },
             selectAnimalClass: function(val){
                 this.showSelectedClass = true
+                this.doAdd = true
             },
             animalnames:function(val){
                     this.selectSpecificAnimal = val
@@ -387,6 +435,7 @@
                 //this.$set(this.markersOld[counter], 'icon', iconWhi);
                 this.$set(this.markersOld[counter], 'draggable', dragtrue)
                 counterArr.push(counter)
+                this.doAdd = false
             },
             removeMarkerMy (index) {
                 this.polyMarkerPos.splice(index, 1)
@@ -546,6 +595,11 @@
                 this.polyPos = []
                 this.polyMarkerPos = []
                 this.selectingCompleteDone = false
+            },
+            makeMessage(newValue){
+                this.total = newValue
+                alert(this.total)
+                console.log('parent' + this.total)
             }
         }
     };

@@ -70,7 +70,7 @@ div#menuMap{
   height: 230px;
   background-color: #fffaff;
   float: right;
-  z-index: 2;
+  z-index: 1;
   border-radius: 2px;
   box-shadow: 2px 2px 10px rgba(0,0,0,.2);
 }
@@ -86,7 +86,7 @@ div#menuMap{
   float: right;
   overflow-y: scroll;
   overflow-x: hidden;
-  z-index: 2;
+  z-index: 0;
   border-radius: 2px;
   box-shadow: 2px 2px 10px rgba(0,0,0,.2);
 }
@@ -133,6 +133,55 @@ select:focus{
 .selectButton:hover{
   background-color: darkorange;
 }
+
+// ---------------------- Adding ---------------------------------------------------------------
+
+.addButtonDis{
+pointer-events: none;
+}
+.addButtonEna{
+
+}
+.form-group input[type="animal"]
+{
+  border: none;
+  outline: none;
+  width: 180px;
+  background: transparent;
+  padding: 0 0 1px 0;
+  margin: 5px 10px 15px 10px;
+  font-size: 1em;
+  border-bottom: 1px dotted #89878d;
+}
+label.animalLabel{
+  margin: 10px !important;
+  width: 100px;
+}
+
+table{
+  width: 400px;
+}
+
+td.animalTableField{
+  width: 50px;
+}
+td.animalTableButton{
+  text-align: center;
+
+}
+
+.resultDivAdd{
+  position: absolute;
+  top: 60px;
+  right: 15px;
+  width: 140px;
+  height: 170px;
+  border:solid #d6d6d6 thin;
+}
+div.vdp-datepicker__calendar{
+  z-index: 4;
+}
+
 
 // ---------------------- InputField Menu ---------------------------------------------------------------
 
@@ -252,17 +301,17 @@ p.selectingAnimal{
 .animal_img_right
 {
   float:right;
-  width:100px;
+  width:120px;
   height: auto;
-  margin: 10px 0 10px 10px;
+  margin: 10px 0 5px 10px;
 }
 
 .animal_img_left
 {
   float:left;
-  width:100px;
+  width:120px;
   height: auto;
-  margin: 10px 10px 10px 0;
+  margin: 10px 10px 5px 0;
 }
 
 

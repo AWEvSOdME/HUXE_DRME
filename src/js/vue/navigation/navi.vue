@@ -6,8 +6,8 @@
         <nav v-bind:class="active" v-on:click.prevent class="navMenu">
             <a href="#" v-if="!loggedin" class="login" v-on:click="makeActive('login'), makeModalActive('log')" @click="showModal = true">{{ loginText }}</a>
             <a href="#" v-if="loggedin" class="login" v-on:click="makeActive(''), signOut()" >{{ loginText }}</a>
-            <a href="#" class="services" v-on:click="makeActive('services')">Settings</a>
-            <a href="#" class="contact" v-on:click="makeActive('contact')">Contact</a>
+            <a href="#" class="services" v-on:click="makeActive('services')" @click="doChild">Settings</a>
+            <a href="#" class="contact" v-on:click="makeActive('contact')" @click="addCounter">Contact</a>
         </nav>
         <p>You chose <b>{{ active }}</b></p>
 
@@ -149,13 +149,21 @@
         component: Vue.component('modal', {
             template: '#modal-template',   },
         ),
+        /*props:{
+            texto: {
+                type: String,
+                required: true
+            },
+        },*/
         data() {
             return {
             newAnimal: {
 
+                    animalclass: '',
                     species: '',
-                    animal: '',
-                    name: '',
+                    family: '',
+                    additionalInfo: '',
+                    timestamp: '',
                     lat: '',
                     lon: ''
 
@@ -177,6 +185,7 @@
                 password: ''
             },
             userID: '',
+            counter: 0
 
         }},
 
@@ -204,6 +213,9 @@
                     this.makeActive('')
                 }
 
+            },
+            texta: function(val){
+                console.log('watch' +val)
             }
         },
         methods: {
@@ -368,6 +380,17 @@
             },
             doAlert(alertMessage){
                 alert('Error: ' + alertMessage)
+            },
+            doChild: function(){
+                this.counter++
+                console.log('child' + this.counter)
+
+
+                this.$emit('update', this.counter)
+            },
+            addCounter(){
+                this.counter = this.counter + 5
+                console.log('adding ' + this.counter)
             }
 
         },
