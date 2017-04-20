@@ -118,6 +118,8 @@
             <div>
              <modal v-if="showContact" @close="showContact = false">
                 <div slot = header>
+                    <button @click="destroy">Destroy Function</button>
+
                 </div>
                 <div slot = body>
                 </div>
@@ -130,6 +132,12 @@
             <div>
                 <modal v-if="showSettings" @close="showSettings = false">
                     <div slot = header>
+                        <div><p class="textNormal">Switch Basemap:
+                            <select v-model="selectMap" v-on:onmouseover="selectMap = map" >
+                            <option v-for="map in maps" :value="map">{{ map.name }}</option>
+                        </select>   </p>
+                            <button @click="changeMap">changeMap</button>
+                        </div>
                     </div>
                     <div slot = body>
                     </div>
@@ -174,8 +182,11 @@
         component: Vue.component('modal', {
             template: '#modal-template',   },
         ),
+
         data() {
             return {
+            selectMap: {name: 'OpenMapSurfer Roads', value: 'map1'},
+            maps: [{name: 'OpenMapSurfer Roads', value: 'map1'}, {name: 'Esri WorldStreetMap', value: 'map2'}, {name: 'OpenStreetMap BlackandWhite', value: 'map3'}, {name: 'Esri WorldImagery', value: 'map4'}],
             newAnimal: {
 
                     species: '',
@@ -187,6 +198,7 @@
             },
             active: 'home',
             activeMod: 'log',
+            reaction: '',
             currentRoute: window.location.pathname,
             showModal: false,
             showContact: false,
@@ -413,9 +425,21 @@
             },
             doAlert(alertMessage){
                 alert('Error: ' + alertMessage)
-            }
+            },
+
+            changeMap: function() {
+
+                this.reaction = this.selectMap.value;
+                console.log(this.selectMap.value);
+
+                this.$emit('update', this.selectMap.value);
+            },
 
         },
+
+
+
+
 
     }
 

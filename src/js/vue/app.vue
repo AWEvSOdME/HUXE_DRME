@@ -26,6 +26,7 @@
 
             <!-- Menu SHOW -->
             <div v-show="inputMenu === 'show'">
+
                 <p class="textNormal">Species:
                 <select v-model="selectAnimal"  >
                     <option v-for="animal in animals" :value="animal">{{ animal.text }}</option>
@@ -106,7 +107,9 @@
         <!-- Navigation -->
         <div>
             <img id="logo" src="../../img/logo.png">
-            <Vnavi id="vueNavi" ></Vnavi>
+            <Vnavi id="vueNavi" :reaction="reaction" @update="destroyReaction"></Vnavi>
+            <!--Vnavi id="vueNavi" @changeMap="destroyReaction(reaction)" :reaction="reaction"></Vnavi-->
+
         </div>
 
         <!-- MAP SETTINGS -->
@@ -121,6 +124,8 @@
 </template>
 
 <script>
+
+
 
     import Map from './Map.vue';
     import Info from './AnimalInfo.vue';
@@ -200,6 +205,7 @@
         },
       data () {
         return {
+            reaction: '',
             lat: 49.1,
             lng: 0,
             zoom: 2,
@@ -546,7 +552,19 @@
                 this.polyPos = []
                 this.polyMarkerPos = []
                 this.selectingCompleteDone = false
-            }
+            },
+
+            destroyReaction(param) {
+
+                this.selectMap.value = param;
+                console.log(param);
+            },
+
+
+
+
+
+
         }
     };
 
