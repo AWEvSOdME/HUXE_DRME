@@ -6,8 +6,8 @@
         <nav v-bind:class="active" v-on:click.prevent class="navMenu">
             <a href="#" v-if="!loggedin" class="login" v-on:click="makeActive('login'), makeModalActive('log')" @click="showModal = true">{{ loginText }}</a>
             <a href="#" v-if="loggedin" class="login" v-on:click="makeActive(''), signOut()" >{{ loginText }}</a>
-            <a href="#" class="services" v-on:click="makeActive('services')">Settings</a>
-            <a href="#" class="contact" v-on:click="makeActive('contact')">Contact</a>
+            <a href="#" class="settings" v-on:click="makeActive('settings')" @click="showSettings = true">Settings</a>
+            <a href="#" class="contact" v-on:click="makeActive('contact')" @click="showContact = true">Contact</a>
         </nav>
         <p>You chose <b>{{ active }}</b></p>
 
@@ -115,7 +115,32 @@
 
             </modal>
 
+            <div>
+             <modal v-if="showContact" @close="showContact = false">
+                <div slot = header>
+                </div>
+                <div slot = body>
+                </div>
+
+
+              </modal>
+            </div>
+
+
+            <div>
+                <modal v-if="showSettings" @close="showSettings = false">
+                    <div slot = header>
+                    </div>
+                    <div slot = body>
+                    </div>
+
+
+                </modal>
+            </div>
+
+
         </div>
+
 
     </div>
 
@@ -164,6 +189,8 @@
             activeMod: 'log',
             currentRoute: window.location.pathname,
             showModal: false,
+            showContact: false,
+            showSettings: false,
             logActive: true,
             loggedin: false,
             isActive: false,
@@ -204,7 +231,25 @@
                     this.makeActive('')
                 }
 
+            },
+            showSettings: function (val) {
+                if(val === true){
+                    this.makeActive('settings')
+                }
+                else{
+                    this.makeActive('')
+                }
+            },
+            showContact: function (val) {
+                if(val === true){
+                    this.makeActive('contact')
+                }
+                else{
+                    this.makeActive('')
+                }
+
             }
+
         },
         methods: {
             makeActive: function (beitem) {
