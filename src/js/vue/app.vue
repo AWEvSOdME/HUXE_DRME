@@ -148,7 +148,7 @@
         <div>
             <img id="logo" src="../../img/logo.png">
 
-            <Vnavi id="vueNavi" @update="changeMap" @login="changeLog" :animalNew="newAnimal"></Vnavi>
+            <Vnavi id="vueNavi" @update="changeMap" @login="changeLog" v-bind:cAnimal="newAnimal"></Vnavi>
             <!--Vnavi id="vueNavi" @changeMap="destroyReaction(reaction)" :reaction="reaction"></Vnavi-->
             <!--Vnavi id="vueNavi" :reaction="reaction" @update="changeMap""></Vnavi-->
 
@@ -345,7 +345,7 @@
                 }
             },
             newAnimal: {
-                animalclass: '', species: '', family: '', additionalInfo: '', timestamp: '', lat: '', lon: ''
+                animalclass: '', species: '', family: '', additionalInfo: '', timestamp: '', lat: '', lng: ''
             },
 
             animalInfo: '',
@@ -484,6 +484,8 @@
                 counterArr.push(counter)
                 this.doAdd = false
                 this.activateDragging(true)
+
+
                 //console.log(this.newAnimal.timestamp)
 
 
@@ -675,6 +677,10 @@
                 //this.activateAdding(false)
                 this.addState = 'add'
                 console.log('SAVEIT')
+                this.newAnimal.lat = this.markersOld[this.markersOld.length-1].positionM.lat
+                this.newAnimal.lng = this.markersOld[this.markersOld.length-1].positionM.lng
+
+                this.$children[4].saveData()
             },
             changeLog(param){
                 this.logChecker = param;
@@ -684,5 +690,7 @@
 
         }
     };
+
+
 
 </script>

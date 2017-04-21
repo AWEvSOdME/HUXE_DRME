@@ -225,12 +225,8 @@
             template: '#modal-template',   },
         ),
 
-        props: {
-            animalNew: {
-                type: Object,
-                required: true
-            },
-        },
+        props: ['cAnimal'],
+
 
         data() {
             return {
@@ -313,6 +309,12 @@
                 }
 
 
+            },
+            'animalclass': function (){
+                console.log(this.animalclass)
+            },
+            'species': function (){
+                console.log(this.species)
             }
 
         },
@@ -488,8 +490,11 @@
 
                 //this.reaction = this.selectMap.value;
                 this.$emit('update', this.selectMap.value);
-                console.log(this.animalNew)
+
             },
+            saveData: function(){
+                console.log(this.cAnimal)
+            }
 
 
 
