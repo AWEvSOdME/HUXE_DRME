@@ -228,6 +228,7 @@
         props: ['cAnimal'],
 
 
+
         data() {
             return {
             selectMap: {name: 'OpenMapSurfer Roads', value: 'map1'},
@@ -309,13 +310,9 @@
                 }
 
 
-            },
-            'animalclass': function (){
-                console.log(this.animalclass)
-            },
-            'species': function (){
-                console.log(this.species)
             }
+
+
 
         },
         methods: {
@@ -448,12 +445,8 @@
 
             addAnimal: function () {
 
-                    firebase.database().ref('userID' + this.userID).push(this.newAnimal)
-                    this.newAnimal.species='',
-                    this.newAnimal.animal='',
-                    this.newAnimal.name='',
-                    this.newAnimal.lat='',
-                    this.newAnimal.lon=''
+                    firebase.database().ref('userID' + this.userID).push(this.cAnimal)
+
 
 
 
@@ -491,9 +484,6 @@
                 //this.reaction = this.selectMap.value;
                 this.$emit('update', this.selectMap.value);
 
-            },
-            saveData: function(){
-                console.log(this.cAnimal)
             }
 
 
