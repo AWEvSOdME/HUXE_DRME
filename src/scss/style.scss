@@ -192,10 +192,10 @@ div.vdp-datepicker__calendar{
   font-size: 120%;
   margin: 5px;
   border: none;
-  background-color: #ffffff;
+  background-color: #fffaff;
 }
 
-nav a.show, a.add, a.delete{
+nav a.show, nav a.addEna, nav a.deleteEna{
   display:inline-block;
   padding: 7px 39px;
   color: #3f3f3f !important;
@@ -206,17 +206,34 @@ nav a.show, a.add, a.delete{
   background-color:transparent;
   border: 1px solid rgba(202, 198, 199, 0);
 }
-nav a.selectMenu:hover{
-  color: #2f2f5e !important;
+
+nav a.addDis, nav a.deleteDis{
+  display:inline-block;
+  padding: 7px 39px;
+  color: #aeaeae !important;
+  font-weight:bold;
+  font-size:13px;
+  text-decoration:none !important;
+  text-transform: uppercase;
+  background-color:transparent;
+  border: 1px solid rgba(202, 198, 199, 0);
+}
+
+nav a.show:hover, nav a.addEna:hover, nav a.deleteEna:hover, nav a.addDis:hover, nav a.deleteDis:hover{
+  color: #a0a0a0 !important;
 }
 
 nav.show .show,
-nav.add .add,
-nav.delete .delete{
+nav.add .addDis,
+nav.delete .deleteEna,
+nav.add .addEna,
+nav.add .addDis,
+nav.delete .deleteDis{
   //background-color: #404040;
   //color: #e6e8e8 !important;
   border: 1px solid rgba(182, 178, 179, 0.76);
 }
+
 
 .inputFieldButton:hover{
   color: #0078A8;
@@ -228,6 +245,11 @@ nav.delete .delete{
 
 .sep{
   font-size: 120%;
+}
+
+.sepWhi{
+  font-size: 130%;
+  color: #ada6a8;
 }
 
 hr {
@@ -486,18 +508,21 @@ div#vueNavi{
   height: 80px;
   background-color: #413e43;
 }
-div#navi{
+.navMenu{
   position: absolute;
   top: 15px;
-  left: 250px;
-  right: 0px;
+  left: 220px;
 }
 
-a.home, a.login, a.settings, a.contact{
+a.login, a.settings, a.contact{
   padding: 12px 15px 16px 15px;
-  margin: 5px;
+  margin: 5px 30px 5px 30px;
   height: 10px;
   border: 1px solid rgba(239, 234, 235, 0);
+
+  font-family: 'Raleway', sans-serif;
+  line-height: 18px;
+  font-size: 15px;
 }
 
 

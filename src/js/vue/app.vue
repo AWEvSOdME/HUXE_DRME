@@ -18,8 +18,8 @@
             <!-- INPUT MENU -->
             <nav v-bind:class="inputMenu" v-on:click.prevent class="selectMenu">
                 <a href="#" class="show" v-on:click="setInputMenu('show')">Show animal</a><span class="sep">   |   </span>
-                <a href="#" class="add" v-on:click="setInputMenu('add')" >Add animal</a><span class="sep">   |   </span>
-                <a href="#" class="delete" v-on:click="setInputMenu('delete')">Delete animal</a>
+                <a href="#" v-bind:class="{ addEna: logChecker, addDis: !logChecker}" v-on:click="setInputMenu('add')" >Add animal</a><span class="sep">   |   </span>
+                <a href="#" v-bind:class="{ deleteEna: logChecker, deleteDis: !logChecker}" v-on:click="setInputMenu('delete')">Delete animal</a>
             </nav>
 
             <hr>
@@ -62,13 +62,13 @@
                 </div>
 
 
-
-
             </div>
 
             <!-- Menu ADD -->
             <div v-show="inputMenu === 'add'">
 
+
+                <div v-if="logChecker">
                 <!--p class="textNormal">Animal Class:
                 <select v-model="selectAnimalClass"  >
                     <option v-for="animal in animalClass" :value="animal">{{ animal.class }}</option>
@@ -122,13 +122,24 @@
                     <p class="selectingResult">Family: <span>{{ newAnimal.family }}</span></p>
                 </div><br>
 
+
+                </div>
+                <div v-if="logChecker === false">
+                    <p>NOT LOGGED IN</p>
+                </div>
+
                 <!--button class="selectButton" @click="activateAdding(true)">Add Marker</button-->
                 <!--button-- class="selectButton" @click="activateAdding(false)">Stop Adding</button--><br><br>
             </div>
 
             <!-- Menu DELETE -->
             <div v-show="inputMenu === 'delete'">
-                <p> Here are delete things happening</p>
+                <div v-if="logChecker">
+                    <p> Here are delete things happening</p>
+                </div>
+                <div v-if="logChecker === false">
+                    <p>NOT LOGGED IN</p>
+                </div>
             </div>
 
             <!-- Menu WAITING -->
@@ -156,12 +167,6 @@
 
         </div>
 
-        <!-- MAP SETTINGS -->
-        <div id="menuMap"><p class="textNormal">Switch Basemap:
-            <select v-model="selectMap" v-on:onmouseover="selectMap = map" >
-            <option v-for="map in maps" :value="map">{{ map.name }}</option>
-            </select></p>
-        </div>
 
     </div>
 

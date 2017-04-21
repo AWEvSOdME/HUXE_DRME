@@ -1,29 +1,29 @@
 <template>
 
-<div>
+
     <div id="navi">
 
         <nav v-bind:class="active" v-on:click.prevent class="navMenu">
+
+            <a href="#" class="settings" v-on:click="makeActive('settings')" @click="showSettings = true">Settings</a><span class="sepWhi">|</span>
+            <a href="#" class="contact" v-on:click="makeActive('contact'), makeModalActive('con')" @click="showContact = true">Contact</a><span class="sepWhi">|</span>
             <a href="#" v-if="!loggedin" class="login" v-on:click="makeActive('login'), makeModalActive('log')" @click="showModal = true">{{ loginText }}</a>
             <a href="#" v-if="loggedin" class="login" v-on:click="makeActive(''), signOut()" >{{ loginText }}</a>
 
-            <a href="#" class="settings" v-on:click="makeActive('settings')" @click="showSettings = true">Settings</a>
-            <a href="#" class="contact" v-on:click="makeActive('contact'), makeModalActive('con')" @click="showContact = true">Contact</a>
-
         </nav>
-        <p>You chose <b>{{ active }}</b></p>
 
-        <div>
+
+        <!--div>
             <form id="addAnimal" v-on:submit.prevent="addAnimal">
                 <select name="species" v-model="newAnimal.species">
                     <option value="mamal">mamal</option>
                     <option value="bird">bird</option>
                     <option value="fish">fish</option>
                     <option value="amphib">amphib</option>
-                </select>
+                </select-->
 
                 <!--input type="text" v-model="newAnimal.species" placeholder="Spec"-->
-                <input type="text" v-model="newAnimal.animal" placeholder="Kind of Animal">
+                <!--input type="text" v-model="newAnimal.animal" placeholder="Kind of Animal">
                 <input type="text" v-model="newAnimal.name" placeholder="Name">
                 <input type="text" v-model="newAnimal.lat" placeholder="latitude">
                 <input type="text" v-model="newAnimal.lon" placeholder="longitude">
@@ -32,7 +32,7 @@
 
             <button v-on:click="querydb()">QueryDB</button>
 
-        </div>
+        </div-->
 
 
         <script type="text/x-template" id="modal-template">
@@ -101,7 +101,7 @@
                         <div class="modhalfright">
                         <form slot = body id="form" v-on:submit.prevent="authentication">
                             <div class="form-group">
-                                <label>Email <span class="errorInfo" v-show="!validation.email"> (Please provide a valid email address.)</span></label>
+                                <label>Email <span class="errorInfo" > {{output}}</span></label>
                                 <input type="email" v-model="createuser.lemail" placeholder="">
                                 <label>Password <span class="errorInfo" v-show="!validation.password"> (Password cannot be empty.)</span></label>
                                 <input type="password" v-model="createuser.password" placeholder="">
@@ -143,7 +143,7 @@
                                     <input type="contact" name="mail"><br>
                                     Comment:<br>
                                     <input type="contact" name="comment" size="30"><br><br>
-                                    <input type="submit" value="Send">
+                                    <input type="submit" class="loginButton" value="Send">
                                 </form>
 
                             </div></form></div>
@@ -263,7 +263,8 @@
                 password: ''
             },
             userID: '',
-            counter: 0
+            counter: 0,
+            output: '(Please provide a valid email address.)'
 
         }},
 
@@ -347,9 +348,9 @@
                             user.sendEmailVerification();
                             auth.signOut();
                             console.log("Verification Mail was sent");
-                            self.showModal = false;
-                            self.doAlert('Verification Mail was sent');
-
+                            //self.showModal = false;
+                            //self.doAlert('Verification Mail was sent');
+                            self.output = 'Verification Mail was sent'
                         }
 
                         self.createuser.lemail="";
@@ -361,8 +362,8 @@
 
 
                        console.log(error);
-                       self.doAlert(error.message)
 
+                        self.output = error.message
 
                     });
                 }
