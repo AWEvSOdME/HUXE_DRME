@@ -148,7 +148,7 @@
         <div>
             <img id="logo" src="../../img/logo.png">
 
-            <Vnavi id="vueNavi" @update="changeMap" @login="changeLog" :animalNew="newAnimal"></Vnavi>
+            <Vnavi id="vueNavi" @update="changeMap" @login="changeLog"  v-bind:cAnimal="newAnimal"></Vnavi>
             <!--Vnavi id="vueNavi" @changeMap="destroyReaction(reaction)" :reaction="reaction"></Vnavi-->
             <!--Vnavi id="vueNavi" :reaction="reaction" @update="changeMap""></Vnavi-->
 
@@ -675,6 +675,8 @@
                 //this.activateAdding(false)
                 this.addState = 'add'
                 console.log('SAVEIT')
+                this.$children[4].addAnimal();
+                console.log(this.$refs.detailsChild);
             },
             changeLog(param){
                 this.logChecker = param;

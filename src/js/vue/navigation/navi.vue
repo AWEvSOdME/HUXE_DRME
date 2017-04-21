@@ -225,12 +225,9 @@
             template: '#modal-template',   },
         ),
 
-        props: {
-            animalNew: {
-                type: Object,
-                required: true
-            },
-        },
+        props: ['cAnimal'],
+
+
 
         data() {
             return {
@@ -313,7 +310,12 @@
                 }
 
 
+            },
+            'cAnimal.family': function (val) {
+                console.log(this.cAnimal)
             }
+
+
 
         },
         methods: {
@@ -446,12 +448,8 @@
 
             addAnimal: function () {
 
-                    firebase.database().ref('userID' + this.userID).push(this.newAnimal)
-                    this.newAnimal.species='',
-                    this.newAnimal.animal='',
-                    this.newAnimal.name='',
-                    this.newAnimal.lat='',
-                    this.newAnimal.lon=''
+                    firebase.database().ref('userID' + this.userID).push(this.cAnimal)
+
 
 
 
@@ -488,7 +486,6 @@
 
                 //this.reaction = this.selectMap.value;
                 this.$emit('update', this.selectMap.value);
-                console.log(this.animalNew)
             },
 
 
