@@ -88,7 +88,7 @@
                                 <input v-bind:class="{ lala: isActive }" type="email" v-model="loguser.lemail" placeholder="">
                                  <label>Password</label>
                                 <input v-bind:class="{ lala: isActive }" type="password" v-model="loguser.password" placeholder="">
-                                <input type="submit" class="loginButton" value="LOGIN">
+                                <input type="submit" class="loginButton" value="LOGIN" >
                             </div>
                         </form>
                     </div>
@@ -155,7 +155,11 @@
                         <div class="modhalfright">
                             <form id="form6">
                                 <div class="form-group">
-                                    <p>impressum stuff here</p>
+                                    <p>This website was created by:<br><br><b>Sophie Drummer</b><br>sophie.drummer@web.de
+                                    <br><br>and<br><br><b>David Messerer</b><br>messerer.da@gmail.com
+
+
+</p>
                                 </div>
                             </form>
                         </div>
@@ -238,7 +242,6 @@
             },
             active: 'home',
             activeMod: 'log',
-            reaction: '',
             currentRoute: window.location.pathname,
             showModal: false,
             showContact: false,
@@ -404,6 +407,8 @@
                             self.makeActive('');
 
                             self.loginText = 'Logout'
+
+                            self.$emit('login', true)
                         }
                         else {
                             //auth.signOut();
@@ -425,6 +430,7 @@
                     self.loggedin = false;
                     self.loginText = 'Login'
                     self.makeActive('');
+                    self.$emit('login', false)
                 }).catch(function(error) {
                     // An error happened.
                 });
@@ -473,11 +479,10 @@
 
             changeMap: function() {
 
-                this.reaction = this.selectMap.value;
-                console.log(this.selectMap.value);
-
+                //this.reaction = this.selectMap.value;
                 this.$emit('update', this.selectMap.value);
             },
+
 
 
         },

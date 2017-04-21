@@ -143,8 +143,9 @@
         <div>
             <img id="logo" src="../../img/logo.png">
 
-            <Vnavi id="vueNavi" :reaction="reaction" @update="changeMap"></Vnavi>
+            <Vnavi id="vueNavi" @update="changeMap" @login="changeLog"></Vnavi>
             <!--Vnavi id="vueNavi" @changeMap="destroyReaction(reaction)" :reaction="reaction"></Vnavi-->
+            <!--Vnavi id="vueNavi" :reaction="reaction" @update="changeMap""></Vnavi-->
 
         </div>
 
@@ -246,6 +247,7 @@
       data () {
         return {
             reaction: '',
+
             lat: 49.1,
             lng: 0,
             zoom: 2,
@@ -338,7 +340,8 @@
             newAnimal: {
                 animalclass: '', species: '', family: '', additionalInfo: '', timestamp: '', lat: '', lon: ''
             },
-            total: 0
+            total: 0,
+            logChecker: false,
         }
       },
         watch: {
@@ -604,10 +607,13 @@
                 this.selectingCompleteDone = false
             },
             changeMap(param) {
-
                 this.selectMap.value = param;
                 console.log(param);
             },
+            changeLog(param){
+                this.logChecker = param;
+                console.log("IS LOGGED IN: "+ param );
+            }
 
         }
     };
