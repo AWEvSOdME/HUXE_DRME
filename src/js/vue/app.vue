@@ -89,7 +89,7 @@
                                 <td><datepicker :value="state.date" v-model="newAnimal.timestamp"></datepicker></td>
                             </tr>
                             <tr>
-                                <td class="animalTableField"><label class="animalLabel">Class</label></td>
+                                <td class="animalTableField"><label class="animalLabel">Species</label></td>
                                 <td class="animalTableField"><label class="animalLabel">Family</label></td>
                             </tr>
                             <tr>
