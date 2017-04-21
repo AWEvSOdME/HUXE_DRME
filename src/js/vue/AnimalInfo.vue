@@ -196,16 +196,19 @@
             On the map you can see (f.e.) where birds migrate to during winter, or where giant elephants are looking for water.<br><br>
 
             You observe animals as a hobby or for a living?
-            This SPA offers you a easy and efficient way to store your sightings direct in a database and visualizes them on a map.<br>
+            This SPA offers you a easy and efficient way to store your sightings direct in a database and visualizes them on a map.<br><br>
 
-            Before you start please make sure that:
-        <li type="1">You have a movebank account and access to the studies used on this page</li>
-        <li type="1">You created a account and you are logged in</li>
-        <li type="1">????</li>
-        <li type="1">Profit</li>
+            Before you start please make sure that:<br><br>
+
+             - You have a movebank account and access to the studies used on this page<br>
+             - You created a account and you are logged in<br>
+             - ????<br>
+             - Profit<br>
+             </p>
 
 
-        </p>
+
+
     </div>
 </template>
 
