@@ -148,7 +148,7 @@
         <div>
             <img id="logo" src="../../img/logo.png">
 
-            <Vnavi id="vueNavi" @update="changeMap" @login="changeLog"></Vnavi>
+            <Vnavi id="vueNavi" @update="changeMap" @login="changeLog" :animalNew="newAnimal"></Vnavi>
             <!--Vnavi id="vueNavi" @changeMap="destroyReaction(reaction)" :reaction="reaction"></Vnavi-->
             <!--Vnavi id="vueNavi" :reaction="reaction" @update="changeMap""></Vnavi-->
 

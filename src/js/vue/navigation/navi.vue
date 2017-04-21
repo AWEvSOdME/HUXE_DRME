@@ -225,6 +225,13 @@
             template: '#modal-template',   },
         ),
 
+        props: {
+            animalNew: {
+                type: Object,
+                required: true
+            },
+        },
+
         data() {
             return {
             selectMap: {name: 'OpenMapSurfer Roads', value: 'map1'},
@@ -481,6 +488,7 @@
 
                 //this.reaction = this.selectMap.value;
                 this.$emit('update', this.selectMap.value);
+                console.log(this.animalNew)
             },
 
 
