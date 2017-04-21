@@ -492,9 +492,14 @@
                             //Here you can query the different informations about the animals
                             var childchild = childSnapshot.child("species").val();
 
+
+
+
                             console.log(key2);
                             console.log(childData);
                             console.log('This is the species: '+ childchild);
+
+                            
 
                         });
                     });

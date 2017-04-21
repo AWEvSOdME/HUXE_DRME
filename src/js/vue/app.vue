@@ -111,6 +111,8 @@
 
                         </table>
 
+                        {{listAnimal}}
+
                     </div>
                 </form>
 
@@ -160,7 +162,7 @@
             <img id="logo" src="../../img/logo.png">
 
 
-            <Vnavi id="vueNavi" @update="changeMap" @login="changeLog" v-bind:cAnimal="newAnimal"></Vnavi>
+            <Vnavi ref="refNavi" id="vueNavi" @update="changeMap" @login="changeLog" v-bind:cAnimal="newAnimal"></Vnavi>
 
             <!--Vnavi id="vueNavi" @changeMap="destroyReaction(reaction)" :reaction="reaction"></Vnavi-->
             <!--Vnavi id="vueNavi" :reaction="reaction" @update="changeMap""></Vnavi-->
@@ -339,6 +341,7 @@
                     lazy: false,
                     reverse: false,
                     speed: 0.5,
+
                     formatter: null,
                     bgStyle: null,
                     sliderStyle:{
@@ -352,6 +355,9 @@
                 }
             },
             newAnimal: {
+                animalclass: '', species: '', family: '', additionalInfo: '', timestamp: '', lat: '', lng: ''
+            },
+            listAnimal: {
                 animalclass: '', species: '', family: '', additionalInfo: '', timestamp: '', lat: '', lng: ''
             },
 
@@ -401,7 +407,7 @@
                 //console.log(this.newAnimal)
 
                 //this.newAnimal.timestamp = this.newAnimal.timestamp.split("")
-            }
+            },
         },
 
         computed: {
@@ -689,12 +695,20 @@
                 this.newAnimal.lng = this.markersOld[this.markersOld.length-1].positionM.lng
 
 
-                this.$children[4].addAnimal();
-                console.log(this.$refs.detailsChild);
+                //var test = this.$refs;
+                //test.refNavi.addAnimal();
+
+                this.$refs.refNavi.addAnimal();
+                //this.$children[4].addAnimal();
+
+
+
             },
             changeLog(param){
                 this.logChecker = param;
                 console.log("IS LOGGED IN: "+ param );
+                this.listAnimal = this.$refs.refNavi.querydb();
+                console.log("this.$refs.refNavi.querydb()" + this.$refs.refNavi.querydb())
 
             }
 
