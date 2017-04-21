@@ -40,8 +40,9 @@
       this.$map = Leaflet.map(this.$refs.map, {
         center: this.position,
         zoom: this.zoom,
-        minZoom: this.minZoom,
-        maxZoom: this.maxZoom
+        minZoom: 2,
+        maxZoom: this.maxZoom,
+          worldCopyJump: true
       })
 
 

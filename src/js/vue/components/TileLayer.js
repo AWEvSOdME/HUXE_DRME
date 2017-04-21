@@ -18,7 +18,9 @@ export default {
 
   created () {
     this.$tileLayer = Leaflet.tileLayer(this.url, {
-      attribution: this.attribution
+      attribution: this.attribution,
+      worldCopyJump: true,
+
     })
     this.$setLayer(this.$tileLayer)
   }
