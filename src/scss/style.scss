@@ -63,12 +63,11 @@ div#menuMap{
   right: 15px;
   top: 80px;
   bottom: 15px;
-  padding: 10px;
-  padding-top: 5px;
+  padding: 3px 10px 5px;
   margin-top: 15px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   width: 565px;
-  height: 230px;
+  height: 245px;
   background-color: #fffaff;
   float: right;
   z-index: 1;
@@ -81,8 +80,8 @@ div#menuMap{
   position: absolute;
   padding: 10px;
   width: 565px;
-  bottom: 10px;
-  top: 355px;
+  bottom: 15px;
+  top: 365px;
   right: 15px;
   float: right;
   overflow-y: scroll;
@@ -138,7 +137,9 @@ select:focus{
 // ---------------------- Adding ---------------------------------------------------------------
 
 .addButtonDis{
-pointer-events: none;
+  //display:none;
+  pointer-events: none;
+  disabled: true;
 }
 .addButtonEna{
 
@@ -150,7 +151,7 @@ pointer-events: none;
 {
   border: none;
   outline: none;
-  width: 180px;
+  width: 165px;
   background: transparent;
   padding: 0 0 1px 0;
   margin: 5px 10px 15px 10px;
@@ -158,16 +159,14 @@ pointer-events: none;
   border-bottom: 1px dotted #89878d;
 }
 label.animalLabel{
-  margin: 10px !important;
+  margin: 8px !important;
   width: 100px;
 }
 
-table{
-  width: 400px;
-}
+
 
 td.animalTableField{
-  width: 50px;
+
 }
 td.animalTableButton{
   text-align: center;
@@ -176,10 +175,10 @@ td.animalTableButton{
 
 .resultDivAdd{
   position: absolute;
-  top: 60px;
+  bottom: 15px;
   right: 15px;
-  width: 140px;
-  height: 170px;
+  width: 160px;
+  height: 172px;
   border:solid #d6d6d6 thin;
 }
 div.vdp-datepicker__calendar{
@@ -273,17 +272,15 @@ div.v-spinner{
   bottom: 15px;
   right: 15px;
   width: 200px;
+  height: 172px;
   border:solid #d6d6d6 thin;
 }
 
 #selectedImg{
   display: block;
-  min-width: 70px;
-  max-width: 125px;
-  max-height: 80px;
-  min-height: 60px;
-  margin: auto;
-  margin-top: 15px;
+  width: auto;
+  max-height: 70px;
+  margin: 15px auto 15px auto;
 }
 
 #selectedIcon{
@@ -453,10 +450,10 @@ form .form-group {
   border-bottom: 1px dotted #89878d;
 }
 
-input[type="submit"]{
-  width: 90px;
+input[type="submit"], input[class="submitSave"]{
+  width: 80px;
   border: 1px solid rgba(202, 198, 199, 0.76);
-  padding: 10px;
+  padding: 8px;
   background: transparent ;
   outline: none;
   cursor: url("../img/cursor_foot_black.png"), auto;

@@ -6,7 +6,7 @@
             <vmap-tile-layer v-if="selectMap.value === 'map3'" url="http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" attribution="&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"></vmap-tile-layer>
             <vmap-tile-layer v-if="selectMap.value === 'map4'" url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" attribution="Tiles &copy; Esri"></vmap-tile-layer>
 
-            <vmap-marker v-for="markerPosition in markersOld" v-bind:key="markerPosition" :latlng="markerPosition.positionM" :visible="markerPosition.visible" :icon="markerPosition.icon" :draggable="markerPosition.draggable" :popupcontent="' <img id=' + popupImg +' src=' + markerPosition.iconPop +' > <p>Hello world!<br />This is a nice popup.</p>'"></vmap-marker>
+            <vmap-marker @drag="onDrag" v-for="markerPosition in markersOld" v-bind:key="markerPosition" :latlng="markerPosition.positionM" :visible="markerPosition.visible" :icon="markerPosition.icon" :draggable="markerPosition.draggable" :popupcontent="' <p> Class: ' + markerPosition.animalclass + '<br /> Species: ' + markerPosition.species + '<br /> Family: ' + markerPosition.family + '<br /> Additional Info: ' + markerPosition.additionalInfo + '<br /> Date: ' + markerPosition.date + '.</p>'"></vmap-marker>
             <vmap-polyline :latlngs="polyPos"></vmap-polyline>
 
             <!--PolyLine's Marker-->
@@ -41,7 +41,7 @@
 
 
                 <div class="resultDiv" v-show="show">
-                    <img id="selectedImg" v-bind:src="selectAnimal.iconPop"><br>
+                    <img id="selectedImg" v-bind:src="selectAnimal.iconPop">
                     <p class="selectingResult">Species: <span>{{ selectAnimal.text }}</span></p>
                     <p class="selectingResult">Genus: <span>{{ selectAnimal.genus }}</span></p>
                     <p class="selectingResult">Animal: <span>{{ selectSpecificAnimal }}</span></p>
@@ -75,7 +75,7 @@
                 </select></p-->
 
 
-                <form id="form4" v-on:submit.prevent="activateAdding(true)">
+                <form id="form4" v-on:submit.prevent="activateAdding(true), outputAnimalNew()">
                     <div class="form-group">
                         <table class="animalTable">
                             <tr>
@@ -86,7 +86,7 @@
                                 <td><select v-model="selectAnimalClass"  >
                                     <option v-for="animal in animalClass" :value="animal">{{ animal.class }}</option>
                                 </select></td>
-                                <td><datepicker :value="state.date" v-model="newAnimal.timestamp"></datepicker></td>
+                                <td><datepicker :value="state.date" :format="state.format" v-model="newAnimal.timestamp"></datepicker></td>
                             </tr>
                             <tr>
                                 <td class="animalTableField"><label class="animalLabel">Species</label></td>
@@ -98,7 +98,11 @@
                             </tr>
                             <tr>
                                 <td class="animalTableField"><label class="animalLabel">Additional Info</label></td>
-                                <td rowspan="2" class="animalTableButton"><input v-bind:class="{ addButtonEna: doAdd, addButtonDis: !doAdd}" type="submit" value="ADD"></td>
+                                <td rowspan="2" class="animalTableButton">
+                                    <input v-if="addState === 'beforeadd'" type="submit" value="ADD" disabled="true">
+                                    <input v-if="addState === 'add'" v-bind:class="{ addButtonEna: doAdd, addButtonDis: !doAdd}" type="submit" value="ADD">
+                                    <input v-if="addState === 'save'" v-on:click="saveAnimal()" class="submitSave" type="reset" value="SAVE">
+                                </td>
                             </tr>
                             <tr>
                                 <td><input type="animal" v-model="newAnimal.additionalInfo" placeholder=""></td>
@@ -113,8 +117,9 @@
 
                 <div class="resultDivAdd" v-if="showSelectedClass">
                     <img id="selectedIcon" v-bind:src="selectAnimalClass.imgSrc"><br>
-                    <p class="selectingResult">Species: <span>{{ selectAnimalClass.class }}</span></p>
-                    <p class="selectingResult">Genus: <span>{{ selectAnimalClass.class }}</span></p>
+                    <p class="selectingResult">Class: <span>{{ newAnimal.animalclass }}</span></p>
+                    <p class="selectingResult">Species: <span>{{ newAnimal.species }}</span></p>
+                    <p class="selectingResult">Family: <span>{{ newAnimal.family }}</span></p>
                 </div><br>
 
                 <!--button class="selectButton" @click="activateAdding(true)">Add Marker</button-->
@@ -137,7 +142,7 @@
         </div>
 
         <!-- Animal Info -->
-        <div><Vinfo id="vueInfo" :animal="selectAnimal.text"></Vinfo></div>
+        <div><Vinfo id="vueInfo" :animal="animalInfo"></Vinfo></div>
 
         <!-- Navigation -->
         <div>
@@ -276,14 +281,15 @@
                 { class: 'Amphib', iconSelected: iconAmp, imgSrc: imgAmpSrc}
             ],
             markersOld: [
-                { positionM : {lat:50.622, lng: 6.174}, visible: true, icon: iconWhe, draggable: drag, iconPop: imgWhePop },
-                { positionM : {lat:60.63, lng: 2.054}, visible: true, icon: iconFal, draggable: drag, iconPop: imgFalPop }],
+                { positionM : {lat:50.622, lng: 6.174}, visible: true, icon: iconBir, draggable: drag, animalclass: 'Bird', species: 'Wheatear', family: 'Muscicapidae', additionalInfo: 'female', date: '20-2-2005' },
+                { positionM : {lat:60.63, lng: 2.054}, visible: true, icon: iconFis, draggable: drag, animalclass: 'Fish', species: 'Cat Shark', family: 'Scyliorhinidae', additionalInfo: 'young animal', date: '20-2-2012' }],
             pos: {lat:49.658, lng: 6.774},
             polyPos: [{lat: '', lng: '', time: ''}],
             polyMarkerPos: [{ positionM : {lat:'', lng: ''}, visible: '', icon: '', popupTitle: '', popupText: '', time: '' }],
             latClick: '',
             lngClick: '',
             addingActive: false,
+            draggingActive: false,
             show: false,
             showSelectedClass: false,
             selectingDone: false,
@@ -295,7 +301,8 @@
             maps: [{name: 'OpenMapSurfer Roads', value: 'map1'}, {name: 'Esri WorldStreetMap', value: 'map2'}, {name: 'OpenStreetMap BlackandWhite', value: 'map3'}, {name: 'Esri WorldImagery', value: 'map4'}],
             spinner: {loading: true, color: 'lightgrey', height: '100', width: '100'},
             state: {
-                date: new Date(2017, 4,  24)
+                date: new Date(2017, 4,  24),
+                format: 'MMMM dd yyyy'
             },
             inputMenu: 'show',
             demo: {
@@ -338,7 +345,8 @@
             newAnimal: {
                 animalclass: '', species: '', family: '', additionalInfo: '', timestamp: '', lat: '', lon: ''
             },
-            total: 0
+            animalInfo: '',
+            addState: 'beforeadd'
         }
       },
         watch: {
@@ -347,10 +355,14 @@
                     this.show = true
                     this.selectingDone = false;
                     this.setSelectingCompleteDone(false);
+                    this.animalInfo = this.selectAnimal.text
+                    console.log(this.animalInfo)
             },
             selectAnimalClass: function(val){
                 this.showSelectedClass = true
                 this.doAdd = true
+                this.addState = 'add'
+                this.newAnimal.animalclass = this.selectAnimalClass.class
             },
             animalnames:function(val){
                     this.selectSpecificAnimal = val
@@ -371,6 +383,11 @@
                 if (index != -1) {
                     this.changeMarkerPos(index)
                 }
+            },
+            newAnimal: function (){
+                //console.log(this.newAnimal)
+
+                //this.newAnimal.timestamp = this.newAnimal.timestamp.split("")
             }
         },
 
@@ -391,6 +408,13 @@
                 //this.lng = data.position.lng
                 //console.log(data.position.lat + '...' + this.lat)
             },
+            onDrag(data){
+                console.log('data'+data.latlng.lat)
+                console.log('marker' +this.markersOld[this.markersOld.length-1].positionM.lat)
+                this.markersOld[this.markersOld.length-1].positionM.lat = data.latlng.lat
+                //this.markersOld.positionM.lng = data.latlng.lng
+
+            },
             onClick (data) {
 
                 console.log('CLICK')
@@ -401,6 +425,9 @@
                 if (this.addingActive) {
                     this.addMarker(this.selectAnimalClass.iconSelected)
                     console.log('adding IS active :)')
+                    this.activateAdding(false)
+                    this.addState = 'save'
+                    console.log(this.addState)
                 }
                 else {
                     console.log('adding not active :)')
@@ -410,13 +437,18 @@
                 this.addingActive = state;
 
 
+
+
+            },
+            activateDragging(state){
+                this.draggingActive = state
+
                 if (!state){
                     for (var i = 0; i < counterArr.length; i++) {
                         //this.$set(this.markersOld[counterArr[i]], 'icon', iconWhe);
                         this.$set(this.markersOld[counterArr[i]], 'draggable', state);
                     }
                 }
-
             },
             removeMarker (index) {
                 this.markers.splice(index, 1)
@@ -436,13 +468,19 @@
             addMarker (){ //add marker to center of map
                 counter = counter+1
                 console.log('counter' + counter)
+
+
                 this.markersOld.push(({
-                    positionM: {lat: this.latClick, lng: this.lngClick}, icon: this.selectAnimalClass.iconSelected, draggable: drag, iconPop: this.selectAnimalClass.imgSrc
+                    positionM: {lat: this.latClick, lng: this.lngClick}, icon: this.selectAnimalClass.iconSelected, draggable: drag, animalclass: this.newAnimal.animalclass, species: this.newAnimal.species, family: this.newAnimal.family, additionalInfo: this.newAnimal.additionalInfo, date: this.newAnimal.timestamp
                 }))
                 //this.$set(this.markersOld[counter], 'icon', iconWhi);
                 this.$set(this.markersOld[counter], 'draggable', dragtrue)
                 counterArr.push(counter)
                 this.doAdd = false
+                this.activateDragging(true)
+                //console.log(this.newAnimal.timestamp)
+
+
             },
             removeMarkerMy (index) {
                 this.polyMarkerPos.splice(index, 1)
@@ -570,6 +608,15 @@
             },
             setInputMenu(val){
                 this.inputMenu = val
+                this.animalInfo = val
+                //console.log(val)
+                if (val != 'show') {
+                    //this.selectingDone = false
+                    //this.selectAnimal = ''
+                }
+                else{
+                    this.animalInfo = this.selectAnimal.text
+                }
             },
             convertTimestamp (unix_timestamp){
 
@@ -608,6 +655,21 @@
                 this.selectMap.value = param;
                 console.log(param);
             },
+            outputAnimalNew(){
+                console.log(this.newAnimal)
+
+                if(this.newAnimal.timestamp != '') {
+                    var timeString = this.newAnimal.timestamp.toDateString()
+                    console.log('lala ' + timeString)
+                    this.newAnimal.timestamp = timeString
+                }
+            },
+            saveAnimal(){
+                this.activateDragging(false)
+                //this.activateAdding(false)
+                this.addState = 'add'
+                console.log('SAVEIT')
+            }
 
         }
     };

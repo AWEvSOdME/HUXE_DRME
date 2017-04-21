@@ -170,17 +170,35 @@
             <a href="https://en.wikipedia.org/wiki/Black_skimmer" target="_blank" style="padding-bottom:15px;">More Infos about the black skimmer ...</a> </p>
     </div>
 
+    <!--ADDING Info-->
+    <div class="animalInfo" v-else-if="animal === 'add'">
+        <p class="infoText"><b>Adding Info</b><br><br>
+
+        lalala
+
+        </p>
+    </div>
+
+    <!--ADDING Info-->
+    <div class="animalInfo" v-else-if="animal === 'delete'">
+        <p class="infoText"><b>Delete</b><br><br>
+
+            wahwahwah
+
+        </p>
+    </div>
+
     <!--Nothing selected-->
     <div class="animalInfo" v-else>
         <p class="infoText"><b>Welcome to ANCKS - the animal tracks database</b><br><br>
 
-        This website was designed to easily request animal tracking data from <a href="http://www.movebank.org" target="_blank">movebank.org</a>.<br>
-        On the map you can see (f.e.) where birds migrate to during winter, or where giant elephants are looking for water.<br><br>
+            This website was designed to easily request animal tracking data from <a href="http://www.movebank.org" target="_blank">movebank.org</a>.<br>
+            On the map you can see (f.e.) where birds migrate to during winter, or where giant elephants are looking for water.<br><br>
 
-        You observe animals as a hobby or for a living?
-        This SPA offers you a easy and efficient way to store your sightings direct in a database and visualizes them on a map.<br>
+            You observe animals as a hobby or for a living?
+            This SPA offers you a easy and efficient way to store your sightings direct in a database and visualizes them on a map.<br>
 
-        Before you start please make sure that:
+            Before you start please make sure that:
         <li type="1">You have a movebank account and access to the studies used on this page</li>
         <li type="1">You created a account and you are logged in</li>
         <li type="1">????</li>
