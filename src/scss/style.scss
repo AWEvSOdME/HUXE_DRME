@@ -2,7 +2,8 @@
 @import "../../node_modules/leaflet/dist/leaflet";
 
 body {
-  font-family: sans-serif;
+  font-family: 'Raleway', sans-serif;
+  line-height: 18px;
   font-size: 14px;
   background: url("../img/bgd.jpg");
   overflow: hidden;
@@ -142,7 +143,10 @@ pointer-events: none;
 .addButtonEna{
 
 }
-.form-group input[type="animal"]
+
+
+
+.form-group input[type="animal"], [type="contact"]
 {
   border: none;
   outline: none;
@@ -362,7 +366,7 @@ img#popupImg{
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
   transition: all .3s ease;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: 'Raleway', sans-serif;
 }
 
 .modal-body {

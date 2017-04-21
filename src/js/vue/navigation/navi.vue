@@ -131,9 +131,21 @@
                             <img class="modImg" src="../../../img/footsteps.png">
                         </div>
                         <div class="modhalfright">
+
                         <form id="form5">
                             <div class="form-group">
-                                <p>contact stuff here</p>
+
+
+                                <form action="mailto:messerer.da@gmail.com" method="post" enctype="text/plain">
+                                    Name:<br>
+                                    <input type="contact" name="name"><br>
+                                    E-mail:<br>
+                                    <input type="contact" name="mail"><br>
+                                    Comment:<br>
+                                    <input type="contact" name="comment" size="30"><br><br>
+                                    <input type="submit" value="Send">
+                                </form>
+
                             </div></form></div>
                     </div>
                     <div  v-if="retActive()==='imp'">
