@@ -17,8 +17,6 @@
 
 
 
-    </p>
-
     </div>
 
     <!--WhiteStork INFO-->
@@ -174,7 +172,7 @@
     <div class="animalInfo" v-else-if="animal === 'add'">
         <p class="infoText"><b>Adding Info</b><br><br>
 
-        lalala
+
 
         </p>
     </div>
@@ -183,7 +181,7 @@
     <div class="animalInfo" v-else-if="animal === 'delete'">
         <p class="infoText"><b>Delete</b><br><br>
 
-            wahwahwah
+
 
         </p>
     </div>
@@ -226,7 +224,8 @@
             animal (animal) {
                 console.log(animal)
             },
-        }
+        },
+
     }
 
 </script>
