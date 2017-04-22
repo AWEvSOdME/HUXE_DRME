@@ -168,7 +168,7 @@
             <img id="logo" src="../../img/logo.png">
 
 
-            <Vnavi ref="refNavi" id="vueNavi" @update="changeMap" @login="changeLog" @getAnimalList="viewAnimalList" v-bind:cAnimal="newAnimal"></Vnavi>
+            <Vnavi ref="refNavi" id="vueNavi" @update="changeMap" @login="changeLog" @pushData="fetchData" v-bind:cAnimal="newAnimal"></Vnavi>
 
             <!--Vnavi id="vueNavi" @changeMap="destroyReaction(reaction)" :reaction="reaction"></Vnavi-->
             <!--Vnavi id="vueNavi" :reaction="reaction" @update="changeMap""></Vnavi-->
@@ -737,25 +737,9 @@
 
             },
 
-            viewAnimalList: function(param){
-                console.log('PARENT view animal list method...')
-                console.log(param)
-
-
-                this.logChecker=param;
-                console.log(this.logChecker + " Change Log function")
-
-                if(param)
-                {
-                    //this.$refs.refNavi.querydb();
-                }
-                else
-                {
-
-                }
-
-
-
+            fetchData(AnimalData)
+            {
+                console.log(AnimalData)
             }
 
         }

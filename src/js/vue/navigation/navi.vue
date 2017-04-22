@@ -299,6 +299,8 @@
 
         }},
 
+
+
         created: function () {
 
             var test = Vue.cookie.get('login')
@@ -308,20 +310,23 @@
                 Vue.cookie.set('login', 'false', 1)
             }
 
+
+
             this.loggedin = Vue.cookie.get('login');
             console.log(this.loggedin + "The Logged in Value")
 
             this.$emit('login', this.loggedin);
 
-           /* if (checker == true) {
-                this.loggedin = true;
-                console.log(this.loggedin + "THIS LOGEDIN");
 
-            }
-            else {
-                this.loggedin = false;
-                console.log(this.loggedin + "THIS LOGEDOUT");
-            } */
+            /* if (checker == true) {
+             this.loggedin = true;
+             console.log(this.loggedin + "THIS LOGEDIN");
+
+             }
+             else {
+             this.loggedin = false;
+             console.log(this.loggedin + "THIS LOGEDOUT");
+             } */
         },
         destroyed: function () {
             this.loggedin = Vue.cookie.get('login')
@@ -395,7 +400,7 @@
 
             authentication: function () {
 
-               var self = this;
+                var self = this;
 
                 if (this.isValid)
                 {
@@ -427,14 +432,14 @@
                     }).catch(function (error) {
 
 
-                       console.log(error);
+                        console.log(error);
 
-                       if(error.code == 'auth/weak-password') {
-                           self.outputPassword = error.message
-                       }
+                        if(error.code == 'auth/weak-password') {
+                            self.outputPassword = error.message
+                        }
                         else{
-                           self.outputEmail = error.message
-                       }
+                            self.outputEmail = error.message
+                        }
 
                     });
                 }
@@ -450,13 +455,13 @@
 
                 firebase.auth().signInWithEmailAndPassword(this.loguser.lemail, this.loguser.password).then(function (user) {
 
-                    }).catch(function (error) {
-                        console.log("NO LOGIN POSSIBLE");
-                        var message = 'Invalid e-mail or password!'
-                        //self.doAlert(message);
-                        self.isActive = true;
+                }).catch(function (error) {
+                    console.log("NO LOGIN POSSIBLE");
+                    var message = 'Invalid e-mail or password!'
+                    self.doAlert(message);
+                    self.isActive = true;
 
-                    });
+                });
 
 
 
@@ -521,7 +526,7 @@
 
             addAnimal: function () {
 
-                    firebase.database().ref('userID' + this.userID).push(this.cAnimal)
+                firebase.database().ref('userID' + this.userID).push(this.cAnimal)
 
 
 
@@ -529,8 +534,6 @@
             },
 
             querydb: function () {
-
-                console.log('QUERY XXX QUERY')
 
                 var self = this;
 
@@ -547,27 +550,16 @@
                             console.log(childData);
 
                             //Here you can query the different informations about the animals
-
-                            var childchild = childSnapshot.child("species").val();
-
-                            self.animalList = childData
-
-                            console.log('child query animal List: ')
-                            console.log(self.animalList)
-
-                            self.getAnimalList()
-
-                            //console.log(key2);
-                            //console.log(childData);
-                            //console.log('This is the species: '+ childchild);
-
-                            var childchild2 = childSnapshot.child("animalclass").val();
+                            var childchild = childSnapshot.child("animalclass").val();
 
                             //console.log(key2);
 
                             var childchild = null;
                             console.log('This is the species: '+ childchild);
 
+
+
+                            self.$emit('pushData', childData);
 
 
 
@@ -585,14 +577,7 @@
                 //this.reaction = this.selectMap.value;
                 this.$emit('update', this.selectMap.value);
 
-            },
-            getAnimalList: function(){
-                this.$emit('getAnimalList', this.animalList);
             }
-
-
-
-
 
         },
 
@@ -600,7 +585,13 @@
 
 
 
+
     }
+
+
+
+
+
 
 
 
