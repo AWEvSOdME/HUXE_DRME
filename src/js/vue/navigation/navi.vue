@@ -297,12 +297,24 @@
 
         }},
 
+
+
         created: function () {
 
-            this.loggedin = Vue.cookie.get('login');
-            console.log(this.loggedin + "The Logged in Value")
+           var test = Vue.cookie.get('login')
 
-            this.$emit('login', this.loggedin);
+            if(test == null)
+            {
+                Vue.cookie.set('login', 'false', 1)
+            }
+
+
+
+                this.loggedin = Vue.cookie.get('login');
+                console.log(this.loggedin + "The Logged in Value")
+
+                this.$emit('login', this.loggedin);
+
 
            /* if (checker == true) {
                 this.loggedin = true;

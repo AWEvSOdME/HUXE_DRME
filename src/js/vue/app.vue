@@ -374,7 +374,7 @@
       },
         created: function () {
 
-            this.changeLog(false);
+            this.changeLog('false');
         },
 
         watch: {
@@ -718,9 +718,9 @@
                 this.logChecker=param;
                 console.log(this.logChecker + " Change Log function")
 
-                if(param)
+                if(param === 'true')
                 {
-                    //this.$refs.refNavi.querydb();
+                    this.$refs.refNavi.querydb();
                 }
                 else
                 {
