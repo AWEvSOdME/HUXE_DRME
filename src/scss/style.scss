@@ -90,6 +90,62 @@ div#menuMap{
   border-radius: 2px;
   box-shadow: 2px 2px 10px rgba(0,0,0,.2);
 }
+// ---------------------- Select ---------------------------------------------------------------
+
+select {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  background-color: #fff;
+  border-radius: 5px;
+  border: solid 1px #c4c2c8;
+  box-sizing: border-box;
+  clear: both;
+  cursor: pointer;
+  display: inherit;
+  font-family: inherit;
+  font-size: 13px;
+  height: 30px;
+  line-height: 30px;
+  outline: none;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin: 1px;
+  text-align: left !important;
+  transition: all 1.2s ease-in-out;
+  user-select: none;
+  width: auto;
+  &:hover {
+    border-color: darken(#89878d, 15%);
+    //background-color: #a81700;
+  }
+  &:active, &:focus {
+    border-color: #666666;
+    //background-color: #a83c83;
+  }
+  // Arrow
+  &:after {
+    border-bottom: 2px solid #3f3f3f;
+    border-right: 2px solid #89878d;
+    background-color: #a81700;
+    content: '';
+    display: block;
+    height: 5px;
+    margin-top: -4px;
+    pointer-events: none;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform-origin: 66% 66%;
+    transform: rotate(45deg);
+    transition: all 5.15s ease-in-out;
+    width: 5px;
+  }
+}
+
+.selectText{
+  display: inline-block;
+  height: 40px;
+}
+
 
 // ---------------------- Scrollbar ---------------------------------------------------------------
 ::-webkit-scrollbar{
@@ -111,7 +167,7 @@ div#menuMap{
   padding-bottom: 10px;
 }
 
-select{
+/*select{
   min-width: 100px;
   color: rgba(28, 26, 26, 0.93);
   border-radius: 4px;
@@ -120,18 +176,27 @@ select{
 
 select:focus{
   background-color: #dddddd;
-}
+}*/
 
+.selectButtonDiv{
+  position: absolute;
+  margin: 15px 20px 30px 15px;
+  width: 500px;
+  display: inline-block;
+}
 .selectButton{
-  margin: 5px;
-  border-radius: 1px;
-  border: none;
-  background-color: #dddddd;
-  padding: 5px;
-  margin: 5px;
+  width: auto;
+  border: 1px solid rgba(202, 198, 199, 0.76);
+  padding: 8px;
+  margin-right:15px;
+  background: transparent ;
+  outline: none;
+  cursor: url("../img/cursor_foot_black.png"), auto;
+
+  text-align: center;
 }
 .selectButton:hover{
-  background-color: darkorange;
+  //background-color: darkorange;
 }
 
 // ---------------------- Adding ---------------------------------------------------------------
@@ -166,7 +231,7 @@ label.animalLabel{
 
 
 td.animalTableField{
-
+  padding-left: 8px;
 }
 td.animalTableButton{
   text-align: center;
@@ -255,14 +320,15 @@ nav.delete .deleteDis{
 hr {
   border:solid #d6d6d6 thin;
   margin-top: 2px;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
 
 
 
-
-p.textNormal{
+span.textNormal{
   margin: 5px;
+  padding: 10px;
+  display: inline-block;
 }
 
 div.v-spinner{
@@ -353,7 +419,16 @@ img#popupImg{
 // ---------------------- Slider ---------------------------------------------------------------
 
 #slider{
-  margin: 30px 15px 10px 55px;
+  margin: 10px 5px 10px 35px !important;
+}
+div#sliderInfo{
+  width: 200px;
+  margin-left: 30px;
+
+}
+.sliderInfoSpan{
+  font-size: 0.8em;
+  color: #6b6768;
 }
 
 
@@ -559,10 +634,29 @@ a.logMod, a.newMod{
   width: 193px;
   text-align: center;
 }
+a.emptyMod{
+  padding: 12px 15px 16px 15px;
+  width: 193px;
+  background-color: #eaeaea;
+  box-shadow:0px -1px 3px 3px #e2e2e2 inset;
+}
+.empty{
+  color: transparent !important;
+  line-height: 0;
+}
+a.settMod{
+  padding: 12px 15px 16px 15px;
+  width: 193px;
+  background-color: #ffffff;
+  box-shadow: none;
+  text-align: center;
+}
+
 nav.log .logMod,
 nav.new .newMod,
 nav.con .logMod,
-nav.imp .newMod{
+nav.imp .newMod,
+.settMod{
   background-color: #ffffff;
   box-shadow: none;
   padding: 12px 15px 16px 15px;

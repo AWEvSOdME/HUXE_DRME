@@ -27,16 +27,18 @@
             <!-- Menu SHOW -->
             <div v-show="inputMenu === 'show'">
 
-                <p class="textNormal">Species:
+                <div class="selectText">
+                <span class="textNormal">Species:</span>
                 <select v-model="selectAnimal"  >
-                    <option v-for="animal in animals" :value="animal">{{ animal.text }}</option>
-                </select></p>
+                    <option class="optionAnimal" v-for="animal in animals" :value="animal">{{ animal.text }}</option>
+                </select></div>
 
                 <div v-show="show">
-                    <p class="textNormal">Specific Animal:
+                    <div class="selectText">
+                    <span class="textNormal">Specific Animal:</span>
                     <select v-model="selectSpecificAnimal" v-on:mouseleave="setSelectingDone(true)">
                         <option v-for="animalname in animalnames" v-bind:value="animalname.text">{{ animalname.text }}</option>
-                    </select></p>
+                    </select></div>
                 </div>
 
 
@@ -47,19 +49,21 @@
                     <p class="selectingResult">Animal: <span>{{ selectSpecificAnimal }}</span></p>
                 </div>
 
-                <div class="ShowButtonDiv" v-if="selectingDone">
-                    <button class="selectButton" @click="getData(selectAnimal.urlStudyId, selectSpecificAnimal, selectAnimal.urlSensor), setInputMenu('waiting')">show on map!</button>
-                </div>
+                <table class="selectButtonDiv" >
+                    <tr>
+                        <td><button v-show="selectingDone" class="selectButton" @click="getData(selectAnimal.urlStudyId, selectSpecificAnimal, selectAnimal.urlSensor), setInputMenu('waiting')">SHOW</button></td>
+                        <td rowspan="2"><vue-slider v-if="selectingCompleteDone" id="slider" ref="slider" v-bind="demo.default" v-model="demo.default.value"></vue-slider>
+                            <div id="sliderInfo"><span v-if="selectingCompleteDone" class="sliderInfoSpan" >{{sliderHelp}}</span></div></td>
+                    </tr>
+                    <tr>
+                        <td><button v-show="selectingCompleteDone" class="selectButton" @click="hideAnimal()">CLEAR</button></td>
 
-                <div class="ShowButtonDiv" v-if="selectingCompleteDone">
-                    <button class="selectButton" @click="hideAnimal()">clear!</button>
-                </div><br><br><br>
 
-                <div v-if="selectingCompleteDone">
-                    <div id="slider">
-                        <vue-slider ref="slider" v-bind="demo.default" v-model="demo.default.value"></vue-slider>
-                    </div>
-                </div>
+                    </tr>
+
+                </table>
+
+
 
 
             </div>
@@ -79,25 +83,25 @@
                     <div class="form-group">
                         <table class="animalTable">
                             <tr>
-                                <td class="animalTableField"><label class="animalLabel">Class</label></td>
-                                <td class="animalTableField"><label class="animalLabel">Date</label></td>
+                                <td><label class="animalLabel">Class</label></td>
+                                <td><label class="animalLabel">Date</label></td>
                             </tr>
                             <tr>
-                                <td><select v-model="selectAnimalClass"  >
+                                <td class="animalTableField"><select v-model="selectAnimalClass"  >
                                     <option v-for="animal in animalClass" :value="animal">{{ animal.class }}</option>
                                 </select></td>
-                                <td><datepicker :value="state.date" :format="state.format" v-model="newAnimal.timestamp"></datepicker></td>
+                                <td class="animalTableField"><datepicker :value="state.date" :format="state.format" v-model="newAnimal.timestamp"></datepicker></td>
                             </tr>
                             <tr>
-                                <td class="animalTableField"><label class="animalLabel">Species</label></td>
-                                <td class="animalTableField"><label class="animalLabel">Family</label></td>
+                                <td><label class="animalLabel">Species</label></td>
+                                <td><label class="animalLabel">Family</label></td>
                             </tr>
                             <tr>
                                 <td><input type="animal" v-model="newAnimal.species" placeholder=""></td>
                                 <td><input type="animal" v-model="newAnimal.family" placeholder=""></td>
                             </tr>
                             <tr>
-                                <td class="animalTableField"><label class="animalLabel">Additional Info</label></td>
+                                <td><label class="animalLabel">Additional Info</label></td>
                                 <td rowspan="2" class="animalTableButton">
                                     <input v-if="addState === 'beforeadd'" type="submit" value="ADD" disabled="true">
                                     <input v-if="addState === 'add'" v-bind:class="{ addButtonEna: doAdd, addButtonDis: !doAdd}" type="submit" value="ADD">
@@ -162,7 +166,7 @@
             <img id="logo" src="../../img/logo.png">
 
 
-            <Vnavi ref="refNavi" id="vueNavi" @update="changeMap" @login="changeLog" v-bind:cAnimal="newAnimal"></Vnavi>
+            <Vnavi ref="refNavi" id="vueNavi" @update="changeMap" @login="changeLog" @getAnimalList="viewAnimalList" v-bind:cAnimal="newAnimal"></Vnavi>
 
             <!--Vnavi id="vueNavi" @changeMap="destroyReaction(reaction)" :reaction="reaction"></Vnavi-->
             <!--Vnavi id="vueNavi" :reaction="reaction" @update="changeMap""></Vnavi-->
@@ -319,7 +323,7 @@
             demo: {
                 default: {
                     value: 0,
-                    width: 230,
+                    width: 170,
                     height: 6,
                     direction: 'horizontal',
                     dotSize: 15,
@@ -365,6 +369,7 @@
             addState: 'beforeadd',
 
             logChecker: false,
+            sliderHelp: '(drag the slider to move animal on map dependent on time!)'
 
         }
       },
@@ -376,6 +381,7 @@
                     this.setSelectingCompleteDone(false);
                     this.animalInfo = this.selectAnimal.text
                     console.log(this.animalInfo)
+                    this.sliderHelp = '(drag the slider to move animal on map dependent on time!)'
             },
             selectAnimalClass: function(val){
                 this.showSelectedClass = true
@@ -397,11 +403,15 @@
                         index = i;
                         break;
                     }
+                    if(i != 0){
+                        this.sliderHelp = ''
+                    }
                 }
 
                 if (index != -1) {
                     this.changeMarkerPos(index)
                 }
+
             },
             newAnimal: function (){
                 //console.log(this.newAnimal)
@@ -707,8 +717,18 @@
             changeLog(param){
                 this.logChecker = param;
                 console.log("IS LOGGED IN: "+ param );
-                this.listAnimal = this.$refs.refNavi.querydb();
-                console.log("this.$refs.refNavi.querydb()" + this.$refs.refNavi.querydb())
+                if (param) {
+                    this.$refs.refNavi.querydb();
+                    console.log('LISTE:')
+                    console.log(this.listAnimal)
+                }
+                //console.log("this.$refs.refNavi.querydb()" + this.$refs.refNavi.querydb())
+
+            },
+
+            viewAnimalList: function(param){
+                console.log('PARENT view animal list method...')
+                console.log(param)
 
             }
 

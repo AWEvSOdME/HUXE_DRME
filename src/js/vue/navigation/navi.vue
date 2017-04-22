@@ -146,7 +146,7 @@
                                     <input type="contact" name="mail"><br>
                                     <label>Comment</label>
                                     <input type="contact" name="comment" size="30">
-                                    <input type="submit" class="sendMailButton" value="Send">
+                                    <input type="submit" class="sendMailButton" value="SEND">
 
                             </div></form></div>
                     </div>
@@ -171,11 +171,12 @@
 
 
             <div>
-                <modal v-if="showSettings" @close="showSettings = false">
+                <modal v-if="showSettings" @close="showSettings = false" @open="">
                     <div slot = header>
-
-                            <a   >Map Settings</a>
-
+                        <nav v-bind:class="activeMod">
+                            <a class="settMod" >Map Settings</a>
+                            <a class="emptyMod"><br></a>
+                        </nav>
 
                     </div>
                     <div slot = body >
@@ -192,7 +193,7 @@
                                         <option v-for="map in maps" :value="map">{{ map.name }}</option>
                                     </select>
 
-                                    <input type="submit" class="sendMailButton" value="Send">
+                                    <input type="submit" class="sendMailButton" value="CHANGE">
 
                                 </div>
                             </form>
@@ -283,7 +284,8 @@
             outputEmail: '(Please provide a valid email address.)',
             outputPassword: '(Insert a password with at least 6 characters.)',
             outputCreated: '',
-            mailSent: false
+            mailSent: false,
+            animalList: ''
 
         }},
 
@@ -407,7 +409,7 @@
                     }).catch(function (error) {
                         console.log("NO LOGIN POSSIBLE");
                         var message = 'Invalid e-mail or password!'
-                        self.doAlert(message);
+                        //self.doAlert(message);
                         self.isActive = true;
 
                     });
@@ -480,6 +482,10 @@
 
             querydb: function () {
 
+                console.log('QUERY XXX QUERY')
+
+                var self = this;
+
                 var query = firebase.database().ref('userID' + this.userID).orderByKey();
                 query.once("value")
                     .then(function(snapshot) {
@@ -492,12 +498,16 @@
                             //Here you can query the different informations about the animals
                             var childchild = childSnapshot.child("species").val();
 
+                            self.animalList = childData
 
+                            console.log('child query animal List: ')
+                            console.log(self.animalList)
 
+                            self.getAnimalList()
 
-                            console.log(key2);
-                            console.log(childData);
-                            console.log('This is the species: '+ childchild);
+                            //console.log(key2);
+                            //console.log(childData);
+                            //console.log('This is the species: '+ childchild);
 
 
 
@@ -515,7 +525,12 @@
                 //this.reaction = this.selectMap.value;
                 this.$emit('update', this.selectMap.value);
 
+            },
+            getAnimalList: function(){
+                this.$emit('getAnimalList', this.animalList);
             }
+
+
 
 
 
