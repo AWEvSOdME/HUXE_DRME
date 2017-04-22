@@ -67,7 +67,7 @@
         </script>
 
         <div>
-            <modal v-if="showModal" @close="showModal = false">
+            <modal v-if="showModal" @close="showModal = false, mailSent = false">
                 <div slot = header>
                     <nav v-bind:class="activeMod" v-on:click.prevent>
                         <a href="#" class="logMod" v-on:click="makeModalActive('log')">Login</a>
@@ -98,16 +98,21 @@
                         <div class="modhalfleft">
                             <img class="modImgRight" src="../../../img/footsteps_right.png">
                         </div>
-                        <div class="modhalfright">
+                        <div class="modhalfright" v-if="mailSent == false">
                         <form slot = body id="form" v-on:submit.prevent="authentication">
                             <div class="form-group">
-                                <label>Email <span class="errorInfo" > {{output}}</span></label>
+                                <label>Email <span class="errorInfo" > {{outputEmail}}</span></label>
                                 <input type="email" v-model="createuser.lemail" placeholder="">
-                                <label>Password <span class="errorInfo" v-show="!validation.password"> (Password cannot be empty.)</span></label>
+                                <label>Password <span class="errorInfo" v-show="!validation.password"> {{outputPassword}} </span></label>
                                 <input type="password" v-model="createuser.password" placeholder="">
                                 <input type="submit" class="createButton" value="CREATE USER">
                             </div>
                         </form></div>
+                        <div class="modhalfright" v-if="mailSent">
+                            <form slot = body id="form7" v-on:submit.prevent="mailSent = false">
+                                <span class="mailInfo" > {{outputCreated}}</span><br><br>
+                                <input type="submit" class="createButton" value="BACK"></form>
+                        </div>
                     </div>
                 </div>
 
@@ -130,21 +135,18 @@
                         <div class="modhalfleft">
                             <img class="modImg" src="../../../img/footsteps.png">
                         </div>
-                        <div class="modhalfright">
+                        <div class="modhalfmiddle">
 
-                        <form id="form5">
+                            <form action="mailto:messerer.da@gmail.com" method="post" enctype="text/plain">
                             <div class="form-group">
 
-
-                                <form action="mailto:messerer.da@gmail.com" method="post" enctype="text/plain">
-                                    Name:<br>
+                                    <label>Name</label>
                                     <input type="contact" name="name"><br>
-                                    E-mail:<br>
+                                    <label>E-Mail</label>
                                     <input type="contact" name="mail"><br>
-                                    Comment:<br>
-                                    <input type="contact" name="comment" size="30"><br><br>
-                                    <input type="submit" class="loginButton" value="Send">
-                                </form>
+                                    <label>Comment</label>
+                                    <input type="contact" name="comment" size="30">
+                                    <input type="submit" class="sendMailButton" value="Send">
 
                             </div></form></div>
                     </div>
@@ -156,10 +158,7 @@
                             <form id="form6">
                                 <div class="form-group">
                                     <p>This website was created by:<br><br><b>Sophie Drummer</b><br>sophie.drummer@web.de
-                                    <br><br>and<br><br><b>David Messerer</b><br>messerer.da@gmail.com
-
-
-</p>
+                                    <br><br>and<br><br><b>David Messerer</b><br>messerer.da@gmail.com</p>
                                 </div>
                             </form>
                         </div>
@@ -174,14 +173,31 @@
             <div>
                 <modal v-if="showSettings" @close="showSettings = false">
                     <div slot = header>
-                        <div><p class="textNormal">Switch Basemap:
-                            <select v-model="selectMap" v-on:onmouseover="selectMap = map" >
-                            <option v-for="map in maps" :value="map">{{ map.name }}</option>
-                        </select>   </p>
-                            <button @click="changeMap">changeMap</button>
-                        </div>
+
+                            <a   >Map Settings</a>
+
+
                     </div>
-                    <div slot = body>
+                    <div slot = body >
+                        <div class="modhalfleft">
+                            <img class="modImg" src="../../../img/footsteps.png">
+                        </div>
+                        <div class="modhalfmiddle">
+
+                            <form id="form8" v-on:submit.prevent="changeMap">
+                                <div class="form-group">
+
+                                    <label>Switch Basemap:</label>
+                                    <select v-model="selectMap" v-on:onmouseover="selectMap = map" >
+                                        <option v-for="map in maps" :value="map">{{ map.name }}</option>
+                                    </select>
+
+                                    <input type="submit" class="sendMailButton" value="Send">
+
+                                </div>
+                            </form>
+                        </div>
+
                     </div>
 
 
@@ -264,7 +280,10 @@
             },
             userID: '',
             counter: 0,
-            output: '(Please provide a valid email address.)'
+            outputEmail: '(Please provide a valid email address.)',
+            outputPassword: '(Insert a password with at least 6 characters.)',
+            outputCreated: '',
+            mailSent: false
 
         }},
 
@@ -349,8 +368,9 @@
                             auth.signOut();
                             console.log("Verification Mail was sent");
                             //self.showModal = false;
-                            //self.doAlert('Verification Mail was sent');
-                            self.output = 'Verification Mail was sent'
+                            self.mailSent = true
+
+                            self.outputCreated = 'Verification Mail was sent to: ' + self.createuser.lemail + '. Please also check your spam folder!'
                         }
 
                         self.createuser.lemail="";
@@ -363,7 +383,12 @@
 
                        console.log(error);
 
-                        self.output = error.message
+                       if(error.code == 'auth/weak-password') {
+                           self.outputPassword = error.message
+                       }
+                        else{
+                           self.outputEmail = error.message
+                       }
 
                     });
                 }
