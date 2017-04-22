@@ -7,8 +7,13 @@
 
             <a href="#" class="settings" v-on:click="makeActive('settings')" @click="showSettings = true">Settings</a><span class="sepWhi">|</span>
             <a href="#" class="contact" v-on:click="makeActive('contact'), makeModalActive('con')" @click="showContact = true">Contact</a><span class="sepWhi">|</span>
-            <a href="#" v-if="!loggedin" class="login" v-on:click="makeActive('login'), makeModalActive('log')" @click="showModal = true">{{ loginText }}</a>
-            <a href="#" v-if="loggedin" class="login" v-on:click="makeActive(''), signOut()" >{{ loginText }}</a>
+
+
+            <a href="#" v-show="loggedin === 'true'" class="login" v-on:click="makeActive(''), signOut()" >logout</a>
+            <a href="#" v-show="loggedin === 'false'" class="login" v-on:click="makeActive('login'), makeModalActive('log')" @click="showModal = true">login</a>
+
+
+
 
         </nav>
 
@@ -210,7 +215,7 @@
 
     </div>
 
-</div>
+
 
 </template>
 
@@ -218,8 +223,12 @@
 <script>
 
     import Vue from 'vueCommon';
+    import vueCookie from 'vue-cookie';
+    Vue.use(vueCookie);
+
 
     var firebase = require('firebase');
+
 
     var emailRE = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     var config = {
@@ -232,13 +241,14 @@
     }
     firebase.initializeApp(config);
 
-    var auth = firebase.auth();
+
 
     export default {
 
         name: 'LOGIN',
         component: Vue.component('modal', {
             template: '#modal-template',   },
+
         ),
 
         props: ['cAnimal'],
@@ -267,7 +277,7 @@
             showContact: false,
             showSettings: false,
             logActive: true,
-            loggedin: false,
+            loggedin: '',
             isActive: false,
             loginText: 'Login',
             createuser: {
@@ -287,11 +297,36 @@
 
         }},
 
+        created: function () {
+
+            this.loggedin = Vue.cookie.get('login');
+            console.log(this.loggedin + "The Logged in Value")
+
+            this.$emit('login', this.loggedin);
+
+           /* if (checker == true) {
+                this.loggedin = true;
+                console.log(this.loggedin + "THIS LOGEDIN");
+
+            }
+            else {
+                this.loggedin = false;
+                console.log(this.loggedin + "THIS LOGEDOUT");
+            } */
+        },
+        destroyed: function () {
+            this.loggedin = Vue.cookie.get('login')
+        },
+
+
+
+
         computed: {
             validation: function () {
                 return {
                     password: !!this.createuser.password.trim(),
-                    email: emailRE.test(this.createuser.lemail)
+                    email: emailRE.test(this.createuser.lemail),
+
                 }
             },
             isValid: function () {
@@ -299,8 +334,10 @@
                 return Object.keys(validation).every(function (key) {
                     return validation[key]
                 })
-            }
+            },
+
         },
+
         watch: {
             showModal:function (val) {
 
@@ -353,7 +390,7 @@
 
                 if (this.isValid)
                 {
-                    auth.createUserWithEmailAndPassword(this.createuser.lemail, this.createuser.password).then(function(user) {
+                    firebase.auth().createUserWithEmailAndPassword(this.createuser.lemail, this.createuser.password).then(function(user) {
 
 
 
@@ -365,7 +402,7 @@
                         else
                         {
                             user.sendEmailVerification();
-                            auth.signOut();
+                            firebase.auth().signOut();
                             console.log("Verification Mail was sent");
                             //self.showModal = false;
                             self.mailSent = true
@@ -402,7 +439,7 @@
                 var self = this;
                 this.check();
 
-                    auth.signInWithEmailAndPassword(this.loguser.lemail, this.loguser.password).then(function (user) {
+                firebase.auth().signInWithEmailAndPassword(this.loguser.lemail, this.loguser.password).then(function (user) {
 
                     }).catch(function (error) {
                         console.log("NO LOGIN POSSIBLE");
@@ -421,10 +458,12 @@
                 var self = this;
 
 
-                auth.onAuthStateChanged(function (user) {
+                firebase.auth().onAuthStateChanged(function (user) {
 
                     if(user) {
                         if (user.emailVerified) {
+
+
 
                             self.userID = user.uid;
                             self.showModal = false;
@@ -433,14 +472,14 @@
                             self.loguser.lemail="";
                             self.loguser.password="";
 
-                            self.loggedin = true;
+                            self.loggedin = 'true';
 
                             console.log("User is logged in")
                             self.makeActive('');
 
                             self.loginText = 'Logout'
-
-                            self.$emit('login', true)
+                            Vue.cookie.set('login', 'true', 1);
+                            self.$emit('login', 'true')
                         }
                         else {
                             //auth.signOut();
@@ -454,15 +493,17 @@
 
             },
 
+
             signOut: function () {
                 var self = this;
 
-                auth.signOut().then(function() {
+                firebase.auth().signOut().then(function() {
                     console.log("sign out")
-                    self.loggedin = false;
+                    self.loggedin = 'false';
                     self.loginText = 'Login'
                     self.makeActive('');
-                    self.$emit('login', false)
+                    Vue.cookie.set('login', 'false', 1)
+                    self.$emit('login', 'false')
                 }).catch(function(error) {
                     // An error happened.
                 });
@@ -486,17 +527,18 @@
                         snapshot.forEach(function(childSnapshot) {
 
                             var key2 = childSnapshot.key;
+
+
                             // childData will be the actual contents of the child
                             var childData = childSnapshot.val();
+                            console.log(childData);
 
                             //Here you can query the different informations about the animals
-                            var childchild = childSnapshot.child("species").val();
+                            var childchild = childSnapshot.child("animalclass").val();
 
+                            //console.log(key2);
 
-
-
-                            console.log(key2);
-                            console.log(childData);
+                            var childchild = null;
                             console.log('This is the species: '+ childchild);
 
 

@@ -18,8 +18,10 @@
             <!-- INPUT MENU -->
             <nav v-bind:class="inputMenu" v-on:click.prevent class="selectMenu">
                 <a href="#" class="show" v-on:click="setInputMenu('show')">Show animal</a><span class="sep">   |   </span>
-                <a href="#" v-bind:class="{ addEna: logChecker, addDis: !logChecker}" v-on:click="setInputMenu('add')" >Add animal</a><span class="sep">   |   </span>
-                <a href="#" v-bind:class="{ deleteEna: logChecker, deleteDis: !logChecker}" v-on:click="setInputMenu('delete')">Delete animal</a>
+                <a href="#" v-show="logChecker==='true'" class="addEna" v-on:click="setInputMenu('add')" >Add animal</a> <span v-show="logChecker==='true'" class="sep">   |   </span>
+                <a href="#" v-show="logChecker==='true'" class="deleteEna" v-on:click="setInputMenu('delete')">Delete animal</a>
+                <a href="#" v-show="logChecker==='false'" class="addDis" v-on:click="setInputMenu('add')" >Add animal</a><span v-show="logChecker==='false'" class="sep">   |   </span>
+                <a href="#" v-show="logChecker==='false'" class="deleteDis" v-on:click="setInputMenu('delete')">Delete animal</a>
             </nav>
 
             <hr>
@@ -68,7 +70,7 @@
             <div v-show="inputMenu === 'add'">
 
 
-                <div v-if="logChecker">
+                <div v-show="logChecker ==='true'">
                 <!--p class="textNormal">Animal Class:
                 <select v-model="selectAnimalClass"  >
                     <option v-for="animal in animalClass" :value="animal">{{ animal.class }}</option>
@@ -126,7 +128,7 @@
 
 
                 </div>
-                <div v-if="logChecker === false">
+                <div v-show="logChecker === 'false'">
                     <p>NOT LOGGED IN</p>
                 </div>
 
@@ -136,10 +138,10 @@
 
             <!-- Menu DELETE -->
             <div v-show="inputMenu === 'delete'">
-                <div v-if="logChecker">
+                <div v-show="logChecker === 'true'">
                     <p> Here are delete things happening</p>
                 </div>
-                <div v-if="logChecker === false">
+                <div v-show="logChecker === 'false'">
                     <p>NOT LOGGED IN</p>
                 </div>
             </div>
@@ -183,10 +185,12 @@
     import Navi from './navigation/navi.vue';
     import * as components from './components';
     import * as $ from "jquery";
-    import * as Vue from "vue";
+    import Vue from 'Vue';
     import ScaleLoader from 'vue-spinner/src/ScaleLoader.vue'
     import vueSlider from 'vue-slider-component';
     import Datepicker from 'vuejs-datepicker';
+
+
 
     var main = require('../../js/data.js');
 
@@ -256,7 +260,7 @@
             ScaleLoader,
             vueSlider,
             Datepicker,
-            Vnavi: Navi
+            Vnavi: Navi,
         },
       data () {
         return {
@@ -364,10 +368,15 @@
             animalInfo: '',
             addState: 'beforeadd',
 
-            logChecker: false,
+            logChecker: 'false',
 
         }
       },
+        created: function () {
+
+            this.changeLog(false);
+        },
+
         watch: {
             selectAnimal:function (val, oldVal) {
                     this.getAnimalName(this.selectAnimal.urlStudyId)
@@ -705,10 +714,21 @@
 
             },
             changeLog(param){
-                this.logChecker = param;
-                console.log("IS LOGGED IN: "+ param );
-                this.listAnimal = this.$refs.refNavi.querydb();
-                console.log("this.$refs.refNavi.querydb()" + this.$refs.refNavi.querydb())
+
+                this.logChecker=param;
+                console.log(this.logChecker + " Change Log function")
+
+                if(param)
+                {
+                    //this.$refs.refNavi.querydb();
+                }
+                else
+                {
+
+                }
+
+
+
 
             }
 
