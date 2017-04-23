@@ -17,7 +17,7 @@ h1 {
 #logo{
   position: absolute;
   height: 82px;
-  top: 0px;
+  top: 0;
   left: 13px;
 }
 
@@ -25,10 +25,10 @@ h1 {
 // ---------------------- VUE DIV ---------------------------------------------------------------
 #vue{
   position: absolute;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  left: 0px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   overflow: hidden;
 }
 
@@ -45,8 +45,8 @@ div#menuMap{
   position: fixed;
   top: 80px;
   right: 600px;
-  bottom: 0px;
-  left: 0px;
+  bottom: 0;
+  left: 0;
   padding: 15px;
   z-index: 1;
 
@@ -596,7 +596,7 @@ span.mailInfo{
   line-height: 25px;
 }
 
-.lala{
+.errorLine{
   border-bottom: 2px dotted #d70e00 !important;
 }
 /*-------------------------

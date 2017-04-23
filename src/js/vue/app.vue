@@ -117,7 +117,6 @@
 
                         </table>
 
-                        {{listAnimal}}
 
                     </div>
                 </form>
@@ -189,10 +188,13 @@
     import Navi from './navigation/navi.vue';
     import * as components from './components';
     import * as $ from "jquery";
-    import Vue from 'Vue';
+    import Vue from 'vueCommon';
     import ScaleLoader from 'vue-spinner/src/ScaleLoader.vue'
     import vueSlider from 'vue-slider-component';
     import Datepicker from 'vuejs-datepicker';
+
+    import vueCookie from 'vue-cookie';
+    Vue.use(vueCookie);
 
 
 
@@ -247,7 +249,7 @@
     var coords, popupInfo, popupName, popupTaxName, nameId, nameIdArray, requestUrl, times;
     var finished = false; var drag = false;var dragtrue = true;
     var counterArr = []; var polyArray = []; var timeArray = [];
-    var counter = 1;
+    var counter = 1; var counterList = 0;
 
 
 
@@ -365,9 +367,7 @@
             newAnimal: {
                 animalclass: '', species: '', family: '', additionalInfo: '', timestamp: '', lat: '', lng: ''
             },
-            listAnimal: {
-                animalclass: '', species: '', family: '', additionalInfo: '', timestamp: '', lat: '', lng: ''
-            },
+            listAnimal: [],
 
             animalInfo: '',
             addState: 'beforeadd',
@@ -375,12 +375,18 @@
             sliderHelp: '(drag the slider to move animal on map dependent on time!)',
 
             logChecker: 'false',
+            createFinished: 'false'
 
         }
       },
         created: function () {
-
-            this.changeLog('false');
+            //var animalDataCookie = Vue.cookie.get('animaldata')
+            //this.fetchData(animalDataCookie)
+            //console.log(animalDataCookie)
+            //this.changeLog('false');
+        },
+        mounted: function(){
+            this.createFinished = 'true'
         },
 
         watch: {
@@ -728,10 +734,16 @@
 
                 this.logChecker = param;
                 console.log("IS LOGGED IN: "+ param );
-                if (param === 'true') {
+                if (param === 'true' && this.createFinished === 'true') {
                     this.$refs.refNavi.querydb();
-                    console.log('LISTE:')
-                    console.log(this.listAnimal)
+                    //console.log('LISTE:')
+                    //console.log(this.listAnimal)
+                }
+                else if (param === 'false' && this.createFinished === 'true'){
+                    console.log('changeLOG with FALSE value')
+
+                    this.removeMarkerDB()
+                    counterList = 0
                 }
                 //console.log("this.$refs.refNavi.querydb()" + this.$refs.refNavi.querydb())
 
@@ -739,7 +751,56 @@
 
             fetchData(AnimalData)
             {
-                console.log(AnimalData)
+                //Vue.cookie.set('animaldata', AnimalData);
+                //console.log(AnimalData)
+
+
+                this.listAnimal.push(({
+                    animalclass: AnimalData.animalclass,
+                    species: AnimalData.species,
+                    family: AnimalData.family,
+                    additionalInfo: AnimalData.additionalInfo,
+                    timestamp: AnimalData.timestamp,
+                    lat: AnimalData.lat,
+                    lng: AnimalData.lng
+                }))
+
+                console.log(this.listAnimal)
+                console.log('Family: ' + this.listAnimal.family)
+
+                var compIcon
+                var anClass = AnimalData.animalclass
+                console.log('Animal class = ' + anClass)
+                if(anClass === 'Bird'){compIcon = iconBir}
+                else if(anClass === 'Mammal'){ compIcon = iconMam}
+                else if(anClass === 'Fish'){ compIcon = iconFis}
+                else if(anClass === 'Reptile'){ compIcon = iconRep}
+                else if(anClass === 'Amphib'){ compIcon = iconAmp}
+                else if(anClass === 'Insect'){ compIcon = iconIns}
+
+                counterList = counterList + 1
+                console.log('counterlist = ' + counterList)
+
+                this.markersOld.push(({
+                    positionM: {lat: AnimalData.lat, lng: AnimalData.lng},
+                    icon: compIcon,
+                    draggable: false,
+                    animalclass: AnimalData.animalclass,
+                    species: AnimalData.species,
+                    family: AnimalData.family,
+                    additionalInfo: AnimalData.additionalInfo,
+                    date: AnimalData.timestamp
+                }))
+
+
+                //animalclass: '', species: '', family: '', additionalInfo: '', timestamp: '', lat: '', lng: ''
+            },
+
+            removeMarkerDB(){
+                console.log('remove marker function')
+                var nmb = counterList
+                var index = this.markersOld.length - nmb
+                this.markersOld.splice(2, counterList)
             }
 
         }

@@ -90,9 +90,9 @@
                         <form id="form2" v-on:submit.prevent="login()">
                              <div class="form-group">
                                 <label>Email</label>
-                                <input v-bind:class="{ lala: isActive }" type="email" v-model="loguser.lemail" placeholder="">
+                                <input v-bind:class="{ errorLine: isWrong }" type="email" v-model="loguser.lemail" placeholder="">
                                  <label>Password</label>
-                                <input v-bind:class="{ lala: isActive }" type="password" v-model="loguser.password" placeholder="">
+                                <input v-bind:class="{ errorLine: isWrong }" type="password" v-model="loguser.password" placeholder="">
                                 <input type="submit" class="loginButton" value="LOGIN" >
                             </div>
                         </form>
@@ -279,7 +279,7 @@
             showSettings: false,
             logActive: true,
             loggedin: '',
-            isActive: false,
+            isWrong: false,
             loginText: 'Login',
             createuser: {
                 lemail: '',
@@ -295,7 +295,8 @@
             outputPassword: '(Insert a password with at least 6 characters.)',
             outputCreated: '',
             mailSent: false,
-            animalList: ''
+            animalList: '',
+            logInVal: 'true'
 
         }},
 
@@ -315,7 +316,7 @@
             this.loggedin = Vue.cookie.get('login');
             console.log(this.loggedin + "The Logged in Value")
 
-            this.$emit('login', this.loggedin);
+            //this.$emit('login', this.loggedin);
 
 
             /* if (checker == true) {
@@ -328,9 +329,13 @@
              console.log(this.loggedin + "THIS LOGEDOUT");
              } */
         },
-        destroyed: function () {
-            this.loggedin = Vue.cookie.get('login')
+        mounted: function(){
+            this.$emit('login', this.loggedin);
         },
+        destroyed: function () {
+            //this.loggedin = Vue.cookie.get('login')
+        },
+
 
 
 
@@ -451,15 +456,19 @@
             login: function () {
                 //Check and write UserID
                 var self = this;
-                this.check();
+
+                if (this.logInVal === 'true'){
+                    this.check()
+                }
+
 
                 firebase.auth().signInWithEmailAndPassword(this.loguser.lemail, this.loguser.password).then(function (user) {
 
+                    self.isWrong = false;
                 }).catch(function (error) {
                     console.log("NO LOGIN POSSIBLE");
                     var message = 'Invalid e-mail or password!'
-                    self.doAlert(message);
-                    self.isActive = true;
+                    self.isWrong = true;
 
                 });
 
@@ -494,6 +503,7 @@
                             self.loginText = 'Logout'
                             Vue.cookie.set('login', 'true', 1);
                             self.$emit('login', 'true')
+                            self.logInVal = 'false'
                         }
                         else {
                             //auth.signOut();
@@ -567,9 +577,6 @@
                     });
 
             },
-            doAlert(alertMessage){
-                alert('Error: ' + alertMessage)
-            },
 
 
             changeMap: function() {
@@ -580,7 +587,6 @@
             }
 
         },
-
 
 
 
