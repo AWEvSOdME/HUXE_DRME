@@ -19,17 +19,19 @@ The tracking data used is from [www.movebank.org](http://www.movebank.org). To u
 
 
 
+
+
 ####Studies
-| Study                                                  | Study ID  |
+| Study | Study ID |
 |--------------------------------------------------------|-----------|
-| White Stork Lithuania GPS 2015                         | 92053942  |
-| Oenantheoenanthe Turdidae Uppsala                      | 58672150  |
-| Black Stork Lithuania GPS 2015                         | 102703103 |
-| Forest Elephant Telemetry Programme                    | 1818825   |
-| False Killer Wales Northwestern Hawaiian Islands       | 17196801  |
-| Tsavo Lion Study                                       | 220229    |
-| BCI Agouti                                             | 82207     |
-| BCI Ocelot                                             | 123413    |
+| White Stork Lithuania GPS 2015 | 92053942 |
+| Oenantheoenanthe Turdidae Uppsala | 58672150 |
+| Black Stork Lithuania GPS 2015 | 102703103 |
+| Forest Elephant Telemetry Programme | 1818825 |
+| False Killer Wales Northwestern Hawaiian Islands | 17196801 |
+| Tsavo Lion Study | 220229 |
+| BCI Agouti | 82207 |
+| BCI Ocelot | 123413 |
 | Trans Andean and divergent migration of Black Skimmers | 126103076 |
 
 
