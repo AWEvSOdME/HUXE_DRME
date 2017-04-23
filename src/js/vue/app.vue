@@ -747,7 +747,6 @@
             changeLog(param){
 
                 this.logChecker = param;
-                console.log("IS LOGGED IN: "+ param );
                 if (param === 'true' && this.createFinished === 'true') {
                     this.$refs.refNavi.querydb();
                     //console.log('LISTE:')
