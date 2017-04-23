@@ -501,12 +501,18 @@
             },
             activateDragging(state){
                 this.draggingActive = state
+                if (state){
 
-                if (!state){
-                    for (var i = 0; i < counterArr.length; i++) {
+                        this.$set(this.markersOld[this.markersOld.length-1], 'draggable', state);
+                        console.log('drag me')
+
+                }
+                else{
+
                         //this.$set(this.markersOld[counterArr[i]], 'icon', iconWhe);
-                        this.$set(this.markersOld[counterArr[i]], 'draggable', state);
-                    }
+                        this.$set(this.markersOld[this.markersOld.length-1], 'draggable', state);
+                        console.log('dont drag me')
+
                 }
             },
             removeMarker (index) {
