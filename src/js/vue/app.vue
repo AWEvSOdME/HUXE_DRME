@@ -6,7 +6,7 @@
             <vmap-tile-layer v-if="selectMap.value === 'map3'" url="http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" attribution="&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"></vmap-tile-layer>
             <vmap-tile-layer v-if="selectMap.value === 'map4'" url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" attribution="Tiles &copy; Esri"></vmap-tile-layer>
 
-            <vmap-marker @drag="onDrag" v-for="markerPosition in markersOld" v-bind:key="markerPosition" :latlng="markerPosition.positionM" :visible="markerPosition.visible" :icon="markerPosition.icon" :draggable="markerPosition.draggable" :popupcontent="' <p> Class: ' + markerPosition.animalclass + '<br /> Species: ' + markerPosition.species + '<br /> Family: ' + markerPosition.family + '<br /> Additional Info: ' + markerPosition.additionalInfo + '<br /> Date: ' + markerPosition.date + '.</p>'"></vmap-marker>
+            <vmap-marker @drag="onDrag" v-for="markerPosition in markersOld" v-bind:key="markerPosition.id" :latlng="markerPosition.positionM" :visible="markerPosition.visible" :icon="markerPosition.icon" :draggable="markerPosition.draggable" :popupcontent="' <p> Class: ' + markerPosition.animalclass + '<br /> Species: ' + markerPosition.species + '<br /> Family: ' + markerPosition.family + '<br /> Additional Info: ' + markerPosition.additionalInfo + '<br /> Date: ' + markerPosition.date + '.</p>'"></vmap-marker>
             <vmap-polyline :latlngs="polyPos"></vmap-polyline>
 
             <!--PolyLine's Marker-->
@@ -250,6 +250,8 @@
     var finished = false; var drag = false;var dragtrue = true;
     var counterArr = []; var polyArray = []; var timeArray = [];
     var counter = 1; var counterList = 0;
+    var i = 0;
+    var localAnimalData = [];
 
 
 
@@ -258,8 +260,6 @@
         components: {
             Vmap: Map,
             VmapMarker: components.Marker,
-            VmapGeoJson: components.GeoJson,
-            VmapLayerGroup: components.LayerGroup,
             VmapPolyline: components.Polyline,
             VmapTileLayer: components.TileLayer,
             Vinfo: Info,
@@ -380,13 +380,27 @@
         }
       },
         created: function () {
-            //var animalDataCookie = Vue.cookie.get('animaldata')
-            //this.fetchData(animalDataCookie)
-            //console.log(animalDataCookie)
-            //this.changeLog('false');
+
+
+
         },
         mounted: function(){
+
+            if (localStorage.getItem('animal'))
+            {
+                console.log("CreatedFunction")
+                this.writeMarkerOnRefresh()
+
+            }
+
             this.createFinished = 'true'
+
+
+
+
+
+
+
         },
 
         watch: {
@@ -754,6 +768,10 @@
                 //Vue.cookie.set('animaldata', AnimalData);
                 //console.log(AnimalData)
 
+                localAnimalData.push(AnimalData);
+
+                localStorage.setItem('animal', JSON.stringify(localAnimalData));
+
 
                 this.listAnimal.push(({
                     animalclass: AnimalData.animalclass,
@@ -781,7 +799,7 @@
                 counterList = counterList + 1
                 console.log('counterlist = ' + counterList)
 
-                this.markersOld.push(({
+               this.markersOld.push(({
                     positionM: {lat: AnimalData.lat, lng: AnimalData.lng},
                     icon: compIcon,
                     draggable: false,
@@ -793,16 +811,93 @@
                 }))
 
 
+
+
+
+
+
+
+
                 //animalclass: '', species: '', family: '', additionalInfo: '', timestamp: '', lat: '', lng: ''
             },
 
             removeMarkerDB(){
-                console.log('remove marker function')
-                var nmb = counterList + (this.markersOld.length - (2 + counterList))
-                this.markersOld.splice(2, nmb)
+
+                    localStorage.removeItem('animal')
+                    console.log('remove marker function')
+                    var nmb = counterList + (this.markersOld.length - (2 + counterList))
+                    this.markersOld.splice(2, nmb)
+                },
+
+            writeMarkerOnRefresh(){
+
+
+
+                //this.removeMarkerDB();
+                this.$refs.refNavi.querydb();
+
+                var animalObjStorage = localStorage.getItem('animal')
+                console.log(JSON.parse(animalObjStorage))
+
+                var animalObj = JSON.parse(animalObjStorage)
+
+                var compIcon
+                var anClass = JSON.parse(animalObjStorage).animalclass
+
+                console.log(this.markersOld)
+
+                console.log('Animal class = ' + anClass)
+                if(anClass === 'Bird'){compIcon = iconBir}
+                else if(anClass === 'Mammal'){ compIcon = iconMam}
+                else if(anClass === 'Fish'){ compIcon = iconFis}
+                else if(anClass === 'Reptile'){ compIcon = iconRep}
+                else if(anClass === 'Amphib'){ compIcon = iconAmp}
+                else if(anClass === 'Insect'){ compIcon = iconIns}
+
+
+                for(var j = 0; j<animalObj.length; j++)
+                {
+                    var compIcon
+                    var anClass = animalObj[j].animalclass
+                    counterList = counterList + 1
+                    console.log('counterlist = ' + counterList)
+                    console.log(this.markersOld)
+
+                    console.log('Animal class = ' + anClass)
+                    if(anClass === 'Bird'){compIcon = iconBir}
+                    else if(anClass === 'Mammal'){ compIcon = iconMam}
+                    else if(anClass === 'Fish'){ compIcon = iconFis}
+                    else if(anClass === 'Reptile'){ compIcon = iconRep}
+                    else if(anClass === 'Amphib'){ compIcon = iconAmp}
+                    else if(anClass === 'Insect'){ compIcon = iconIns}
+
+                    this.markersOld.push(({
+                        positionM: {lat: animalObj[j].lat, lng: animalObj[j].lng},
+                        icon: compIcon,
+                        draggable: false,
+                        animalclass: animalObj[j].animalclass,
+                        species: animalObj[j].species,
+                        family: animalObj[j].family,
+                        additionalInfo: animalObj[j].additionalInfo,
+                        date: animalObj[j].timestamp
+                    }))
+                }
+                this.removeDuplicate()
+
+
+
+            },
+            removeDuplicate(){
+
+                localStorage.removeItem('animal')
+
+                console.log(this.markersOld.length + "DAS IST DIE LÄENGE")
+                this.markersOld.splice(2, this.markersOld.length)
             }
 
-        }
+            }
+
+
     };
 
 
