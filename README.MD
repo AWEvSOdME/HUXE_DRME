@@ -1,4 +1,6 @@
-###ANCKS *the animal tracks database*
+
+
+###ANCKS the animal tracks database
 
 members of this project
 
