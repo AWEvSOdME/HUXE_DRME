@@ -1,8 +1,7 @@
 
 
-#Anks *the animal tracks database*
 
-
+# Anks the animal track database
 members of this project
 
 **Sophie Drummer and David Messerer**
