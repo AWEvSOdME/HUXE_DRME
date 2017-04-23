@@ -296,7 +296,8 @@
             outputCreated: '',
             mailSent: false,
             animalList: '',
-            logInVal: 'true'
+            logInVal: 'true',
+            checkedFinished: 'false'
 
         }},
 
@@ -467,9 +468,8 @@
                     self.isWrong = false;
                 }).catch(function (error) {
                     console.log("NO LOGIN POSSIBLE");
-                    var message = 'Invalid e-mail or password!'
                     self.isWrong = true;
-
+                    self.logInVal = 'true';
                 });
 
 
@@ -480,6 +480,7 @@
                 // Check function for Login and writing user.uid
                 var self = this;
 
+                if(this.checkedFinished === 'false'){
 
                 firebase.auth().onAuthStateChanged(function (user) {
 
@@ -504,17 +505,20 @@
                             Vue.cookie.set('login', 'true', 1);
                             self.$emit('login', 'true')
                             self.logInVal = 'false'
+
                         }
                         else {
                             //auth.signOut();
                             console.log("Please Validate Email!")
+                            self.checkedFinished = 'true'
                         }
                     }
                     else{
                         console.log("User is not logged in")
+                        self.checkedFinished = 'true'
                     }
                 });
-
+                }
             },
 
 

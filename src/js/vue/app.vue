@@ -105,8 +105,8 @@
                             <tr>
                                 <td><label class="animalLabel">Additional Info</label></td>
                                 <td rowspan="2" class="animalTableButton">
-                                    <input v-if="addState === 'beforeadd'" type="submit" value="ADD" disabled="true">
-                                    <input v-if="addState === 'add'" v-bind:class="{ addButtonEna: doAdd, addButtonDis: !doAdd}" type="submit" value="ADD">
+                                    <input v-if="addState === 'beforeadd'" type="submit" value="ADD" class="addButtonDis" disabled="true">
+                                    <input v-if="addState === 'add'" type="submit" value="ADD">
                                     <input v-if="addState === 'save'" v-on:click="saveAnimal()" class="submitSave" type="reset" value="SAVE">
                                 </td>
                             </tr>
@@ -798,9 +798,8 @@
 
             removeMarkerDB(){
                 console.log('remove marker function')
-                var nmb = counterList
-                var index = this.markersOld.length - nmb
-                this.markersOld.splice(2, counterList)
+                var nmb = counterList + (this.markersOld.length - (2 + counterList))
+                this.markersOld.splice(2, nmb)
             }
 
         }

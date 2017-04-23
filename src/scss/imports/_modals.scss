@@ -1,0 +1,230 @@
+/* -----------------------------------------------------------------------------------------------
+                              Menu & Modal Components
+ ------------------------------------------------------------------------------------------------*/
+
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .5);
+  display: table;
+  transition: opacity .10s ease;
+}
+
+.modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.modal-container {
+  width: 450px;
+  height: 400px;
+  margin: 0 auto;
+  padding: 0 0;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+  transition: all .3s ease;
+  font-family: 'Raleway', sans-serif;
+}
+
+.modal-body {
+  padding: 1px 1px;
+  margin: 1px 0;
+}
+
+.modal-enter {
+  opacity: 0;
+}
+
+.modal-leave-active {
+  opacity: 0;
+}
+
+.modal-enter .modal-container,
+.modal-leave-active .modal-container {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+section, footer, header, aside, nav{
+  display: block;
+}
+
+
+// ---------------------- MODAL Content---------------------------------------------------------------
+
+.modhalfleft  {
+  position: absolute;
+  margin-left: 0;
+  margin-top: 0;
+  width: auto;
+  height: auto;
+}
+.modhalfright  {
+  position: absolute;
+  margin-left: 75px;
+  margin-top: 50px;
+  width: 300px;
+  height: 430px;
+}
+.modhalfmiddle {
+  position: absolute;
+  margin-left: 100px;
+  margin-top: 40px;
+  width: 270px;
+  height: 430px;
+}
+
+.modImg{
+  margin-top:170px;
+  margin-left: 10px;
+  width: 200px;
+  opacity: 0.3;
+}
+.modImgRight{
+  margin-top:240px;
+  margin-left: 160px;
+  width: 280px;
+  opacity: 0.3;
+}
+
+form .form-group {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 0 0;
+  color: #403e3f;
+  font-size: .9em;
+
+  label {
+    margin: 0 0 6px 0;
+  }
+}
+
+.form-group input[type="email"],input[type="password"]{
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0 0 1px 0;
+  margin: 15px 0 30px 0;
+  font-size: 1em;
+  border-bottom: 1px dotted #89878d;
+}
+
+.form-group input[type="contact"]{
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0 0 1px 0;
+  margin: 5px 0 15px 0;
+  font-size: 1em;
+  border-bottom: 1px dotted #89878d;
+}
+
+input[type="submit"], input[class="submitSave"]{
+  width: 80px;
+  border: 1px solid rgba(202, 198, 199, 0.76);
+  padding: 8px;
+  background: transparent ;
+  outline: none;
+  cursor: url("../../img/cursor_foot_black.png"), auto;
+  text-align: center;
+}
+
+input.createButton{
+  width: 130px;
+}
+input.loginButton{
+  margin-left: 210px;
+}
+input.sendMailButton{
+  margin: 10px 0 0 190px;
+}
+
+.errorInfo{
+  font-size: 0.8em;
+  color: #6b6768;
+  padding: 10px;
+}
+span.mailInfo{
+  font-size: 1.0em;
+  color: #575354;
+  line-height: 25px;
+}
+
+.errorLine{
+  border-bottom: 2px dotted #d70e00 !important;
+}
+
+
+// ---------------------- MODAL MENU---------------------------------------------------------------
+
+a.logMod, a.newMod{
+  padding: 12px 15px 16px 15px;
+  cursor: url("../../img/cursor_foot_black.png"), auto;
+  background-color: #eaeaea;
+  box-shadow:0px -1px 3px 3px #e2e2e2 inset;
+  width: 193px;
+  text-align: center;
+}
+a.emptyMod{
+  padding: 12px 15px 16px 15px;
+  width: 193px;
+  background-color: #eaeaea;
+  box-shadow:0px -1px 3px 3px #e2e2e2 inset;
+}
+.empty{
+  color: transparent !important;
+  line-height: 0;
+}
+a.settMod{
+  padding: 12px 15px 16px 15px;
+  width: 193px;
+  background-color: #ffffff;
+  box-shadow: none;
+  text-align: center;
+}
+
+nav.log .logMod,
+nav.new .newMod,
+nav.con .logMod,
+nav.imp .newMod,
+.settMod{
+  background-color: #ffffff;
+  box-shadow: none;
+  padding: 12px 15px 16px 15px;
+  -webkit-transition:background-color 0.25s;
+  -moz-transition:background-color 0.25s;
+  transition:background-color 0.25s;
+}
+
+nav.navMenu{
+  display:inline-block;
+  margin:0 auto 0;
+}
+
+nav.log a, nav.new a, nav.con a, nav.imp a{
+  color: #000 !important;
+}
+
+nav a{
+  display:inline-block;
+  color: #dadad7;
+  font-size:14px;
+  text-decoration:none;
+  text-transform: uppercase;
+  background-color:transparent;
+}
+
+nav.home a.home,
+nav.login a.login,
+nav.settings a.settings,
+nav.contact a.contact{
+  border: 1px solid #efe8ef;
+  -webkit-transition:border 0.25s;
+  -moz-transition:border 0.25s;
+  transition:border 0.25s;
+}

@@ -1,5 +1,15 @@
-@import "imports/layout";
+/* -----------------------------------------------------------------------------------------------
+                      The Main SASS file for the ANCKS PROJECT
+                   - created by David Messerer & Sophie Drummer -
+                 - 24.04.2017, HyperMediaUserExperienceEngineering -
+ ------------------------------------------------------------------------------------------------*/
+
 @import "../../node_modules/leaflet/dist/leaflet";
+@import "../scss/imports/animalInfo";
+@import "../scss/imports/modals";
+
+
+// ---------------------- General ---------------------------------------------------------------
 
 body {
   font-family: 'Raleway', sans-serif;
@@ -7,7 +17,6 @@ body {
   font-size: 14px;
   background: url("../img/bgd.jpg");
   overflow: hidden;
-
 }
 
 h1 {
@@ -23,6 +32,7 @@ h1 {
 
 
 // ---------------------- VUE DIV ---------------------------------------------------------------
+
 #vue{
   position: absolute;
   top: 0;
@@ -32,14 +42,14 @@ h1 {
   overflow: hidden;
 }
 
+
 // ---------------------- Components ---------------------------------------------------------------
+
 div#menuMap{
   position: absolute;
   top: 25px;
   right: 30px;
 }
-
-
 
 .component-vue-map {
   position: fixed;
@@ -49,7 +59,6 @@ div#menuMap{
   left: 0;
   padding: 15px;
   z-index: 1;
-
 }
 
 .component-vue-map .map-container {
@@ -76,107 +85,36 @@ div#menuMap{
 }
 
 
-#vueInfo{
+// ---------------------- Main Navi ---------------------------------------------------------------
+
+div#vueNavi{
+  width: 100%;
+  height: 80px;
+  background-color: #413e43;
+}
+.navMenu{
   position: absolute;
-  padding: 10px;
-  width: 565px;
-  bottom: 15px;
-  top: 365px;
-  right: 15px;
-  float: right;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  z-index: 0;
-  border-radius: 2px;
-  box-shadow: 2px 2px 10px rgba(0,0,0,.2);
-}
-// ---------------------- Select ---------------------------------------------------------------
-
-select {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  background-color: #fff;
-  border-radius: 5px;
-  border: solid 1px #c4c2c8;
-  box-sizing: border-box;
-  clear: both;
-  cursor: pointer;
-  display: inherit;
-  font-family: inherit;
-  font-size: 13px;
-  height: 30px;
-  line-height: 30px;
-  outline: none;
-  padding-left: 8px;
-  padding-right: 8px;
-  margin: 1px;
-  text-align: left !important;
-  transition: all 1.2s ease-in-out;
-  user-select: none;
-  width: auto;
-  &:hover {
-    border-color: darken(#89878d, 15%);
-    //background-color: #a81700;
-  }
-  &:active, &:focus {
-    border-color: #666666;
-    //background-color: #a83c83;
-  }
-  // Arrow
-  &:after {
-    border-bottom: 2px solid #3f3f3f;
-    border-right: 2px solid #89878d;
-    background-color: #a81700;
-    content: '';
-    display: block;
-    height: 5px;
-    margin-top: -4px;
-    pointer-events: none;
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform-origin: 66% 66%;
-    transform: rotate(45deg);
-    transition: all 5.15s ease-in-out;
-    width: 5px;
-  }
+  top: 15px;
+  left: 220px;
 }
 
-.selectText{
-  display: inline-block;
-  height: 40px;
+a:hover{
+  color: #bdb9bd;
+}
+
+a.login, a.settings, a.contact{
+  padding: 12px 15px 16px 15px;
+  margin: 5px 30px 5px 30px;
+  height: 10px;
+  border: 1px solid rgba(239, 234, 235, 0);
+
+  font-family: 'Raleway', sans-serif;
+  line-height: 18px;
+  font-size: 15px;
 }
 
 
-// ---------------------- Scrollbar ---------------------------------------------------------------
-::-webkit-scrollbar{
-  width: 12px;
-}
-::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
-}
-
-// ---------------------- InputField ---------------------------------------------------------------
-.inputField{
-  padding-top: 15px;
-  padding-bottom: 10px;
-}
-
-/*select{
-  min-width: 100px;
-  color: rgba(28, 26, 26, 0.93);
-  border-radius: 4px;
-  margin: 5px;
-}
-
-select:focus{
-  background-color: #dddddd;
-}*/
+// ---------------------- Show Animal ---------------------------------------------------------------
 
 .selectButtonDiv{
   position: absolute;
@@ -184,6 +122,7 @@ select:focus{
   width: 500px;
   display: inline-block;
 }
+
 .selectButton{
   width: auto;
   border: 1px solid rgba(202, 198, 199, 0.76);
@@ -192,28 +131,18 @@ select:focus{
   background: transparent ;
   outline: none;
   cursor: url("../img/cursor_foot_black.png"), auto;
-
   text-align: center;
 }
-.selectButton:hover{
-  //background-color: darkorange;
-}
+
 
 // ---------------------- Adding ---------------------------------------------------------------
 
 .addButtonDis{
-  //display:none;
   pointer-events: none;
-  disabled: true;
-}
-.addButtonEna{
-
+  cursor: none;
 }
 
-
-
-.form-group input[type="animal"]
-{
+.form-group input[type="animal"]{
   border: none;
   outline: none;
   width: 165px;
@@ -223,19 +152,18 @@ select:focus{
   font-size: 1em;
   border-bottom: 1px dotted #89878d;
 }
+
 label.animalLabel{
   margin: 8px !important;
   width: 100px;
 }
 
-
-
 td.animalTableField{
   padding-left: 8px;
 }
+
 td.animalTableButton{
   text-align: center;
-
 }
 
 .resultDivAdd{
@@ -246,6 +174,7 @@ td.animalTableButton{
   height: 172px;
   border:solid #d6d6d6 thin;
 }
+
 div.vdp-datepicker__calendar{
   z-index: 4;
 }
@@ -284,7 +213,11 @@ nav a.addDis, nav a.deleteDis{
   border: 1px solid rgba(202, 198, 199, 0);
 }
 
-nav a.show:hover, nav a.addEna:hover, nav a.deleteEna:hover, nav a.addDis:hover, nav a.deleteDis:hover{
+nav a.show:hover,
+nav a.addEna:hover,
+nav a.deleteEna:hover,
+nav a.addDis:hover,
+nav a.deleteDis:hover{
   color: #a0a0a0 !important;
 }
 
@@ -294,18 +227,7 @@ nav.delete .deleteEna,
 nav.add .addEna,
 nav.add .addDis,
 nav.delete .deleteDis{
-  //background-color: #404040;
-  //color: #e6e8e8 !important;
   border: 1px solid rgba(182, 178, 179, 0.76);
-}
-
-
-.inputFieldButton:hover{
-  color: #0078A8;
-}
-
-.inputFieldButton:active{
-  color: #a81700;
 }
 
 .sep{
@@ -323,8 +245,6 @@ hr {
   margin-bottom: 8px;
 }
 
-
-
 span.textNormal{
   margin: 5px;
   padding: 10px;
@@ -341,70 +261,6 @@ div.v-spinner{
   height: 30px;
 }
 
-// ---------------------- AnimalInfo Field ---------------------------------------------------------------
-
-.animalInfo{
-  background-color: #fbf9ff;
-  width: 100%;
-  max-height: 53%;
-
-}
-
-.infoText{
-  text-align: justify;
-  margin: 5px;
-}
-
-.resultDiv{
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
-  width: 200px;
-  height: 172px;
-  border:solid #d6d6d6 thin;
-}
-
-#selectedImg{
-  display: block;
-  width: auto;
-  max-height: 70px;
-  margin: 15px auto 15px auto;
-}
-
-#selectedIcon{
-  display: block;
-  width: 25%;
-  margin: auto;
-  margin-top: 15px;
-}
-
-p.selectingResult{
-  font-size: 90%;
-  margin: 5px;
-  text-align: center;
-}
-p.selectingAnimal{
-  font-size: 110%;
-  margin: 5px;
-  text-align: center;
-}
-
-.animal_img_right
-{
-  float:right;
-  width:120px;
-  height: auto;
-  margin: 10px 0 5px 10px;
-}
-
-.animal_img_left
-{
-  float:left;
-  width:120px;
-  height: auto;
-  margin: 10px 10px 5px 0;
-}
-
 
 // ---------------------- PopUp ---------------------------------------------------------------
 
@@ -416,285 +272,75 @@ img#popupImg{
   margin: auto;
 }
 
+
 // ---------------------- Slider ---------------------------------------------------------------
 
 #slider{
   margin: 10px 5px 10px 35px !important;
 }
+
 div#sliderInfo{
   width: 200px;
   margin-left: 30px;
-
 }
+
 .sliderInfoSpan{
   font-size: 0.8em;
   color: #6b6768;
 }
 
 
-// ---------------------- NAVI ---------------------------------------------------------------
+// ---------------------- Select ---------------------------------------------------------------
 
-.modal-mask {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, .5);
-  display: table;
-  transition: opacity .10s ease;
-}
-
-.modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.modal-container {
-  width: 450px;
-  height: 400px;
-  margin: 0px auto;
-  padding: 0px 0px;
+select {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   background-color: #fff;
-  border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
-  transition: all .3s ease;
-  font-family: 'Raleway', sans-serif;
-}
-
-.modal-body {
-  padding: 1px 1px;
-  margin: 1px 0;
-}
-
-.modal-enter {
-  opacity: 0;
-}
-
-.modal-leave-active {
-  opacity: 0;
-}
-
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
-}
-
-
-
-
-a:hover{
-  color: #bdb9bd;
-}
-
-section, footer, header, aside, nav{
-  display: block;
-}
-
-//....
-
-.modhalfleft  {
-  position: absolute;
-  margin-left: 0;
-  margin-top: 0;
+  border-radius: 5px;
+  border: solid 1px #c4c2c8;
+  box-sizing: border-box;
+  clear: both;
+  cursor: pointer;
+  display: inherit;
+  font-family: inherit;
+  font-size: 13px;
+  height: 30px;
+  line-height: 30px;
+  outline: none;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin: 1px;
+  text-align: left !important;
+  transition: all 1.2s ease-in-out;
+  user-select: none;
   width: auto;
-  height: auto;
-}
-.modhalfright  {
-  position: absolute;
-  margin-left: 75px;
-  margin-top: 50px;
-  width: 300px;
-  height: 430px;
-}
-.modhalfmiddle {
-  position: absolute;
-  margin-left: 100px;
-  margin-top: 40px;
-  width: 270px;
-  height: 430px;
-}
-
-.modImg{
-  margin-top:170px;
-  margin-left: 10px;
-  width: 200px;
-  opacity: 0.3;
-}
-.modImgRight{
-  margin-top:240px;
-  margin-left: 160px;
-  width: 280px;
-  opacity: 0.3;
-}
-
-form .form-group {
-  display: flex;
-  flex-direction: column;
-  margin: 0 0 0 0;
-  color: #403e3f;
-  font-size: .9em;
-
-
-  label {
-    margin: 0 0 6px 0;
+  &:hover {
+    border-color: darken(#89878d, 15%);
   }
-
-}
-.form-group input[type="email"],input[type="password"]
-{
-  border: none;
-  outline: none;
-  background: transparent;
-  padding: 0 0 1px 0;
-  margin: 15px 0 30px 0;
-  font-size: 1em;
-  border-bottom: 1px dotted #89878d;
-}
-.form-group input[type="contact"]
-{
-  border: none;
-  outline: none;
-  background: transparent;
-  padding: 0 0 1px 0;
-  margin: 5px 0 15px 0;
-  font-size: 1em;
-  border-bottom: 1px dotted #89878d;
+  &:active, &:focus {
+    border-color: #666666;
+  }
 }
 
-input[type="submit"], input[class="submitSave"]{
-  width: 80px;
-  border: 1px solid rgba(202, 198, 199, 0.76);
-  padding: 8px;
-  background: transparent ;
-  outline: none;
-  cursor: url("../img/cursor_foot_black.png"), auto;
-
-  text-align: center;
-}
-
-input.createButton{
-  width: 130px;
-}
-input.loginButton{
-  margin-left: 210px;
-}
-input.sendMailButton{
-  margin: 10px 0 0 190px;
-}
-
-.errorInfo{
-  font-size: 0.8em;
-  color: #6b6768;
-  padding: 10px;
-}
-span.mailInfo{
-  font-size: 1.0em;
-  color: #575354;
-  line-height: 25px;
-}
-
-.errorLine{
-  border-bottom: 2px dotted #d70e00 !important;
-}
-/*-------------------------
-    The menu
---------------------------*/
-
-div#vueNavi{
-  width: 100%;
-  height: 80px;
-  background-color: #413e43;
-}
-.navMenu{
-  position: absolute;
-  top: 15px;
-  left: 220px;
-}
-
-a.login, a.settings, a.contact{
-  padding: 12px 15px 16px 15px;
-  margin: 5px 30px 5px 30px;
-  height: 10px;
-  border: 1px solid rgba(239, 234, 235, 0);
-
-  font-family: 'Raleway', sans-serif;
-  line-height: 18px;
-  font-size: 15px;
+.selectText{
+  display: inline-block;
+  height: 40px;
 }
 
 
-a.logMod, a.newMod{
-  padding: 12px 15px 16px 15px;
-  cursor: url("../img/cursor_foot_black.png"), auto;
-  background-color: #eaeaea;
-  box-shadow:0px -1px 3px 3px #e2e2e2 inset;
-  width: 193px;
-  text-align: center;
-}
-a.emptyMod{
-  padding: 12px 15px 16px 15px;
-  width: 193px;
-  background-color: #eaeaea;
-  box-shadow:0px -1px 3px 3px #e2e2e2 inset;
-}
-.empty{
-  color: transparent !important;
-  line-height: 0;
-}
-a.settMod{
-  padding: 12px 15px 16px 15px;
-  width: 193px;
-  background-color: #ffffff;
-  box-shadow: none;
-  text-align: center;
+// ---------------------- Scrollbar ---------------------------------------------------------------
+
+::-webkit-scrollbar{
+  width: 12px;
 }
 
-nav.log .logMod,
-nav.new .newMod,
-nav.con .logMod,
-nav.imp .newMod,
-.settMod{
-  background-color: #ffffff;
-  box-shadow: none;
-  padding: 12px 15px 16px 15px;
-
-  -webkit-transition:background-color 0.25s;
-  -moz-transition:background-color 0.25s;
-  transition:background-color 0.25s;
-}
-nav.navMenu{
-  display:inline-block;
-  margin:0px auto 0px;
-}
-nav.log a, nav.new a, nav.con a, nav.imp a{
-  color: #000 !important;
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 10px;
 }
 
-nav a{
-  display:inline-block;
-  color: #dadad7;
-  font-size:14px;
-  text-decoration:none;
-  text-transform: uppercase;
-  background-color:transparent;
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
 }
 
 
-nav.home a.home,
-nav.login a.login,
-nav.settings a.settings,
-nav.contact a.contact{
-  border: 1px solid #efe8ef;
-
-
-  -webkit-transition:border 0.25s;
-  -moz-transition:border 0.25s;
-  transition:border 0.25s;
-}
-
-.resource {
-  margin: 20px 0;
-}

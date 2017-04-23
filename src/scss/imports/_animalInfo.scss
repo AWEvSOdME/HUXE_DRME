@@ -1,0 +1,85 @@
+/* -----------------------------------------------------------------------------------------------
+                                    Animal Info Component
+ ------------------------------------------------------------------------------------------------*/
+
+#vueInfo{
+  position: absolute;
+  padding: 10px;
+  width: 565px;
+  bottom: 15px;
+  top: 365px;
+  right: 15px;
+  float: right;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  z-index: 0;
+  border-radius: 2px;
+  box-shadow: 2px 2px 10px rgba(0,0,0,.2);
+}
+
+
+// ---------------------- AnimalInfo Field --------------------------------------------------------
+
+.animalInfo{
+  background-color: #fbf9ff;
+  width: 100%;
+  max-height: 53%;
+
+}
+
+.infoText{
+  text-align: justify;
+  margin: 5px;
+}
+
+.resultDiv{
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 200px;
+  height: 172px;
+  border:solid #d6d6d6 thin;
+}
+
+#selectedImg{
+  display: block;
+  width: auto;
+  max-height: 70px;
+  margin: 15px auto 15px auto;
+}
+
+#selectedIcon{
+  display: block;
+  width: 25%;
+  margin: 15px auto 0 auto;
+}
+
+p.selectingResult{
+  font-size: 90%;
+  margin: 5px;
+  text-align: center;
+}
+p.selectingAnimal{
+  font-size: 110%;
+  margin: 5px;
+  text-align: center;
+}
+
+.animal_img_right
+{
+  float:right;
+  width:120px;
+  height: auto;
+  margin: 10px 0 5px 10px;
+}
+
+.animal_img_left
+{
+  float:left;
+  width:120px;
+  height: auto;
+  margin: 10px 10px 5px 0;
+}
+
+
+
