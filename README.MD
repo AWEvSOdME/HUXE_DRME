@@ -19,9 +19,6 @@ The tracking data used is from [www.movebank.org](http://www.movebank.org). To u
 
 
 
-
-
-####Studies
 | Study | Study ID |
 |--------------------------------------------------------|-----------|
 | White Stork Lithuania GPS 2015 | 92053942 |
