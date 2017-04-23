@@ -304,11 +304,16 @@
 
         created: function () {
 
-            var test = Vue.cookie.get('login')
+            var checkEmpty = Vue.cookie.get('login')
 
-            if(test == null)
+            if(checkEmpty == null)
             {
+
                 Vue.cookie.set('login', 'false', 1)
+
+            }else {
+                this.userID = Vue.cookie.get('cUserID')
+                console.log(this.userID + 'userCookie')
             }
 
 
@@ -487,6 +492,7 @@
                         if (user.emailVerified) {
 
 
+                            Vue.cookie.set('cUserID', user.uid, 1)
 
                             self.userID = user.uid;
                             self.showModal = false;
@@ -521,6 +527,7 @@
             signOut: function () {
                 var self = this;
 
+
                 firebase.auth().signOut().then(function() {
                     console.log("sign out")
                     self.loggedin = 'false';
@@ -528,6 +535,7 @@
                     self.makeActive('');
                     Vue.cookie.set('login', 'false', 1)
                     self.$emit('login', 'false')
+                    Vue.cookie.delete('cUserID')
                 }).catch(function(error) {
                     // An error happened.
                 });
