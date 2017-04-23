@@ -46,6 +46,7 @@
                     <a href="#" class="newMod" v-on:click="makeModalActive('new')">New Account</a>
                 </nav>
             </div>
+
             <!-- LOGIN and SIGN-IN Modal Component-->
             <div slot = body>
                 <!-- Login Tab -->
@@ -65,6 +66,7 @@
                         </form>
                     </div>
                 </div>
+
                 <!-- Sign In Tab -->
                 <div v-else-if="retActive()==='new'">
                     <div class="modhalfleft">
@@ -119,6 +121,7 @@
                         </form>
                     </div>
                 </div>
+
                 <!-- Impressum Tab -->
                 <div  v-if="retActive()==='imp'">
                     <div class="modhalfleft">
@@ -235,10 +238,8 @@
             }
             else {
                 this.userID = Vue.cookie.get('cUserID');
-                console.log(this.userID + 'userCookie');
             }
             this.loggedin = Vue.cookie.get('login');
-            console.log('The User is logged in: ' + this.loggedin);
         },
 
         mounted: function(){
@@ -289,10 +290,12 @@
         },
 
         methods: {
-            makeActive: function (beitem) {
-                this.active = beitem;
+            //make Modal active
+            makeActive: function (activate) {
+                this.active = activate;
             },
 
+            //make Modal Tab active
             makeModalActive: function(item){
                 this.activeMod = item;
             },
@@ -301,13 +304,13 @@
                 return this.activeMod;
             },
 
+            // create new user
             authentication: function () {
                 const self = this;
                 if (this.isValid){
                     firebase.auth().createUserWithEmailAndPassword(this.createuser.lemail, this.createuser.password).then(function(user) {
                         user.sendEmailVerification();
                         firebase.auth().signOut();
-                        console.log('Verification Mail was sent');
                         self.mailSent = true;
                         self.outputCreated = 'Verification Mail was sent to: ' + self.createuser.lemail + '. Please also check your spam folder!';
                         self.createuser.lemail='';
@@ -331,6 +334,7 @@
                 }
             },
 
+            // Login
             login: function () {
                 const self = this;
                 if (this.logInVal === 'true'){
@@ -345,6 +349,7 @@
                 });
             },
 
+            // observe user state
             check: function () {
                 // Check function for Login and writing user.uid
                 const self = this;
@@ -393,6 +398,7 @@
                 firebase.database().ref('userID' + this.userID).push(this.cAnimal);
             },
 
+            //Firebase query
             querydb: function () {
                 const self = this;
                 let query = firebase.database().ref('userID' + this.userID).orderByKey();
@@ -406,6 +412,7 @@
                     });
             },
 
+            // Change tile layer map
             changeMap: function() {
                 this.$emit('update', this.selectMap.value);
             }

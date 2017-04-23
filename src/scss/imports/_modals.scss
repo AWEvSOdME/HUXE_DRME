@@ -133,6 +133,7 @@ input[type="submit"], input[class="submitSave"]{
   outline: none;
   cursor: url("../../img/cursor_foot_black.png"), auto;
   text-align: center;
+  font-family: "Raleway", sans-serif;
 }
 
 input.createButton{
@@ -163,6 +164,13 @@ span.mailInfo{
 
 // ---------------------- MODAL MENU---------------------------------------------------------------
 
+a.emptyMod{
+  padding: 12px 15px 16px 15px;
+  width: 193px;
+  background-color: #eaeaea;
+  box-shadow:0px -1px 3px 3px #e2e2e2 inset;
+}
+
 a.logMod, a.newMod{
   padding: 12px 15px 16px 15px;
   cursor: url("../../img/cursor_foot_black.png"), auto;
@@ -171,22 +179,18 @@ a.logMod, a.newMod{
   width: 193px;
   text-align: center;
 }
-a.emptyMod{
-  padding: 12px 15px 16px 15px;
-  width: 193px;
-  background-color: #eaeaea;
-  box-shadow:0px -1px 3px 3px #e2e2e2 inset;
-}
-.empty{
-  color: transparent !important;
-  line-height: 0;
-}
+
 a.settMod{
   padding: 12px 15px 16px 15px;
   width: 193px;
   background-color: #ffffff;
   box-shadow: none;
   text-align: center;
+}
+
+.empty{
+  color: transparent !important;
+  line-height: 0;
 }
 
 nav.log .logMod,

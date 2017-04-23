@@ -1,48 +1,48 @@
 <template lang="html" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
     <div id="vue">
-        <vmap  :position="position" :zoom="zoom" @move="onMove" @zoom="onZoom" @click="onClick" >
+        <!-- The Leaflet Map, Markers, etc. -->
+        <vmap  :position="position" :zoom="zoom" @zoom="onZoom" @click="onClick" >
             <vmap-tile-layer v-if="selectMap.value === 'map1'" url="http://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}" attribution="Imagery from <a href='http://giscience.uni-hd.de/'>GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy;"></vmap-tile-layer>
             <vmap-tile-layer v-if="selectMap.value === 'map2'" url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}" attribution="Tiles &copy; Esri"></vmap-tile-layer>
             <vmap-tile-layer v-if="selectMap.value === 'map3'" url="http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png" attribution="&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"></vmap-tile-layer>
             <vmap-tile-layer v-if="selectMap.value === 'map4'" url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" attribution="Tiles &copy; Esri"></vmap-tile-layer>
 
-            <vmap-marker @drag="onDrag" v-for="markerPosition in markersOld" v-bind:key="markerPosition.id" :latlng="markerPosition.positionM" :visible="markerPosition.visible" :icon="markerPosition.icon" :draggable="markerPosition.draggable" :popupcontent="' <p> Class: ' + markerPosition.animalclass + '<br /> Species: ' + markerPosition.species + '<br /> Family: ' + markerPosition.family + '<br /> Additional Info: ' + markerPosition.additionalInfo + '<br /> Date: ' + markerPosition.date + '.</p>'"></vmap-marker>
-            <vmap-polyline :latlngs="polyPos"></vmap-polyline>
+            <!--Firebase Markers-->
+            <vmap-marker @drag="onDrag" v-for="markerPosition in markers" v-bind:key="markerPosition.id" :latlng="markerPosition.positionM" :visible="markerPosition.visible" :icon="markerPosition.icon" :draggable="markerPosition.draggable" :popupcontent="' <p> Class: ' + markerPosition.animalclass + '<br /> Species: ' + markerPosition.species + '<br /> Family: ' + markerPosition.family + '<br /> Additional Info: ' + markerPosition.additionalInfo + '<br /> Date: ' + markerPosition.date + '.</p>'"></vmap-marker>
 
-            <!--PolyLine's Marker-->
+            <!--Movebanke-Data: Show-Animal - Marker & Path-->
             <vmap-marker v-for="markerPolyPosition in polyMarkerPos" v-if="markerPolyPosition.popupTitle!=''" v-bind:key="markerPolyPosition" :latlng="markerPolyPosition.positionM" :visible="markerPolyPosition.visible" :icon="markerPolyPosition.icon" :draggable="markerPolyPosition.draggable" :popupcontent="'<img id=' + popupImg +' src=' + selectAnimal.iconPop +' ><p> Species: ' + markerPolyPosition.popupName + '<br /> Specific animal: ' + markerPolyPosition.popupTitle + '<br /> Genus: ' + markerPolyPosition.popupText + '.</p>'"></vmap-marker>
-
+            <vmap-polyline :latlngs="polyPos"></vmap-polyline>
         </vmap>
-        <div class="input">
 
+        <div class="input">
             <!-- INPUT MENU -->
             <nav v-bind:class="inputMenu" v-on:click.prevent class="selectMenu">
-                <a href="#" class="show" v-on:click="setInputMenu('show')">Show animal</a><span class="sep">   |   </span>
+                <a href="#" class="show" v-on:click="setInputMenu('show')">SHOW ANIMAL</a><span class="sep">   |   </span>
                 <a href="#" v-show="logChecker==='true'" class="addEna" v-on:click="setInputMenu('add')" >Add animal</a> <span v-show="logChecker==='true'" class="sep">   |   </span>
                 <a href="#" v-show="logChecker==='true'" class="deleteEna" v-on:click="setInputMenu('delete')">Delete animal</a>
                 <a href="#" v-show="logChecker==='false'" class="addDis" v-on:click="setInputMenu('add')" >Add animal</a><span v-show="logChecker==='false'" class="sep">   |   </span>
-                <a href="#" v-show="logChecker==='false'" class="deleteDis" v-on:click="setInputMenu('delete')">Delete animal</a>
+                <a href="#" v-show="logChecker==='false'" class="deleteDis" v-on:click="setInputMenu('delete')" >Delete animal</a>
             </nav>
-
             <hr>
 
             <!-- Menu SHOW -->
             <div v-show="inputMenu === 'show'">
-
                 <div class="selectText">
-                <span class="textNormal">Species:</span>
-                <select v-model="selectAnimal"  >
-                    <option class="optionAnimal" v-for="animal in animals" :value="animal">{{ animal.text }}</option>
-                </select></div>
+                    <span class="textNormal">Species:</span>
+                    <select v-model="selectAnimal"  >
+                        <option class="optionAnimal" v-for="animal in animals" :value="animal">{{ animal.text }}</option>
+                    </select>
+                </div>
 
                 <div v-show="show">
                     <div class="selectText">
-                    <span class="textNormal">Specific Animal:</span>
-                    <select v-model="selectSpecificAnimal" v-on:mouseleave="setSelectingDone(true)">
-                        <option v-for="animalname in animalnames" v-bind:value="animalname.text">{{ animalname.text }}</option>
-                    </select></div>
+                        <span class="textNormal">Specific Animal:</span>
+                        <select v-model="selectSpecificAnimal" v-on:mouseleave="setSelectingDone(true)">
+                            <option v-for="animalname in animalnames" v-bind:value="animalname.text">{{ animalname.text }}</option>
+                        </select>
+                    </div>
                 </div>
-
 
                 <div class="resultDiv" v-show="show">
                     <img id="selectedImg" v-bind:src="selectAnimal.iconPop">
@@ -53,74 +53,57 @@
 
                 <table class="selectButtonDiv" >
                     <tr>
-                        <td><button v-show="selectingDone" class="selectButton" @click="getData(selectAnimal.urlStudyId, selectSpecificAnimal, selectAnimal.urlSensor), setInputMenu('waiting')">SHOW</button></td>
-                        <td rowspan="2"><vue-slider v-if="selectingCompleteDone" id="slider" ref="slider" v-bind="demo.default" v-model="demo.default.value"></vue-slider>
+                        <td>
+                            <button v-show="selectingDone" class="selectButton" @click="getData(selectAnimal.urlStudyId, selectSpecificAnimal, selectAnimal.urlSensor), setInputMenu('waiting')">SHOW</button></td>
+                        <td rowspan="2">
+                            <vue-slider v-if="selectingCompleteDone" id="slider" ref="slider" v-bind="slider.default" v-model="slider.default.value"></vue-slider>
                             <div id="sliderInfo"><span v-if="selectingCompleteDone" class="sliderInfoSpan" >{{sliderHelp}}</span></div></td>
                     </tr>
                     <tr>
-                        <td><button v-show="selectingCompleteDone" class="selectButton" @click="hideAnimal()">CLEAR</button></td>
-
-
+                        <td>
+                            <button v-show="selectingCompleteDone" class="selectButton" @click="hideAnimal()">CLEAR</button></td>
                     </tr>
-
                 </table>
-
-
-
-
             </div>
 
             <!-- Menu ADD -->
             <div v-show="inputMenu === 'add'">
-
-
                 <div v-show="logChecker ==='true'">
-                <!--p class="textNormal">Animal Class:
-                <select v-model="selectAnimalClass"  >
-                    <option v-for="animal in animalClass" :value="animal">{{ animal.class }}</option>
-                </select></p-->
-
-
-                <form id="form4" v-on:submit.prevent="activateAdding(true), outputAnimalNew()">
-                    <div class="form-group">
-                        <table class="animalTable">
-                            <tr>
-                                <td><label class="animalLabel">Class</label></td>
-                                <td><label class="animalLabel">Date</label></td>
-                            </tr>
-                            <tr>
-                                <td class="animalTableField"><select v-model="selectAnimalClass"  >
-                                    <option v-for="animal in animalClass" :value="animal">{{ animal.class }}</option>
-                                </select></td>
-                                <td class="animalTableField"><datepicker :value="state.date" :format="state.format" v-model="newAnimal.timestamp"></datepicker></td>
-                            </tr>
-                            <tr>
-                                <td><label class="animalLabel">Species</label></td>
-                                <td><label class="animalLabel">Family</label></td>
-                            </tr>
-                            <tr>
-                                <td><input type="animal" v-model="newAnimal.species" placeholder=""></td>
-                                <td><input type="animal" v-model="newAnimal.family" placeholder=""></td>
-                            </tr>
-                            <tr>
-                                <td><label class="animalLabel">Additional Info</label></td>
-                                <td rowspan="2" class="animalTableButton">
-                                    <input v-if="addState === 'beforeadd'" type="submit" value="ADD" class="addButtonDis" disabled="true">
-                                    <input v-if="addState === 'add'" type="submit" value="ADD">
-                                    <input v-if="addState === 'save'" v-on:click="saveAnimal()" class="submitSave" type="reset" value="SAVE">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><input type="animal" v-model="newAnimal.additionalInfo" placeholder=""></td>
-
-                            </tr>
-
-                        </table>
-
-
-                    </div>
-                </form>
-
+                    <form id="form4" v-on:submit.prevent="activateAdding(true), outputAnimalNew()">
+                        <div class="form-group">
+                            <table class="animalTable">
+                                <tr>
+                                    <td><label class="animalLabel">Class</label></td>
+                                    <td><label class="animalLabel">Date</label></td>
+                                </tr>
+                                <tr>
+                                    <td class="animalTableField">
+                                        <select v-model="selectAnimalClass"  >
+                                            <option v-for="animal in animalClass" :value="animal">{{ animal.animalclass }}</option>
+                                        </select></td>
+                                    <td class="animalTableField"><datepicker :value="state.date" :format="state.format" v-model="newAnimal.timestamp"></datepicker></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="animalLabel">Species</label></td>
+                                    <td><label class="animalLabel">Family</label></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="animal" v-model="newAnimal.species" placeholder=""></td>
+                                    <td><input type="animal" v-model="newAnimal.family" placeholder=""></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="animalLabel">Additional Info</label></td>
+                                    <td rowspan="2" class="animalTableButton">
+                                        <input v-if="addState === 'beforeadd'" type="submit" value="ADD" class="addButtonDis" disabled="true">
+                                        <input v-if="addState === 'add'" type="submit" value="ADD">
+                                        <input v-if="addState === 'save'" v-on:click="saveAnimal()" class="submitSave" type="reset" value="SAVE"></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="animal" v-model="newAnimal.additionalInfo" placeholder=""></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </form>
 
                 <div class="resultDivAdd" v-if="showSelectedClass">
                     <img id="selectedIcon" v-bind:src="selectAnimalClass.imgSrc"><br>
@@ -129,14 +112,9 @@
                     <p class="selectingResult">Family: <span>{{ newAnimal.family }}</span></p>
                 </div><br>
 
-
-                </div>
+            </div>
                 <div v-show="logChecker === 'false'">
-                    <p>NOT LOGGED IN</p>
                 </div>
-
-                <!--button class="selectButton" @click="activateAdding(true)">Add Marker</button-->
-                <!--button-- class="selectButton" @click="activateAdding(false)">Stop Adding</button--><br><br>
             </div>
 
             <!-- Menu DELETE -->
@@ -145,7 +123,7 @@
                     <p> Here are delete things happening</p>
                 </div>
                 <div v-show="logChecker === 'false'">
-                    <p>NOT LOGGED IN</p>
+
                 </div>
             </div>
 
@@ -156,32 +134,22 @@
                     <p class="selectingResult"> Waiting for requested Data... </p>
                 </div>
             </div>
-
         </div>
 
         <!-- Animal Info -->
-        <div><Vinfo id="vueInfo" :animal="animalInfo"></Vinfo></div>
+        <div>
+            <Vinfo id="vueInfo" :animal="animalInfo"></Vinfo>
+        </div>
 
         <!-- Navigation -->
         <div>
             <img id="logo" src="../../img/logo.png">
-
-
             <Vnavi ref="refNavi" id="vueNavi" @update="changeMap" @login="changeLog" @pushData="fetchData" v-bind:cAnimal="newAnimal"></Vnavi>
-
-            <!--Vnavi id="vueNavi" @changeMap="destroyReaction(reaction)" :reaction="reaction"></Vnavi-->
-            <!--Vnavi id="vueNavi" :reaction="reaction" @update="changeMap""></Vnavi-->
-
         </div>
-
-
     </div>
-
 </template>
 
 <script>
-
-
 
     import Map from './Map.vue';
     import Info from './AnimalInfo.vue';
@@ -192,68 +160,61 @@
     import ScaleLoader from 'vue-spinner/src/ScaleLoader.vue'
     import vueSlider from 'vue-slider-component';
     import Datepicker from 'vuejs-datepicker';
-
+    import L from 'leaflet';
     import vueCookie from 'vue-cookie';
+
     Vue.use(vueCookie);
+    const main = require('../../js/data.js');
 
+    const imgWheSrc =  '../../img/icon_wheatear.png';
+    const imgWhiSrc =  '../../img/icon_whitestork.png';
+    const imgBlaSrc =  '../../img/icon_blackstork.png';
+    const imgFalSrc =  '../../img/icon_false_killer_whale.png';
+    const imgAgoSrc =  '../../img/icon_agouti.png';
+    const imgAfrSrc =  '../../img/icon_african_elephant.png';
+    const imgLioSrc =  '../../img/icon_lion.png';
+    const imgOceSrc =  '../../img/icon_ocelot.png';
+    const imgSkiSrc =  '../../img/icon_black_skimmer.png';
 
+    const imgMamSrc =  '../../img/icon_mammal.png';
+    const imgBirSrc =  '../../img/icon_bird.png';
+    const imgFisSrc =  '../../img/icon_fish.png';
+    const imgRepSrc =  '../../img/icon_reptile.png';
+    const imgInsSrc =  '../../img/icon_insect.png';
+    const imgAmpSrc =  '../../img/icon_amphib.png';
 
-    var main = require('../../js/data.js');
+    const imgWhePop = '../../img/wheatear.png';
+    const imgWhiPop = '../../img/whitestork.png';
+    const imgBlaPop = '../../img/blackstork.png';
+    const imgFalPop = '../../img/false_killer_whale.png';
+    const imgAgoPop = '../../img/agouti.png';
+    const imgAfrPop = '../../img/african_elephant.png';
+    const imgLioPop = '../../img/lion.png';
+    const imgOcePop = '../../img/ocelot.png';
+    const imgSkiPop = '../../img/black_skimmer.png';
+    const iconShadow = '../../img/marker-shadow.png';
 
-    var imgWheSrc =  '../../img/icon_wheatear.png';
-    var imgWhiSrc =  '../../img/icon_whitestork.png';
-    var imgBlaSrc =  '../../img/icon_blackstork.png';
-    var imgFalSrc =  '../../img/icon_false_killer_whale.png';
-    var imgAgoSrc =  '../../img/icon_agouti.png';
-    var imgAfrSrc =  '../../img/icon_african_elephant.png';
-    var imgLioSrc =  '../../img/icon_lion.png';
-    var imgOceSrc =  '../../img/icon_ocelot.png';
-    var imgSkiSrc =  '../../img/icon_black_skimmer.png';
+    const iconWhe = L.icon({iconUrl:  imgWheSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    const iconWhi = L.icon({iconUrl:  imgWhiSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    const iconBla = L.icon({iconUrl:  imgBlaSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    const iconFal = L.icon({iconUrl:  imgFalSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    const iconAgo = L.icon({iconUrl:  imgAgoSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    const iconAfr = L.icon({iconUrl:  imgAfrSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    const iconLio = L.icon({iconUrl:  imgLioSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    const iconOce = L.icon({iconUrl:  imgOceSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    const iconSki = L.icon({iconUrl:  imgSkiSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
 
-    var imgMamSrc =  '../../img/icon_mammal.png';
-    var imgBirSrc =  '../../img/icon_bird.png';
-    var imgFisSrc =  '../../img/icon_fish.png';
-    var imgRepSrc =  '../../img/icon_reptile.png';
-    var imgInsSrc =  '../../img/icon_insect.png';
-    var imgAmpSrc =  '../../img/icon_amphib.png';
+    const iconMam = L.icon({iconUrl:  imgMamSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    const iconBir = L.icon({iconUrl:  imgBirSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    const iconFis = L.icon({iconUrl:  imgFisSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    const iconRep = L.icon({iconUrl:  imgRepSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    const iconIns = L.icon({iconUrl:  imgInsSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
+    const iconAmp = L.icon({iconUrl:  imgAmpSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
 
-    var imgWhePop = '../../img/wheatear.png';
-    var imgWhiPop = '../../img/whitestork.png';
-    var imgBlaPop = '../../img/blackstork.png';
-    var imgFalPop = '../../img/false_killer_whale.png';
-    var imgAgoPop = '../../img/agouti.png';
-    var imgAfrPop = '../../img/african_elephant.png';
-    var imgLioPop = '../../img/lion.png';
-    var imgOcePop = '../../img/ocelot.png';
-    var imgSkiPop = '../../img/black_skimmer.png';
-
-    var iconShadow = '../../img/marker-shadow.png';
-
-    var iconWhe = L.icon({iconUrl:  imgWheSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-    var iconWhi = L.icon({iconUrl:  imgWhiSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-    var iconBla = L.icon({iconUrl:  imgBlaSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-    var iconFal = L.icon({iconUrl:  imgFalSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-    var iconAgo = L.icon({iconUrl:  imgAgoSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-    var iconAfr = L.icon({iconUrl:  imgAfrSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-    var iconLio = L.icon({iconUrl:  imgLioSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-    var iconOce = L.icon({iconUrl:  imgOceSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-    var iconSki = L.icon({iconUrl:  imgSkiSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-
-    var iconMam = L.icon({iconUrl:  imgMamSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-    var iconBir = L.icon({iconUrl:  imgBirSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-    var iconFis = L.icon({iconUrl:  imgFisSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-    var iconRep = L.icon({iconUrl:  imgRepSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-    var iconIns = L.icon({iconUrl:  imgInsSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-    var iconAmp = L.icon({iconUrl:  imgAmpSrc, shadowUrl: iconShadow, iconSize: [40, 56], iconAnchor: [20, 56], shadowSize:[50, 50], shadowAnchor: [14, 50], popupAnchor:  [0, -60]});
-
-    var coords, popupInfo, popupName, popupTaxName, nameId, nameIdArray, requestUrl, times;
-    var finished = false; var drag = false;var dragtrue = true;
-    var counterArr = []; var polyArray = []; var timeArray = [];
-    var counter = 1; var counterList = 0;
-    var i = 0;
-    var localAnimalData = [];
-
-
+    let coords, popupInfo, popupName, popupTaxName, nameId, nameIdArray, requestUrl, times;
+    let finished = false; let drag = false; let dragtrue = true;
+    let counterArr = []; let polyArray = []; let timeArray = []; let localAnimalData = [];
+    let counter = 1; let counterList = 0;
 
     export default {
         name: 'app',
@@ -268,16 +229,14 @@
             Datepicker,
             Vnavi: Navi,
         },
+
       data () {
         return {
-            reaction: '',
-
-            lat: 49.1,
+            lat: 0,
             lng: 0,
             zoom: 2,
-            message: '1',
             selectAnimal: { text: '', genus: '', iconSelected: '', imgSrc: '', urlStudyId: '', urlPublic: '', urlSensor: '', iconPop: ''},
-            selectAnimalClass: { class: '', genus: '', iconSelected: '', imgSrc: ''},
+            selectAnimalClass: { animalclass: '', genus: '', iconSelected: '', imgSrc: ''},
             selectSpecificAnimal: { text: '', genus: ''},
             animals: [
                 { text: 'Wheatear', genus: 'Oenanthe oenanthe', iconSelected: iconWhe, imgSrc: imgWheSrc, urlStudyId: '58672150', urlSensor: 'solar-geolocator', iconPop: imgWhePop},
@@ -294,14 +253,14 @@
                 { text: '', genus: ''}
             ],
             animalClass: [
-                { class: 'Mammal', iconSelected: iconMam, imgSrc: imgMamSrc},
-                { class: 'Bird', iconSelected: iconBir, imgSrc: imgBirSrc},
-                { class: 'Fish', iconSelected: iconFis, imgSrc: imgFisSrc},
-                { class: 'Reptile', iconSelected: iconRep, imgSrc: imgRepSrc},
-                { class: 'Insect', iconSelected: iconIns, imgSrc: imgInsSrc},
-                { class: 'Amphib', iconSelected: iconAmp, imgSrc: imgAmpSrc}
+                { animalclass: 'Mammal', iconSelected: iconMam, imgSrc: imgMamSrc},
+                { animalclass: 'Bird', iconSelected: iconBir, imgSrc: imgBirSrc},
+                { animalclass: 'Fish', iconSelected: iconFis, imgSrc: imgFisSrc},
+                { animalclass: 'Reptile', iconSelected: iconRep, imgSrc: imgRepSrc},
+                { animalclass: 'Insect', iconSelected: iconIns, imgSrc: imgInsSrc},
+                { animalclass: 'Amphib', iconSelected: iconAmp, imgSrc: imgAmpSrc}
             ],
-            markersOld: [
+            markers: [
                 { positionM : {lat:50.622, lng: 6.174}, visible: true, icon: iconBir, draggable: drag, animalclass: 'Bird', species: 'Wheatear', family: 'Muscicapidae', additionalInfo: 'female', date: '20-2-2005' },
                 { positionM : {lat:60.63, lng: 2.054}, visible: true, icon: iconFis, draggable: drag, animalclass: 'Fish', species: 'Cat Shark', family: 'Scyliorhinidae', additionalInfo: 'young animal', date: '20-2-2012' }],
             pos: {lat:49.658, lng: 6.774},
@@ -316,17 +275,13 @@
             selectingDone: false,
             selectingCompleteDone: false,
             doAdd: false,
-            alertMessage: 'You first have to select a specific animal!',
             popupImg: 'popupImg',
             selectMap: {name: 'OpenMapSurfer Roads', value: 'map1'},
             maps: [{name: 'OpenMapSurfer Roads', value: 'map1'}, {name: 'Esri WorldStreetMap', value: 'map2'}, {name: 'OpenStreetMap BlackandWhite', value: 'map3'}, {name: 'Esri WorldImagery', value: 'map4'}],
             spinner: {loading: true, color: 'lightgrey', height: '100', width: '100'},
-            state: {
-                date: new Date(2017, 4,  24),
-                format: 'MMMM dd yyyy'
-            },
+            state: {date: new Date(2017, 4,  24), format: 'MMMM dd yyyy'},
             inputMenu: 'show',
-            demo: {
+            slider: {
                 default: {
                     value: 0,
                     width: 170,
@@ -337,99 +292,64 @@
                     min: 0,
                     max: 100,
                     interval: 1,
-                    disabled: false,
                     show: true,
-                    realTime: false,
                     tooltip: 'hover',
                     clickable: true,
                     tooltipDir: 'top',
-                    tooltipStyle: {
-                        "backgroundColor": "#666",
-                        "borderColor": "#666"
-                    },
-                    piecewise: false,
-                    lazy: false,
-                    reverse: false,
+                    tooltipStyle: {"backgroundColor": "#666","borderColor": "#666"},
                     speed: 0.5,
-
-                    formatter: null,
-                    bgStyle: null,
-                    sliderStyle:{
-                        "backgroundColor": "#f3f0f2"
-                    },
-                    processStyle: {
-                        "backgroundColor": "#424041"
-                    },
-                    piecewiseStyle: null,
+                    sliderStyle:{"backgroundColor": "#f3f0f2"},
+                    processStyle: {"backgroundColor": "#424041"},
                     data: []
                 }
             },
-            newAnimal: {
-                animalclass: '', species: '', family: '', additionalInfo: '', timestamp: '', lat: '', lng: ''
-            },
+            newAnimal: {animalclass: '', species: '', family: '', additionalInfo: '', timestamp: '', lat: '', lng: ''},
             listAnimal: [],
-
             animalInfo: '',
             addState: 'beforeadd',
-
             sliderHelp: '(drag the slider to move animal on map dependent on time!)',
-
             logChecker: 'false',
             createFinished: 'false'
-
         }
       },
-        created: function () {
 
-
-
-        },
         mounted: function(){
-
-            if (localStorage.getItem('animal'))
-            {
-                console.log("CreatedFunction")
+            if (localStorage.getItem('animal')) {
                 this.writeMarkerOnRefresh()
-
             }
-
             this.createFinished = 'true'
-
-
-
-
-
-
-
         },
 
         watch: {
-            selectAnimal:function (val, oldVal) {
-                    this.getAnimalName(this.selectAnimal.urlStudyId)
-                    this.show = true
+            selectAnimal:function () {
+                    this.getAnimalName(this.selectAnimal.urlStudyId);
+                    this.show = true;
                     this.selectingDone = false;
                     this.setSelectingCompleteDone(false);
-                    this.animalInfo = this.selectAnimal.text
-                    console.log(this.animalInfo)
+                    this.animalInfo = this.selectAnimal.text;
                     this.sliderHelp = '(drag the slider to move animal on map dependent on time!)'
             },
-            selectAnimalClass: function(val){
-                this.showSelectedClass = true
-                this.doAdd = true
-                this.addState = 'add'
-                this.newAnimal.animalclass = this.selectAnimalClass.class
+
+            selectAnimalClass: function(){
+                this.showSelectedClass = true;
+                this.doAdd = true;
+                this.addState = 'add';
+                this.newAnimal.animalclass = this.selectAnimalClass.animalclass
             },
+
             animalnames:function(val){
                     this.selectSpecificAnimal = val
             },
-            pos: function (val){
+
+            pos: function (){
                 this.zoom = 5;
             },
-            'demo.default.value': function(val){
 
-                var searchTerm = val, index = -1;
-                for(var i = 0, len = timeArray.length; i < len; i++) {
-                    if (timeArray[i].time === searchTerm) {
+            'slider.default.value': function(val){
+
+                let index = -1;
+                for(let i = 0, len = timeArray.length; i < len; i++) {
+                    if (timeArray[i].time === val) {
                         index = i;
                         break;
                     }
@@ -441,12 +361,6 @@
                 if (index != -1) {
                     this.changeMarkerPos(index)
                 }
-
-            },
-            newAnimal: function (){
-                //console.log(this.newAnimal)
-
-                //this.newAnimal.timestamp = this.newAnimal.timestamp.split("")
             },
         },
 
@@ -459,123 +373,75 @@
             }
         },
         methods: {
-            onZoom (data) {
+
+            onZoom: function (data) {
                 this.zoom = data.zoom
             },
-            onMove (data) {
-                //this.lat = data.position.lat
-                //this.lng = data.position.lng
-                //console.log(data.position.lat + '...' + this.lat)
-            },
-            onDrag(data){
-                console.log('data'+data.latlng.lat)
-                console.log('marker' +this.markersOld[this.markersOld.length-1].positionM.lat)
-                this.markersOld[this.markersOld.length-1].positionM.lat = data.latlng.lat
-                //this.markersOld.positionM.lng = data.latlng.lng
 
+            onDrag: function(data){
+                this.markers[this.markers.length-1].positionM.lat = data.latlng.lat;
+                this.markers[this.markers.length-1].positionM.lng = data.latlng.lng;
             },
-            onClick (data) {
 
-                console.log('CLICK')
-                console.log(data.latlng)
-                this.latClick = data.latlng.lat
-                this.lngClick = data.latlng.lng
-                console.log(this.lngClick + '..x..' + this.latClick)
+            onClick: function (data) {
+                this.latClick = data.latlng.lat;
+                this.lngClick = data.latlng.lng;
                 if (this.addingActive) {
-                    this.addMarker(this.selectAnimalClass.iconSelected)
-                    console.log('adding IS active :)')
-                    this.activateAdding(false)
+                    this.addMarker(this.selectAnimalClass.iconSelected);
+                    this.activateAdding(false);
                     this.addState = 'save'
-                    console.log(this.addState)
-                }
-                else {
-                    console.log('adding not active :)')
                 }
             },
-            activateAdding(state){
+
+            activateAdding: function(state){
                 this.addingActive = state;
-
-
-
-
             },
-            activateDragging(state){
-                this.draggingActive = state
+
+            activateDragging: function(state){
+                this.draggingActive = state;
                 if (state){
-
-                        this.$set(this.markersOld[this.markersOld.length-1], 'draggable', state);
-                        console.log('drag me')
-
+                    this.$set(this.markers[this.markers.length-1], 'draggable', state);
                 }
                 else{
-
-                        //this.$set(this.markersOld[counterArr[i]], 'icon', iconWhe);
-                        this.$set(this.markersOld[this.markersOld.length-1], 'draggable', state);
-                        console.log('dont drag me')
-
+                    this.$set(this.markers[this.markers.length-1], 'draggable', state);
                 }
             },
-            removeMarker (index) {
-                this.markers.splice(index, 1)
-            },
-            updateMarkerLat (index, event) {
-                this.markers.splice(index, 1, {
-                    ...this.markers[index],
-                    lat: event.target.value
-                })
-            },
-            updateMarkerLng (index, event) {
-                this.markers.splice(index, 1, {
-                    ...this.markers[index],
-                    lng: event.target.value
-                })
-            },
-            addMarker (){ //add marker to center of map
-                counter = counter+1
-                console.log('counter' + counter)
 
-
-                this.markersOld.push(({
+            addMarker: function (){
+                counter = counter+1;
+                this.markers.push(({
                     positionM: {lat: this.latClick, lng: this.lngClick}, icon: this.selectAnimalClass.iconSelected, draggable: drag, animalclass: this.newAnimal.animalclass, species: this.newAnimal.species, family: this.newAnimal.family, additionalInfo: this.newAnimal.additionalInfo, date: this.newAnimal.timestamp
-                }))
-                //this.$set(this.markersOld[counter], 'icon', iconWhi);
-                this.$set(this.markersOld[counter], 'draggable', dragtrue)
-                counterArr.push(counter)
-                this.doAdd = false
-                this.activateDragging(true)
-
-
-                //console.log(this.newAnimal.timestamp)
-
-
+                }));
+                this.$set(this.markers[counter], 'draggable', dragtrue);
+                counterArr.push(counter);
+                this.doAdd = false;
+                this.activateDragging(true);
             },
-            removeMarkerMy (index) {
+
+            removeMarkerMy: function (index) {
                 this.polyMarkerPos.splice(index, 1)
             },
-            setSelectingDone (done){
+
+            setSelectingDone: function(done){
                 if (this.selectSpecificAnimal != undefined) {
                     this.selectingDone = done;
                 }
             },
-            setSelectingCompleteDone(done){
+
+            setSelectingCompleteDone: function(done){
                 if (this.selectSpecificAnimal != undefined) {
                     this.selectingCompleteDone = done;
                 }
             },
-            doAlert(alertMessage){
-                alert('Error: ' + alertMessage)
-            },
-            getData(si, ai, st){ //get Movebank Data from single animal
 
+            //Movebank Data Request with Study ID, Animal ID and Sensor Type
+            getData: function(si, ai, st){
                 requestUrl = 'https://www.movebank.org/movebank/service/json-auth?study_id=' + si +'&individual_local_identifiers[]=' + ai + '&sensor_type=' + st + '';
-                //console.log('url: ' + requestUrl);
                 this.polyPos = [];
                 this.polyMarkerPos = [];
-                this.demo.default.data = [];
-                var self = this;
-
+                this.slider.default.data = [];
+                const self = this;
                 $.when(main.doRequest(requestUrl)).done(function(data){
-                    //console.log(data); //all requested data of the animal in array
                     popupName = data.individuals[0].individual_local_identifier;
                     popupTaxName = data.individuals[0].individual_taxon_canonical_name;
                     popupInfo = {name: popupName, taxName: popupTaxName };
@@ -585,21 +451,18 @@
                     timeArray = [];
                     self.removeMarkerMy(1);
 
-                    // loop through data array, write all coordinates into polyArray var.
-                    var i, x, y, j, t;
+                    // loop through data array, write all coordinates into polyArray.
+                    let i, x, y, j, t;
                     for (i in data.individuals[0].locations){
                         x = data.individuals[0].locations[i].location_lat;
                         y = data.individuals[0].locations[i].location_long;
                         t = data.individuals[0].locations[i].timestamp;
-
                         t = self.convertTimestamp(t);
-
                         coords = {lat: x, lng: y };
                         times = {time: t};
-
                         polyArray.push(coords);
                         timeArray.push(times);
-                    };
+                    }
 
                     // moving to path
                     self.lat = null; self.lng = null;
@@ -612,11 +475,10 @@
                             lat: polyArray[j].lat,
                             lng: polyArray[j].lng,
                             time: timeArray[j].time
-                        }))
+                        }));
                         //TimeSlider Data Values
-                        self.demo.default.data.push(self.polyPos[j].time)
-                    };
-                    //console.log(self.polyPos); //check if there is output
+                        self.slider.default.data.push(self.polyPos[j].time)
+                    }
 
                     //Add Marker to end of Polyline (with Popup)
                     self.polyMarkerPos.push(({
@@ -626,83 +488,70 @@
                         popupTitle: popupInfo.name,
                         popupText: self.selectAnimal.genus,
                         time: timeArray[0]
-                    }))
-
-                    //TimeSlider start value
-                    self.demo.default.value = self.polyPos[0].time;
-
-                    self.setSelectingCompleteDone(true)
-                    self.setInputMenu('show')
-
+                    }));
+                    self.slider.default.value = self.polyPos[0].time;
+                    self.setSelectingCompleteDone(true);
+                    self.setInputMenu('show');
                     finished = true;
-
                 })
-
             },
-            getAnimalName(studyId){
+
+            // Movebank Request to list all individual Animals for each animalclass
+            getAnimalName: function(studyId){
                 requestUrl = 'https://www.movebank.org/movebank/service/json-auth?&entity_type=individual&study_id='+ studyId +'';
-
-                var self = this;
-
+                const self = this;
                 $.when(main.doRequest(requestUrl)).done(function(data) {
-                    var i, id, name, sensor;
-                    var idArray = [];
-                    var nameArray = [];
-
+                    let id, name;
+                    let idArray = [];
+                    let nameArray = [];
                     nameIdArray = [];
                     self.animalnames = [];
-
-                    for (i in data) {
-                        id = data[i].id;
-                        name = data[i].local_identifier;
-
+                    for (let element of data) {
+                        id = element.id;
+                        name = element.local_identifier;
                         if (name.includes('cal') == false) {
-                            //console.log(name);
                             idArray.push(id);
                             nameArray.push(name);
                             nameId = {local_identifier: name, idValue: id};
                             nameIdArray.push(nameId);
                         }
                     }
-                    var j;
-                    for (j in nameIdArray){
+                    for (let element of nameIdArray){
                         self.animalnames.push(({
-                            text: nameIdArray[j].local_identifier,
-                            genus: nameIdArray[j].idValue
+                            text: element.local_identifier,
+                            genus: element.idValue
                         }))
                     }
                 })
             },
-            setInputMenu(val){
-                this.inputMenu = val
-                this.animalInfo = val
-                //console.log(val)
-                if (val != 'show') {
-                    //this.selectingDone = false
-                    //this.selectAnimal = ''
-                }
-                else{
+
+            //show content dependent on selected menu or animal
+            setInputMenu: function(val){
+                this.inputMenu = val;
+                this.animalInfo = val;
+                if (val === 'show') {
                     this.animalInfo = this.selectAnimal.text
                 }
+                if (this.logChecker === 'false' && val != 'show'){
+                    this.animalInfo = 'notInlogged'
+                }
             },
-            convertTimestamp (unix_timestamp){
 
-                var a = new Date(unix_timestamp);
-                var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                var year = a.getFullYear();
-                var month = months[a.getMonth()];
-                var date = a.getDate();
-                var hour = a.getHours();
-                var min = a.getMinutes();
-                var sec = a.getSeconds();
-                var time = date + ' ' + month + '. ' + year + ', ' + hour + ':' + min ;
-
+            // convert the timestamp
+            convertTimestamp: function(unix_timestamp){
+                const a = new Date(unix_timestamp);
+                const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                let year = a.getFullYear();
+                let month = months[a.getMonth()];
+                let date = a.getDate();
+                let hour = a.getHours();
+                let min = a.getMinutes();
+                let time = date + ' ' + month + '. ' + year + ', ' + hour + ':' + min ;
                 return time;
             },
-            changeMarkerPos (val){
 
-                this.polyMarkerPos.splice(0, this.polyMarkerPos.length)
-
+            changeMarkerPos: function(val){
+                this.polyMarkerPos.splice(0, this.polyMarkerPos.length);
                 this.polyMarkerPos.push(({
                     positionM: polyArray[val], icon: this.selectAnimal.iconSelected,
                     visible: true,
@@ -712,72 +561,50 @@
                     time: timeArray[val]
                 }))
             },
-            hideAnimal (val){
-                this.polyPos = []
-                this.polyMarkerPos = []
+
+            hideAnimal: function(){
+                this.polyPos = [];
+                this.polyMarkerPos = [];
                 this.selectingCompleteDone = false
             },
-            changeMap(param) {
+
+            //called on emit
+            changeMap: function(param) {
                 this.selectMap.value = param;
-                console.log(param);
             },
 
-            outputAnimalNew(){
-                console.log(this.newAnimal)
-
+            outputAnimalNew: function(){
                 if(this.newAnimal.timestamp != '') {
-                    var timeString = this.newAnimal.timestamp.toDateString()
-                    console.log('lala ' + timeString)
+                    let timeString = this.newAnimal.timestamp.toDateString();
                     this.newAnimal.timestamp = timeString
                 }
             },
-            saveAnimal(){
-                this.activateDragging(false)
-                //this.activateAdding(false)
-                this.addState = 'add'
-                console.log('SAVEIT')
 
-                this.newAnimal.lat = this.markersOld[this.markersOld.length-1].positionM.lat
-                this.newAnimal.lng = this.markersOld[this.markersOld.length-1].positionM.lng
-
-
-                //var test = this.$refs;
-                //test.refNavi.addAnimal();
-
+            // Save new added animal to database
+            saveAnimal: function(){
+                this.activateDragging(false);
+                this.addState = 'add';
+                this.newAnimal.lat = this.markers[this.markers.length-1].positionM.lat;
+                this.newAnimal.lng = this.markers[this.markers.length-1].positionM.lng;
                 this.$refs.refNavi.addAnimal();
-                //this.$children[4].addAnimal();
-
-
-
             },
-            changeLog(param){
 
+            // changes values dependent on login state
+            changeLog: function(param){
                 this.logChecker = param;
                 if (param === 'true' && this.createFinished === 'true') {
                     this.$refs.refNavi.querydb();
-                    //console.log('LISTE:')
-                    //console.log(this.listAnimal)
                 }
                 else if (param === 'false' && this.createFinished === 'true'){
-                    console.log('changeLOG with FALSE value')
-
-                    this.removeMarkerDB()
+                    this.removeMarkerDB();
                     counterList = 0
                 }
-                //console.log("this.$refs.refNavi.querydb()" + this.$refs.refNavi.querydb())
-
             },
 
-            fetchData(AnimalData)
-            {
-                //Vue.cookie.set('animaldata', AnimalData);
-                //console.log(AnimalData)
-
+            // display marker (from firebase) on map
+            fetchData: function(AnimalData){
                 localAnimalData.push(AnimalData);
-
                 localStorage.setItem('animal', JSON.stringify(localAnimalData));
-
-
                 this.listAnimal.push(({
                     animalclass: AnimalData.animalclass,
                     species: AnimalData.species,
@@ -786,25 +613,10 @@
                     timestamp: AnimalData.timestamp,
                     lat: AnimalData.lat,
                     lng: AnimalData.lng
-                }))
-
-                console.log(this.listAnimal)
-                console.log('Family: ' + this.listAnimal.family)
-
-                var compIcon
-                var anClass = AnimalData.animalclass
-                console.log('Animal class = ' + anClass)
-                if(anClass === 'Bird'){compIcon = iconBir}
-                else if(anClass === 'Mammal'){ compIcon = iconMam}
-                else if(anClass === 'Fish'){ compIcon = iconFis}
-                else if(anClass === 'Reptile'){ compIcon = iconRep}
-                else if(anClass === 'Amphib'){ compIcon = iconAmp}
-                else if(anClass === 'Insect'){ compIcon = iconIns}
-
-                counterList = counterList + 1
-                console.log('counterlist = ' + counterList)
-
-               this.markersOld.push(({
+                }));
+                let compIcon = this.checkClassIcon(AnimalData.animalclass);
+                counterList = counterList + 1;
+               this.markers.push(({
                     positionM: {lat: AnimalData.lat, lng: AnimalData.lng},
                     icon: compIcon,
                     draggable: false,
@@ -813,96 +625,56 @@
                     family: AnimalData.family,
                     additionalInfo: AnimalData.additionalInfo,
                     date: AnimalData.timestamp
-                }))
-
-
-
-
-
-
-
-
-
-                //animalclass: '', species: '', family: '', additionalInfo: '', timestamp: '', lat: '', lng: ''
+                }));
             },
 
-            removeMarkerDB(){
-
-                    localStorage.removeItem('animal')
-                    console.log('remove marker function')
-                    var nmb = counterList + (this.markersOld.length - (2 + counterList))
-                    this.markersOld.splice(2, nmb)
+            //removes marker on reload
+            removeMarkerDB: function(){
+                    localStorage.removeItem('animal');
+                    let nmb = counterList + (this.markers.length - (2 + counterList));
+                    this.markers.splice(2, nmb)
                 },
 
-            writeMarkerOnRefresh(){
-
-
-
-                //this.removeMarkerDB();
+            //show markers on refresh
+            writeMarkerOnRefresh: function(){
                 this.$refs.refNavi.querydb();
+                let animalObjStorage = localStorage.getItem('animal');
+                let animalObj = JSON.parse(animalObjStorage);
+                for(let element of animalObj){
+                    let compIcon = this.checkClassIcon(element.animalclass);
+                    this.markers.push(({
+                        positionM: {lat: element.lat, lng: element.lng},
+                        icon: compIcon,
+                        draggable: false,
+                        animalclass: element.animalclass,
+                        species: element.species,
+                        family: element.family,
+                        additionalInfo: element.additionalInfo,
+                        date: element.timestamp
+                    }))
+                }
+                this.removeDuplicate()
+            },
 
-                var animalObjStorage = localStorage.getItem('animal')
-                console.log(JSON.parse(animalObjStorage))
+            //removes marker on reload
+            removeDuplicate: function(){
+                localStorage.removeItem('animal');
+                this.markers.splice(2, this.markers.length)
+            },
 
-                var animalObj = JSON.parse(animalObjStorage)
-
-                var compIcon
-                var anClass = JSON.parse(animalObjStorage).animalclass
-
-                console.log(this.markersOld)
-
-                console.log('Animal class = ' + anClass)
+            //load icon dependent on animalclass
+            checkClassIcon: function(anClass){
+                let compIcon;
+                counterList = counterList + 1;
                 if(anClass === 'Bird'){compIcon = iconBir}
                 else if(anClass === 'Mammal'){ compIcon = iconMam}
                 else if(anClass === 'Fish'){ compIcon = iconFis}
                 else if(anClass === 'Reptile'){ compIcon = iconRep}
                 else if(anClass === 'Amphib'){ compIcon = iconAmp}
                 else if(anClass === 'Insect'){ compIcon = iconIns}
-
-
-                for(var j = 0; j<animalObj.length; j++)
-                {
-                    var compIcon
-                    var anClass = animalObj[j].animalclass
-                    counterList = counterList + 1
-                    console.log('counterlist = ' + counterList)
-                    console.log(this.markersOld)
-
-                    console.log('Animal class = ' + anClass)
-                    if(anClass === 'Bird'){compIcon = iconBir}
-                    else if(anClass === 'Mammal'){ compIcon = iconMam}
-                    else if(anClass === 'Fish'){ compIcon = iconFis}
-                    else if(anClass === 'Reptile'){ compIcon = iconRep}
-                    else if(anClass === 'Amphib'){ compIcon = iconAmp}
-                    else if(anClass === 'Insect'){ compIcon = iconIns}
-
-                    this.markersOld.push(({
-                        positionM: {lat: animalObj[j].lat, lng: animalObj[j].lng},
-                        icon: compIcon,
-                        draggable: false,
-                        animalclass: animalObj[j].animalclass,
-                        species: animalObj[j].species,
-                        family: animalObj[j].family,
-                        additionalInfo: animalObj[j].additionalInfo,
-                        date: animalObj[j].timestamp
-                    }))
-                }
-                this.removeDuplicate()
-
-
-
-            },
-            removeDuplicate(){
-
-                localStorage.removeItem('animal')
-
-                console.log(this.markersOld.length + "DAS IST DIE LÄENGE")
-                this.markersOld.splice(2, this.markersOld.length)
+                return compIcon;
             }
-
-            }
-
-
+        }
     };
 
 

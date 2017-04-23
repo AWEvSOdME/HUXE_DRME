@@ -8,19 +8,18 @@
 @import "../scss/imports/animalInfo";
 @import "../scss/imports/modals";
 
+$default-padding: 15px;
+$color_back_white: #fff;
+$font_family_default: 'Raleway', sans-serif;
 
 // ---------------------- General ---------------------------------------------------------------
 
 body {
-  font-family: 'Raleway', sans-serif;
+  font-family: $font_family_default;
   line-height: 18px;
   font-size: 14px;
   background: url("../img/bgd.jpg");
   overflow: hidden;
-}
-
-h1 {
-  text-transform: uppercase;
 }
 
 #logo{
@@ -71,7 +70,7 @@ div#menuMap{
   position: absolute;
   right: 15px;
   top: 80px;
-  bottom: 15px;
+  bottom: $default-padding;
   padding: 3px 10px 5px;
   margin-top: 15px;
   margin-bottom: 10px;
@@ -94,7 +93,7 @@ div#vueNavi{
 }
 .navMenu{
   position: absolute;
-  top: 15px;
+  top: $default-padding;
   left: 220px;
 }
 
@@ -107,8 +106,7 @@ a.login, a.settings, a.contact{
   margin: 5px 30px 5px 30px;
   height: 10px;
   border: 1px solid rgba(239, 234, 235, 0);
-
-  font-family: 'Raleway', sans-serif;
+  font-family: $font_family_default;
   line-height: 18px;
   font-size: 15px;
 }
@@ -127,7 +125,8 @@ a.login, a.settings, a.contact{
   width: auto;
   border: 1px solid rgba(202, 198, 199, 0.76);
   padding: 8px;
-  margin-right:15px;
+  margin-right: $default-padding;
+  font-family: $font_family_default;
   background: transparent ;
   outline: none;
   cursor: url("../img/cursor_foot_black.png"), auto;
@@ -168,8 +167,8 @@ td.animalTableButton{
 
 .resultDivAdd{
   position: absolute;
-  bottom: 15px;
-  right: 15px;
+  bottom: $default-padding;
+  right: $default-padding;
   width: 160px;
   height: 172px;
   border:solid #d6d6d6 thin;
@@ -195,8 +194,8 @@ nav a.show, nav a.addEna, nav a.deleteEna{
   color: #3f3f3f !important;
   font-weight:bold;
   font-size:13px;
+  font-family: $font_family_default;
   text-decoration:none !important;
-  text-transform: uppercase;
   background-color:transparent;
   border: 1px solid rgba(202, 198, 199, 0);
 }
@@ -205,6 +204,7 @@ nav a.addDis, nav a.deleteDis{
   display:inline-block;
   padding: 7px 39px;
   color: #aeaeae !important;
+  font-family: $font_family_default;
   font-weight:bold;
   font-size:13px;
   text-decoration:none !important;
@@ -212,6 +212,7 @@ nav a.addDis, nav a.deleteDis{
   background-color:transparent;
   border: 1px solid rgba(202, 198, 199, 0);
 }
+
 
 nav a.show:hover,
 nav a.addEna:hover,
@@ -294,14 +295,14 @@ div#sliderInfo{
 
 select {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  background-color: #fff;
+  background-color: $color_back_white;
   border-radius: 5px;
   border: solid 1px #c4c2c8;
   box-sizing: border-box;
   clear: both;
   cursor: pointer;
   display: inherit;
-  font-family: inherit;
+  font-family: $font_family_default;
   font-size: 13px;
   height: 30px;
   line-height: 30px;
