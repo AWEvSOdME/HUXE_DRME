@@ -170,16 +170,25 @@
 
     <!--ADDING Info-->
     <div class="animalInfo" v-else-if="animal === 'add'">
-        <p class="infoText"><b>Adding Info</b><br><br>
 
+        <p class="infoText"><b>To add data please do the following steps:</b><br><br>
+
+
+            - Choose the class of the animal you want to add<br><br>
+            - Enter the necessary data in the form<br><br>
+            - Click the <b>'ADD'</b> button<br><br>
+            - Now you can drag the marker around and set it to its final location<br><br>
+            - Click the <b>'SAVE'</b> to store the Data in your Map
 
 
         </p>
+
+
     </div>
 
     <!--ADDING Info-->
     <div class="animalInfo" v-else-if="animal === 'delete'">
-        <p class="infoText"><b>Delete</b><br><br>
+        <p class="infoText"><b>Here the delete function is going to happen ... soon</b><br><br>
 
 
 
@@ -191,7 +200,7 @@
         <p class="infoText"><b>Welcome to ANCKS - the animal tracks database</b><br><br>
 
             This website was designed to easily request animal tracking data from <a href="http://www.movebank.org" target="_blank">movebank.org</a>.<br>
-            On the map you can see (f.e.) where birds migrate to during winter, or where giant elephants are looking for water.<br><br>
+            On the map you can see (f.e.) where birds migrate to during winter, or where elephants go to drink water.<br><br>
 
             You observe animals as a hobby or for a living?
             This SPA offers you a easy and efficient way to store your sightings direct in a database and visualizes them on a map.<br><br>
