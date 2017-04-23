@@ -6,6 +6,9 @@
 </template>
 
 <script>
+  //Source: Daniel Duton
+  //https://github.com/dattn/vue-map.git"
+
   import Leaflet from 'leaflet'
   import LayerContainer from './components/mixins/LayerContainer'
 

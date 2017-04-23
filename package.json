@@ -1,21 +1,21 @@
 {
-  "name": "hue-workflow",
-  "version": "0.0.1",
-  "description": "A simple gulp workflow",
+  "name": "ANCKS",
+  "version": "1.0.1",
+  "description": "Animal Tracks Database",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ralphbert/hue-workflow.git"
+    "url": "git+https://github.com/AWEvSOdME/HUXE_DRME.git"
   },
   "keywords": [],
-  "author": "Ralph Harrer",
+  "author": "David Messerer & Sophie Drummer",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ralphbert/hue-workflow/issues"
+    "url": "https://github.com/AWEvSOdME/HUXE_DRME/issues"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --compilers js:babel-register"
   },
-  "homepage": "https://github.com/ralphbert/hue-workflow#readme",
+  "homepage": "https://github.com/AWEvSOdME/HUXE_DRME#readme",
   "devDependencies": {
     "babel-core": "^6.22.1",
     "babel-loader": "^6.2.10",
