@@ -19,7 +19,7 @@ To run this project simply do the following steps:
 
 #### Additional Info
 
-The tracking data used is from [www.movebank.org](http://www.movebank.org). To use the side you need an account as well as access to the studies used in this project (*see following table*).
+The tracking data used is from [www.movebank.org](http://www.movebank.org). To use the site you need an account as well as access to the studies used in this project (*see following table*).
 
 
 
