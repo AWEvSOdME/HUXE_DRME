@@ -1,7 +1,7 @@
 
 
 
-# Anks the animal track database
+# Ancks the animal track database
 members of this project
 
 **Sophie Drummer and David Messerer**
@@ -11,6 +11,8 @@ To run this project simply do the following steps:
 * Download the project
 * Enter folder in your console
 * run npm-install
+* set up firebase db and auth on [www.firebase.com](http://www.firebase.com)
+* enter firebase information in (subfolder navigation) navi.vue
 * run gulp dev
 * enjoy on localhost:3000
 

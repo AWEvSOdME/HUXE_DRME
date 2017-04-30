@@ -178,12 +178,13 @@
 
     const emailRE = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const config = {
-        apiKey: "AIzaSyBwYBLW7TCGJH0HjFWAgAMw_iQe5YQQO98",
-        authDomain: "mapapp-9d5a2.firebaseapp.com",
-        databaseURL: "https://mapapp-9d5a2.firebaseio.com",
-        projectId: "mapapp-9d5a2",
-        storageBucket: "mapapp-9d5a2.appspot.com",
-        messagingSenderId: "981242849200"
+        // Your firebase Information here!!!
+        apiKey: "",
+        authDomain: "",
+        databaseURL: "",
+        projectId: "",
+        storageBucket: "",
+        messagingSenderId: ""
     };
     firebase.initializeApp(config);
 
